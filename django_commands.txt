@@ -1,0 +1,16 @@
+python -m venv ll_env
+Set-ExecutionPolicy RemoteSigned -Scope Process
+ll_env\Scripts\activate
+python manage.py runserver
+
+django-admin startproject my_finance .
+python manage.py startapp andr_finance
+
+python manage.py shell
+
+python manage.py makemigrations andr_finance
+python manage.py migrate
+
+python manage.py createsuperuser
+
+pip freeze > requirements.txt

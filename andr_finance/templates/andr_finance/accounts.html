@@ -1,0 +1,15 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+
+<p>Accounts:</p>
+
+<ul>
+{% for account in accounts %}
+    <li>{{ account }}</li>
+{% empty %}
+    <li>Empty account</li>
+{% endfor %}
+</ul>
+
+{% endblock content %}

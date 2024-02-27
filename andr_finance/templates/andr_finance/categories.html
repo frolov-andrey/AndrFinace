@@ -1,0 +1,15 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+
+<p>Categories:</p>
+
+<ul>
+{% for category in categories %}
+    <li>{{ category.name }}, родитель: {{ category.parent.name }}</li>
+{% empty %}
+    <li>Empty category</li>
+{% endfor %}
+</ul>
+
+{% endblock content %}
