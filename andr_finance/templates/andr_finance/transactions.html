@@ -16,8 +16,10 @@
     {% for transaction in transactions %}
     <li>
         <a href="{% url 'andr_finance:transaction_edit' transaction.id %}">
-            {{ transaction.account.name }}, {{ transaction.change }}, {{ transaction.amount }},
-            {{transaction.account.currency.name }}, {{ transaction.date_added|date:"d.m.Y H:m" }},
+            {{ transaction.account.name }}, {{ transaction.change }},
+            {{ transaction.amount }} {{transaction.account.currency.name }},
+            {{ transaction.date_added|date:"d.m.Y H:m" }},
+            {{ transaction.category.name }},
             {{ transaction.title }}
         </a>
         <a href="{% url 'andr_finance:transaction_delete' transaction.id%}">Delete</a>
