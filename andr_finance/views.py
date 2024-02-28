@@ -31,6 +31,21 @@ def new_category(request):
     return render(request, 'andr_finance/new_category.html', context)
 
 
+def edit_category(request, category_id):
+    category = Category.objects.get(id=category_id)
+
+    if request.method != 'POST':
+        form = CategoryForm(instance=category)
+    else:
+        form = CategoryForm(instance=category, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:categories')
+
+    context = {'category': category, 'form': form}
+    return render(request, 'andr_finance/edit_category.html', context)
+
+
 def currencies(request):
     currencies = Currency.objects.order_by('name')
     context = {'currencies': currencies}
@@ -82,3 +97,18 @@ def new_account(request):
 
     context = {'form': form}
     return render(request, 'andr_finance/new_account.html', context)
+
+
+def edit_account(request, account_id):
+    account = Account.objects.get(id=account_id)
+
+    if request.method != 'POST':
+        form = AccountForm(instance=account)
+    else:
+        form = AccountForm(instance=account, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:accounts')
+
+    context = {'account': account, 'form': form}
+    return render(request, 'andr_finance/edit_account.html', context)

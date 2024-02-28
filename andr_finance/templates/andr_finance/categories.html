@@ -6,7 +6,7 @@
 
 <ul>
 {% for category in categories %}
-    <li>{{ category.name }}</li>
+    <li><a href="{% url 'andr_finance:edit_category' category.id %}">{{ category.name }}</a></li>
 {% empty %}
     <li>Empty category</li>
 {% endfor%}
