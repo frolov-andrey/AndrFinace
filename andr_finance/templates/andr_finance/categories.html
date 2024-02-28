@@ -4,8 +4,14 @@
 
 <p>Categories:</p>
 
+<ul>
 {% for category in categories %}
-    <p>{{ category.name }}</p>
+    <li>{{ category.name }}</li>
+{% empty %}
+    <li>Empty category</li>
 {% endfor%}
+</ul>
+
+<a href="{% url 'andr_finance:new_category' %}">New category</a>
 
 {% endblock content %}

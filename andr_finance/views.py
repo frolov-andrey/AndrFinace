@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
-from .models import Account, Category, CategoryForm
+from .models import Account, Category
+from .forms import CategoryForm
 
 
 def index(request):
@@ -11,6 +12,12 @@ def accounts(request):
     accounts = Account.objects.order_by('name')
     context = {'accounts': accounts}
     return render(request, 'andr_finance/accounts.html', context)
+
+
+def categories(request):
+    categories = Category.objects.order_by('name')
+    context = {'categories': categories}
+    return render(request, 'andr_finance/categories.html', context)
 
 
 def new_category(request):
@@ -28,9 +35,3 @@ def new_category(request):
     # Вывести пустую или недействительную форму
     context = {'form': form}
     return render(request, 'andr_finance/new_category.html', context)
-
-
-def categories(request):
-    categories = Category.objects.order_by('name')
-    context = {'categories': categories}
-    return render(request, 'andr_finance/categories.html', context)

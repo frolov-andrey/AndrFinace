@@ -34,8 +34,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'andr_finance',
 
-    'mptt',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,5 +126,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ----------- My settings --------------------------
-# default is 10 pixels
-MPTT_ADMIN_LEVEL_INDENT = 10
