@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import ModelForm
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Currency(models.Model):
@@ -8,8 +10,16 @@ class Currency(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
-    parent = models.ForeignKey('self', null=True, on_delete=models.DO_NOTHING)
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CategoryForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
 
 
 class Account(models.Model):

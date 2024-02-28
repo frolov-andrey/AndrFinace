@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Account, Category
-from .forms import CategoryForm
+from .models import Account, Category, CategoryForm
 
 
 def index(request):

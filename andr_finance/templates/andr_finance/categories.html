@@ -4,12 +4,8 @@
 
 <p>Categories:</p>
 
-<ul>
 {% for category in categories %}
-    <li>{{ category.name }}, родитель: {{ category.parent.name }}</li>
-{% empty %}
-    <li>Empty category</li>
-{% endfor %}
-</ul>
+    <p>{{ category.name }}</p>
+{% endfor%}
 
 {% endblock content %}
