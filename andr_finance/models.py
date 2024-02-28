@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 
@@ -24,13 +25,12 @@ class Account(models.Model):
     icon = models.ImageField()
 
     def __str__(self):
-        # Возращает строковое представление модели
-        return self.name
+        return self.name + ', ' + self.currency.name
 
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='accounts')
-    account_recipient = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='account_recipient')
+    account_recipient = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='account_recipient', blank=True, null=True)
     RECEIPT = 'receipt'
     EXPENSE = 'expense'
     TRANSFER = 'transfer'
@@ -41,9 +41,10 @@ class Transaction(models.Model):
     }
     change = models.CharField(max_length=20, choices=CHANGE_CHOICES, default=RECEIPT)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
-    date_save = models.DateTimeField(auto_now=True)
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, blank=True, null=True)
+    date_added = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=200)
     description = models.TextField()
 
-
+    def __str__(self):
+        return self.change + ', ' + self.amount + ' ' + str(self.date_added)

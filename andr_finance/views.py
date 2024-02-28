@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 
-from .models import Account, Category, Currency
-from .forms import CategoryForm, CurrencyForm, AccountForm
+from .models import Account, Category, Currency, Transaction
+from .forms import CategoryForm, CurrencyForm, AccountForm, TransactionForm
 
 
 def index(request):
     return render(request, 'andr_finance/index.html')
 
 
+# --- Category ---
 def categories(request):
     categories = Category.objects.order_by('name')
     context = {'categories': categories}
@@ -46,6 +47,7 @@ def edit_category(request, category_id):
     return render(request, 'andr_finance/edit_category.html', context)
 
 
+# --- Currency ---
 def currencies(request):
     currencies = Currency.objects.order_by('name')
     context = {'currencies': currencies}
@@ -80,6 +82,7 @@ def edit_currency(request, currency_id):
     return render(request, 'andr_finance/edit_currency.html', context)
 
 
+# --- Account ---
 def accounts(request):
     accounts = Account.objects.order_by('name')
     context = {'accounts': accounts}
@@ -112,3 +115,39 @@ def edit_account(request, account_id):
 
     context = {'account': account, 'form': form}
     return render(request, 'andr_finance/edit_account.html', context)
+
+
+# --- Transaction ---
+def transactions(request):
+    transactions = Transaction.objects.order_by('date_added')
+    context = {'transactions': transactions}
+    return render(request, 'andr_finance/transactions.html', context)
+
+
+def new_transaction(request):
+    if request.method != 'POST':
+        form = TransactionForm
+    else:
+        form = TransactionForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:transactions')
+
+    context = {'form': form}
+    return render(request, 'andr_finance/new_transaction.html', context)
+
+
+def edit_transaction(request, transaction_id):
+    transaction = Transaction.objects.get(id=transaction_id)
+
+    if request.method != 'POST':
+        form = TransactionForm(instance=transaction)
+    else:
+        form = TransactionForm(instance=transaction, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:transactions')
+
+    context = {'transaction': transaction, 'form': form}
+    return render(request, 'andr_finance/edit_transaction.html', context)
+

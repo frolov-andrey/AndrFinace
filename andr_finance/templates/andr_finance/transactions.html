@@ -1,0 +1,22 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+
+<p>Transactions:</p>
+
+<ul>
+    {% for transaction in transactions %}
+    <li>
+        <a href="{% url 'andr_finance:edit_transaction' transaction.id %}">
+            {{ transaction.account.name }}, {{ transaction.change }}, {{ transaction.amount }} {{ transaction.account.currency.name }},
+            {{transaction.date_added }}, {{transaction.title }}
+        </a>
+    </li>
+    {% empty %}
+    <li>Empty transaction</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'andr_finance:new_transaction' %}">New transaction</a>
+
+{% endblock content %}

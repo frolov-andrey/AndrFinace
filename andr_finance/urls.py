@@ -17,4 +17,8 @@ urlpatterns = [
     path('accounts/', views.accounts, name='accounts'),
     path('new_account/', views.new_account, name='new_account'),
     path('edit_account/<int:account_id>/', views.edit_account, name='edit_account'),
+
+    path('transactions/', views.transactions, name='transactions'),
+    path('new_transaction/', views.new_transaction, name='new_transaction'),
+    path('edit_transaction/<int:transaction_id>/', views.edit_transaction, name='edit_transaction'),
 ]

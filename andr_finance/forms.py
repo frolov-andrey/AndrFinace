@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Currency, Account
+from .models import Category, Currency, Account, Transaction
 
 
 class CurrencyForm(forms.ModelForm):
@@ -37,6 +37,24 @@ class AccountForm(forms.ModelForm):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['icon'].required = False
 
+
+class TransactionForm(forms.ModelForm):
+    amount = forms.DecimalField(max_digits=12, decimal_places=2)
+    date_added = forms.DateTimeField()
+    title = forms.CharField(max_length=200)
+    description = forms.Textarea(attrs={'col': 80})
+
+    class Meta:
+        model = Transaction
+        fields = ['account', 'account_recipient', 'change', 'amount', 'date_added', 'category', 'title', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(TransactionForm, self).__init__(*args, **kwargs)
+        self.fields['account_recipient'].required = False
+        self.fields['category'].required = False
+        self.fields['date_added'].required = False
+        self.fields['title'].required = False
+        self.fields['description'].required = False
 
 
 
