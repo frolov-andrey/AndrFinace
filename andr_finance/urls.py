@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('currencies/', views.currencies, name='currencies'),
     path('new_currency/', views.new_currency, name='new_currency'),
+    path('edit_currency/<int:currency_id>/', views.edit_currency, name='edit_currency'),
 
     path('accounts/', views.accounts, name='accounts'),
 ]

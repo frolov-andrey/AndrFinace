@@ -54,3 +54,18 @@ def new_currency(request):
 
     context = {'form': form}
     return render(request, 'andr_finance/new_currency.html', context)
+
+
+def edit_currency(request, currency_id):
+    currency = Currency.objects.get(id=currency_id)
+
+    if request.method != 'POST':
+        form = CurrencyForm(instance=currency)
+    else:
+        form = CurrencyForm(instance=currency, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:currencies')
+
+    context = {'currency': currency, 'form': form}
+    return render(request, 'andr_finance/edit_currency.html', context)

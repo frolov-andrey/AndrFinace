@@ -6,7 +6,7 @@
 
 <ul>
 {% for currency in currencies %}
-    <li>{{ currency.name }}</li>
+    <li><a href="{% url 'andr_finance:edit_currency' currency.id %}">{{ currency.name }}</a></li>
 {% empty %}
     <li>Empty currency</li>
 {% endfor%}
