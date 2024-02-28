@@ -173,5 +173,9 @@ def delete_transaction(request, transaction_id):
         return render(request, 'andr_finance/delete_transaction.html', context)
     elif request.method == 'POST':
         transaction.delete()
-        messages.success(request, 'The transaction has been deleted successfully: ' + transaction.date_added)
+        messages.success(
+            request,
+            'The transaction has been deleted successfully: ' +
+            transaction.date_added.strftime('%d.%m.%Y %H:%M')
+        )
         return redirect('andr_finance:transactions')
