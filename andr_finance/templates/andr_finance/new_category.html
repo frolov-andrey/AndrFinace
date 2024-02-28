@@ -1,12 +1,12 @@
 {% extends "andr_finance/base.html" %}
 
 {% block content %}
-  <p>Add a new category:</p>
+<p>Add a new category:</p>
 
-  <form action="{% url 'andr_finance:new_category' %}" method='post'>
+<form action="{% url 'andr_finance:new_category' %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Add category</button>
-  </form>
+</form>
 
 {% endblock content %}

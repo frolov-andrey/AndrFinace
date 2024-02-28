@@ -48,6 +48,18 @@ def edit_category(request, category_id):
     return render(request, 'andr_finance/edit_category.html', context)
 
 
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    context = {'category': category}
+
+    if request.method != 'POST':
+        return render(request, 'andr_finance/edit_category.html', context)
+    elif request.method == 'POST':
+        category.delete()
+        messages.success(request, 'The category has been deleted successfully: ' + category.name)
+        return redirect('andr_finance:categories')
+
+
 # --- Currency ---
 def currencies(request):
     currencies = Currency.objects.order_by('name')
@@ -161,6 +173,6 @@ def delete_transaction(request, transaction_id):
         return render(request, 'andr_finance/delete_transaction.html', context)
     elif request.method == 'POST':
         transaction.delete()
-        messages.success(request, 'The transaction has been deleted successfully.')
+        messages.success(request, 'The transaction has been deleted successfully: ' + transaction.date_added)
         return redirect('andr_finance:transactions')
 

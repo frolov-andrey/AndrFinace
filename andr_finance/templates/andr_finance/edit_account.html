@@ -2,12 +2,12 @@
 
 {% block content %}
 
-  <p>Edit account:</p>
+<p>Edit account:</p>
 
-  <form action="{% url 'andr_finance:edit_account' account.id %}" method='post'>
+<form action="{% url 'andr_finance:edit_account' account.id %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Save changes</button>
-  </form>
+</form>
 
 {% endblock content %}

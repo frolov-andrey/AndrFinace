@@ -4,13 +4,17 @@
 <h2>Delete Transaction</h2>
 
 <form method="POST">
-  {% csrf_token %}
-  <p>Are you sure that you want to delete the transaction?:</p>
-  <p>"{{transaction.date_added}}"</p>
-  <div>
-    <button type="submit">Yes, Delete</button>
-    <a href="{% url 'andr_finance:transactions' %}">Cancel</a>
-  </div>
+    {% csrf_token %}
+    <p>Are you sure that you want to delete the transaction?:</p>
+    <p>
+        {{ transaction.account.name }}, {{ transaction.change }}, {{ transaction.amount }}
+        {{transaction.account.currency.name }},
+        {{ transaction.date_added|date:"d.m.Y H:m" }}, {{transaction.title }}
+    </p>
+    <div>
+        <button type="submit">Yes, Delete</button>
+        <a href="{% url 'andr_finance:transactions' %}">Cancel</a>
+    </div>
 </form>
 
 {% endblock content %}

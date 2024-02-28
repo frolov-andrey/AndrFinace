@@ -1,15 +1,14 @@
 {% extends "andr_finance/base.html" %}
 
 
-
 {% block content %}
 
-  <p>Add a new transaction:</p>
+<p>Add a new transaction:</p>
 
-  <form action="{% url 'andr_finance:new_transaction' %}" method='post'>
+<form action="{% url 'andr_finance:new_transaction' %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Add transaction</button>
-  </form>
+</form>
 
 {% endblock content %}

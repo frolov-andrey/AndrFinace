@@ -5,11 +5,11 @@
 <p>Currencies:</p>
 
 <ul>
-{% for currency in currencies %}
+    {% for currency in currencies %}
     <li><a href="{% url 'andr_finance:edit_currency' currency.id %}">{{ currency.name }}</a></li>
-{% empty %}
+    {% empty %}
     <li>Empty currency</li>
-{% endfor%}
+    {% endfor%}
 </ul>
 
 <a href="{% url 'andr_finance:new_currency' %}">New currency</a>

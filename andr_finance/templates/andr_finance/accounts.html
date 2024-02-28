@@ -5,11 +5,11 @@
 <p>Accounts:</p>
 
 <ul>
-{% for account in accounts %}
+    {% for account in accounts %}
     <li><a href="{% url 'andr_finance:edit_account' account.id %}">{{ account.name }}, {{ account.currency }}</a></li>
-{% empty %}
+    {% empty %}
     <li>Empty account</li>
-{% endfor %}
+    {% endfor %}
 </ul>
 
 <a href="{% url 'andr_finance:new_account' %}">New account</a>

@@ -2,12 +2,17 @@
 
 {% block content %}
 
-  <p>Edit category:</p>
+<p>Edit category:</p>
 
-  <form action="{% url 'andr_finance:edit_category' category.id %}" method='post'>
+<form action="{% url 'andr_finance:edit_category' category.id %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Save changes</button>
-  </form>
+</form>
+
+<form action="{% url 'andr_finance:delete_category' category.id %}" method='post'>
+    {% csrf_token %}
+    <button name="submit">Delete</button>
+</form>
 
 {% endblock content %}

@@ -2,14 +2,22 @@
 
 {% block content %}
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <p>Categories:</p>
 
 <ul>
-{% for category in categories %}
+    {% for category in categories %}
     <li><a href="{% url 'andr_finance:edit_category' category.id %}">{{ category.name }}</a></li>
-{% empty %}
+    {% empty %}
     <li>Empty category</li>
-{% endfor%}
+    {% endfor%}
 </ul>
 
 <a href="{% url 'andr_finance:new_category' %}">New category</a>
