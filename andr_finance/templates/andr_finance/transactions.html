@@ -2,33 +2,50 @@
 
 {% block content %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+<h3>Transactions:</h3>
 
-<p>Transactions:</p>
-
-<ul>
+<table border=0 cellpadding=5 cellspacing=0 class="table_report">
+    <tr>
+        <td class="td_title">+ / -</td>
+        <td class="td_title">Category</td>
+        <td class="td_title">Date</td>
+        <td class="td_title">Amount</td>
+        <td class="td_title">Account</td>
+        <td class="td_title">Title</td>
+        <td class="td_title">Edit</td>
+        <td class="td_title">Delete</td>
+    </tr>
     {% for transaction in transactions %}
-    <li>
-        <a href="{% url 'andr_finance:transaction_edit' transaction.id %}">
-            {{ transaction.account.name }}, {{ transaction.change }},
-            {{ transaction.amount }} {{transaction.account.currency.name }},
-            {{ transaction.date_added|date:"d.m.Y H:m" }},
-            {{ transaction.category.name }},
-            {{ transaction.title }}
-        </a>
-        <a href="{% url 'andr_finance:transaction_delete' transaction.id%}">Delete</a>
-    </li>
+    <tr>
+        <td class="td_left">
+            {% if transaction.change == 'receipt' %}
+                -
+            {% elif transaction.change == 'expense' %}
+                +
+            {% elif transaction.change == 'transfer' %}
+                transfer
+            {% endif %}
+        </td>
+        <td class="td_left">{{ transaction.category.name }}</td>
+        <td class="td_left">{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
+        <td class="td_left">{{ transaction.category.amount }} {{transaction.account.currency.name }}</td>
+        <td class="td_left">{{ transaction.account.name }}</td>
+        <td class="td_left">{{ transaction.title }}</td>
+        <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Edit</a></td>
+        <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id%}">Delete</a></td>
+    </tr>
     {% empty %}
-    <li>Empty transaction</li>
+    <tr>
+        <td class="td_left">Empty transaction</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
     {% endfor %}
-</ul>
-
+</table>
+<br><br>
 <a href="{% url 'andr_finance:transaction_new' %}">New transaction</a>
 
 {% endblock content %}

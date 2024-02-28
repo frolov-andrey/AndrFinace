@@ -52,9 +52,7 @@ def category_delete(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     context = {'category': category}
 
-    if request.method != 'POST':
-        return render(request, 'andr_finance/category_edit.html', context)
-    elif request.method == 'POST':
+    if request.method == 'POST':
         category.delete()
         messages.success(request, 'The category has been deleted successfully: ' + category.name)
         return redirect('andr_finance:categories')
@@ -97,11 +95,8 @@ def currency_edit(request, currency_id):
 
 def currency_delete(request, currency_id):
     currency = get_object_or_404(Currency, pk=currency_id)
-    context = {'currency': currency}
 
-    if request.method != 'POST':
-        return render(request, 'andr_finance/currency_edit.html', context)
-    elif request.method == 'POST':
+    if request.method == 'POST':
         currency.delete()
         messages.success(request, 'The currency has been deleted successfully: ' + currency.name)
         return redirect('andr_finance:currencies')
@@ -144,11 +139,7 @@ def account_edit(request, account_id):
 
 def account_delete(request, account_id):
     account = get_object_or_404(Account, pk=account_id)
-    context = {'account': account}
-
-    if request.method != 'POST':
-        return render(request, 'andr_finance/account_edit.html', context)
-    elif request.method == 'POST':
+    if request.method == 'POST':
         account.delete()
         messages.success(request, 'The currency has been deleted successfully: ' + account.name)
         return redirect('andr_finance:accounts')
@@ -191,11 +182,9 @@ def transaction_edit(request, transaction_id):
 
 def transaction_delete(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
-    context = {'transaction': transaction}
 
-    if request.method == 'GET':
-        return render(request, 'andr_finance/transaction_delete.html', context)
-    elif request.method == 'POST':
+    # todo: Возможно тут проблемка
+    if request.method == 'POST' or request.method == 'GET':
         transaction.delete()
         messages.success(
             request,

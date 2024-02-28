@@ -1,9 +1,46 @@
+{% load static %}
+<link  href="{% static 'andr_finance/style.css' %}" rel="stylesheet" type="text/css">
+
+{{ request.path }}
+
 <p>
-    <a href="{% url 'andr_finance:index' %}">AndrFinance</a> -
-    <a href="{% url 'andr_finance:categories' %}">Categories</a> -
-    <a href="{% url 'andr_finance:currencies' %}">Currencies</a> -
-    <a href="{% url 'andr_finance:accounts' %}">Accounts</a> -
-    <a href="{% url 'andr_finance:transactions' %}">Transaction</a>
+    <a href="{% url 'andr_finance:index' %}"
+        {% if request.path == '/' %}
+            style="font-weight: bold;"
+        {% endif %}
+    >AndrFinance</a> -
+
+    <a href="{% url 'andr_finance:categories' %}"
+        {% if request.path == '/categories/' %}
+            style="font-weight: bold;"
+        {% endif %}
+    >Categories</a> -
+
+    <a href="{% url 'andr_finance:currencies' %}"
+        {% if request.path == '/currencies/' %}
+            style="font-weight: bold;"
+        {% endif %}
+    >Currencies</a> -
+
+    <a href="{% url 'andr_finance:accounts' %}"
+        {% if request.path == '/accounts/' %}
+            style="font-weight: bold;"
+        {% endif %}
+    >Accounts</a> -
+
+    <a href="{% url 'andr_finance:transactions' %}"
+        {% if request.path == '/transactions/' %}
+            style="font-weight: bold;"
+        {% endif %}
+    >Transaction</a>
 </p>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 {% block content %}{% endblock content %}

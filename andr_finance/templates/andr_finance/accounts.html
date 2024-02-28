@@ -2,24 +2,31 @@
 
 {% block content %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+<h3>Accounts:</h3>
 
-<p>Accounts:</p>
-
-<ul>
+<table border=0 cellpadding=5 cellspacing=0 class="table_report">
+    <tr>
+        <td class="td_title">Name</td>
+        <td class="td_title">Currency</td>
+        <td class="td_title">Edit</td>
+    </tr>
     {% for account in accounts %}
-    <li><a href="{% url 'andr_finance:account_edit' account.id %}">{{ account.name }}, {{ account.currency }}</a></li>
+    <tr>
+        <td class="td_left">{{ account.name }}</td>
+        <td class="td_left">{{ account.currency }}</td>
+        <td class="td_center"><a href="{% url 'andr_finance:account_edit' account.id %}">Edit</a></td>
+    </tr>
     {% empty %}
-    <li>Empty account</li>
+    <tr>
+        <td>Empty currency</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
     {% endfor %}
-</ul>
+</table>
 
+<br><br>
 <a href="{% url 'andr_finance:account_new' %}">New account</a>
 
 {% endblock content %}
