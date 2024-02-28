@@ -30,7 +30,8 @@ class Account(models.Model):
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='accounts')
-    account_recipient = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='account_recipient', blank=True, null=True)
+    account_recipient = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='account_recipient',
+                                          blank=True, null=True)
     RECEIPT = 'receipt'
     EXPENSE = 'expense'
     TRANSFER = 'transfer'

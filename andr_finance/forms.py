@@ -55,6 +55,3 @@ class TransactionForm(forms.ModelForm):
         self.fields['date_added'].required = False
         self.fields['title'].required = False
         self.fields['description'].required = False
-
-
-
