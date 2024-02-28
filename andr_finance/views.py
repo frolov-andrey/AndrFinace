@@ -142,6 +142,18 @@ def account_edit(request, account_id):
     return render(request, 'andr_finance/account_edit.html', context)
 
 
+def account_delete(request, account_id):
+    account = get_object_or_404(Account, pk=account_id)
+    context = {'account': account}
+
+    if request.method != 'POST':
+        return render(request, 'andr_finance/account_edit.html', context)
+    elif request.method == 'POST':
+        account.delete()
+        messages.success(request, 'The currency has been deleted successfully: ' + account.name)
+        return redirect('andr_finance:accounts')
+
+
 # --- Transaction ---
 def transactions(request):
     transactions = Transaction.objects.order_by('date_added')

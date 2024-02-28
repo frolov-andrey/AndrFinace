@@ -10,4 +10,9 @@
     <button name="submit">Save changes</button>
 </form>
 
+<form action="{% url 'andr_finance:account_delete' account.id %}" method='post'>
+    {% csrf_token %}
+    <button name="submit">Delete</button>
+</form>
+
 {% endblock content %}
