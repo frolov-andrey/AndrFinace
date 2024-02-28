@@ -1,0 +1,17 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+
+<p>Currencies:</p>
+
+<ul>
+{% for currency in currencies %}
+    <li>{{ currency.name }}</li>
+{% empty %}
+    <li>Empty currency</li>
+{% endfor%}
+</ul>
+
+<a href="{% url 'andr_finance:new_currency' %}">New currency</a>
+
+{% endblock content %}

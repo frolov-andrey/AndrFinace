@@ -6,8 +6,11 @@ app_name = 'andr_finance'
 urlpatterns = [
     path('', views.index, name='index'),
 
-    path('accounts/', views.accounts, name='accounts'),
-
     path('categories/', views.categories, name='categories'),
     path('new_category/', views.new_category, name='new_category'),
+
+    path('currencies/', views.currencies, name='currencies'),
+    path('new_currency/', views.new_currency, name='new_currency'),
+
+    path('accounts/', views.accounts, name='accounts'),
 ]

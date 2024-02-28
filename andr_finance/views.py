@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 
-from .models import Account, Category
-from .forms import CategoryForm
+from .models import Account, Category, Currency
+from .forms import CategoryForm, CurrencyForm
 
 
 def index(request):
@@ -35,3 +35,22 @@ def new_category(request):
     # Вывести пустую или недействительную форму
     context = {'form': form}
     return render(request, 'andr_finance/new_category.html', context)
+
+
+def currencies(request):
+    currencies = Currency.objects.order_by('name')
+    context = {'currencies': currencies}
+    return render(request, 'andr_finance/currencies.html', context)
+
+
+def new_currency(request):
+    if request.method != 'POST':
+        form = CurrencyForm
+    else:
+        form = CurrencyForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:currencies')
+
+    context = {'form': form}
+    return render(request, 'andr_finance/new_currency.html', context)
