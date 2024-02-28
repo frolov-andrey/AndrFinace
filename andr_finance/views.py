@@ -1,17 +1,11 @@
 from django.shortcuts import render, redirect
 
 from .models import Account, Category, Currency
-from .forms import CategoryForm, CurrencyForm
+from .forms import CategoryForm, CurrencyForm, AccountForm
 
 
 def index(request):
     return render(request, 'andr_finance/index.html')
-
-
-def accounts(request):
-    accounts = Account.objects.order_by('name')
-    context = {'accounts': accounts}
-    return render(request, 'andr_finance/accounts.html', context)
 
 
 def categories(request):
@@ -69,3 +63,22 @@ def edit_currency(request, currency_id):
 
     context = {'currency': currency, 'form': form}
     return render(request, 'andr_finance/edit_currency.html', context)
+
+
+def accounts(request):
+    accounts = Account.objects.order_by('name')
+    context = {'accounts': accounts}
+    return render(request, 'andr_finance/accounts.html', context)
+
+
+def new_account(request):
+    if request.method != 'POST':
+        form = AccountForm
+    else:
+        form = AccountForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('andr_finance:accounts')
+
+    context = {'form': form}
+    return render(request, 'andr_finance/new_account.html', context)
