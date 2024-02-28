@@ -48,7 +48,7 @@ def category_edit(request, category_id):
     return render(request, 'andr_finance/category_edit.html', context)
 
 
-def delete_category(request, category_id):
+def category_delete(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     context = {'category': category}
 
@@ -93,6 +93,18 @@ def currency_edit(request, currency_id):
 
     context = {'currency': currency, 'form': form}
     return render(request, 'andr_finance/currency_edit.html', context)
+
+
+def currency_delete(request, currency_id):
+    currency = get_object_or_404(Currency, pk=currency_id)
+    context = {'currency': currency}
+
+    if request.method != 'POST':
+        return render(request, 'andr_finance/currency_edit.html', context)
+    elif request.method == 'POST':
+        currency.delete()
+        messages.success(request, 'The currency has been deleted successfully: ' + currency.name)
+        return redirect('andr_finance:currencies')
 
 
 # --- Account ---

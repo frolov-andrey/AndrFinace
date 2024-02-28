@@ -10,7 +10,7 @@
     <button name="submit">Save changes</button>
 </form>
 
-<form action="{% url 'andr_finance:delete_category' category.id %}" method='post'>
+<form action="{% url 'andr_finance:category_delete' category.id %}" method='post'>
     {% csrf_token %}
     <button name="submit">Delete</button>
 </form>
