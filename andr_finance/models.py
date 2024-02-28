@@ -18,7 +18,6 @@ class Account(models.Model):
     name = models.CharField(max_length=200)
     start_balance = models.DecimalField(max_digits=12, decimal_places=2)
     currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
-    balance = models.DecimalField(max_digits=12, decimal_places=2)
     icon = models.ImageField()
 
     def __str__(self):
