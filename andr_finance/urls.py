@@ -7,20 +7,20 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     path('categories/', views.categories, name='categories'),
-    path('new_category/', views.new_category, name='new_category'),
-    path('edit_category/<int:category_id>/', views.edit_category, name='edit_category'),
+    path('category_new/', views.category_new, name='category_new'),
+    path('category_edit/<int:category_id>/', views.category_edit, name='category_edit'),
     path('delete_category/<int:category_id>/', views.delete_category, name='delete_category'),
 
     path('currencies/', views.currencies, name='currencies'),
-    path('new_currency/', views.new_currency, name='new_currency'),
-    path('edit_currency/<int:currency_id>/', views.edit_currency, name='edit_currency'),
+    path('currency_new/', views.currency_new, name='currency_new'),
+    path('currency_edit/<int:currency_id>/', views.currency_edit, name='currency_edit'),
 
     path('accounts/', views.accounts, name='accounts'),
-    path('new_account/', views.new_account, name='new_account'),
-    path('edit_account/<int:account_id>/', views.edit_account, name='edit_account'),
+    path('account_new/', views.account_new, name='account_new'),
+    path('account_edit/<int:account_id>/', views.account_edit, name='account_edit'),
 
     path('transactions/', views.transactions, name='transactions'),
-    path('new_transaction/', views.new_transaction, name='new_transaction'),
-    path('edit_transaction/<int:transaction_id>/', views.edit_transaction, name='edit_transaction'),
-    path('delete_transaction/<int:transaction_id>/', views.delete_transaction, name='delete_transaction'),
+    path('transaction_new/', views.transaction_new, name='transaction_new'),
+    path('transaction_edit/<int:transaction_id>/', views.transaction_edit, name='transaction_edit'),
+    path('transaction_delete/<int:transaction_id>/', views.transaction_delete, name='transaction_delete'),
 ]

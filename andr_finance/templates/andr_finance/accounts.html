@@ -6,12 +6,12 @@
 
 <ul>
     {% for account in accounts %}
-    <li><a href="{% url 'andr_finance:edit_account' account.id %}">{{ account.name }}, {{ account.currency }}</a></li>
+    <li><a href="{% url 'andr_finance:account_edit' account.id %}">{{ account.name }}, {{ account.currency }}</a></li>
     {% empty %}
     <li>Empty account</li>
     {% endfor %}
 </ul>
 
-<a href="{% url 'andr_finance:new_account' %}">New account</a>
+<a href="{% url 'andr_finance:account_new' %}">New account</a>
 
 {% endblock content %}

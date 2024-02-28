@@ -3,7 +3,7 @@
 {% block content %}
 <p>Add a new currency:</p>
 
-<form action="{% url 'andr_finance:new_currency' %}" method='post'>
+<form action="{% url 'andr_finance:currency_new' %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Add currency</button>

@@ -5,7 +5,7 @@
 
 <p>Add a new transaction:</p>
 
-<form action="{% url 'andr_finance:new_transaction' %}" method='post'>
+<form action="{% url 'andr_finance:transaction_new' %}" method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Add transaction</button>

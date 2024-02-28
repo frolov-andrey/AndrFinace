@@ -15,18 +15,18 @@
 <ul>
     {% for transaction in transactions %}
     <li>
-        <a href="{% url 'andr_finance:edit_transaction' transaction.id %}">
+        <a href="{% url 'andr_finance:transaction_edit' transaction.id %}">
             {{ transaction.account.name }}, {{ transaction.change }}, {{ transaction.amount }},
             {{transaction.account.currency.name }}, {{ transaction.date_added|date:"d.m.Y H:m" }},
             {{ transaction.title }}
         </a>
-        <a href="{% url 'andr_finance:delete_transaction' transaction.id%}">Delete</a>
+        <a href="{% url 'andr_finance:transaction_delete' transaction.id%}">Delete</a>
     </li>
     {% empty %}
     <li>Empty transaction</li>
     {% endfor %}
 </ul>
 
-<a href="{% url 'andr_finance:new_transaction' %}">New transaction</a>
+<a href="{% url 'andr_finance:transaction_new' %}">New transaction</a>
 
 {% endblock content %}

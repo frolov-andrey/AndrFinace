@@ -16,7 +16,7 @@ def categories(request):
     return render(request, 'andr_finance/categories.html', context)
 
 
-def new_category(request):
+def category_new(request):
     """ Определяем новую категорию. """
     if request.method != 'POST':
         # Данные не обновлялись, создается пустая форма
@@ -30,10 +30,10 @@ def new_category(request):
 
     # Вывести пустую или недействительную форму
     context = {'form': form}
-    return render(request, 'andr_finance/new_category.html', context)
+    return render(request, 'andr_finance/category_new.html', context)
 
 
-def edit_category(request, category_id):
+def category_edit(request, category_id):
     category = Category.objects.get(id=category_id)
 
     if request.method != 'POST':
@@ -45,7 +45,7 @@ def edit_category(request, category_id):
             return redirect('andr_finance:categories')
 
     context = {'category': category, 'form': form}
-    return render(request, 'andr_finance/edit_category.html', context)
+    return render(request, 'andr_finance/category_edit.html', context)
 
 
 def delete_category(request, category_id):
@@ -53,7 +53,7 @@ def delete_category(request, category_id):
     context = {'category': category}
 
     if request.method != 'POST':
-        return render(request, 'andr_finance/edit_category.html', context)
+        return render(request, 'andr_finance/category_edit.html', context)
     elif request.method == 'POST':
         category.delete()
         messages.success(request, 'The category has been deleted successfully: ' + category.name)
@@ -67,7 +67,7 @@ def currencies(request):
     return render(request, 'andr_finance/currencies.html', context)
 
 
-def new_currency(request):
+def currency_new(request):
     if request.method != 'POST':
         form = CurrencyForm
     else:
@@ -77,10 +77,10 @@ def new_currency(request):
             return redirect('andr_finance:currencies')
 
     context = {'form': form}
-    return render(request, 'andr_finance/new_currency.html', context)
+    return render(request, 'andr_finance/currency_new.html', context)
 
 
-def edit_currency(request, currency_id):
+def currency_edit(request, currency_id):
     currency = Currency.objects.get(id=currency_id)
 
     if request.method != 'POST':
@@ -92,7 +92,7 @@ def edit_currency(request, currency_id):
             return redirect('andr_finance:currencies')
 
     context = {'currency': currency, 'form': form}
-    return render(request, 'andr_finance/edit_currency.html', context)
+    return render(request, 'andr_finance/currency_edit.html', context)
 
 
 # --- Account ---
@@ -102,7 +102,7 @@ def accounts(request):
     return render(request, 'andr_finance/accounts.html', context)
 
 
-def new_account(request):
+def account_new(request):
     if request.method != 'POST':
         form = AccountForm
     else:
@@ -112,10 +112,10 @@ def new_account(request):
             return redirect('andr_finance:accounts')
 
     context = {'form': form}
-    return render(request, 'andr_finance/new_account.html', context)
+    return render(request, 'andr_finance/account_new.html', context)
 
 
-def edit_account(request, account_id):
+def account_edit(request, account_id):
     account = Account.objects.get(id=account_id)
 
     if request.method != 'POST':
@@ -127,7 +127,7 @@ def edit_account(request, account_id):
             return redirect('andr_finance:accounts')
 
     context = {'account': account, 'form': form}
-    return render(request, 'andr_finance/edit_account.html', context)
+    return render(request, 'andr_finance/account_edit.html', context)
 
 
 # --- Transaction ---
@@ -137,7 +137,7 @@ def transactions(request):
     return render(request, 'andr_finance/transactions.html', context)
 
 
-def new_transaction(request):
+def transaction_new(request):
     if request.method != 'POST':
         form = TransactionForm
     else:
@@ -147,10 +147,10 @@ def new_transaction(request):
             return redirect('andr_finance:transactions')
 
     context = {'form': form}
-    return render(request, 'andr_finance/new_transaction.html', context)
+    return render(request, 'andr_finance/transaction_new.html', context)
 
 
-def edit_transaction(request, transaction_id):
+def transaction_edit(request, transaction_id):
     transaction = Transaction.objects.get(id=transaction_id)
 
     if request.method != 'POST':
@@ -162,15 +162,15 @@ def edit_transaction(request, transaction_id):
             return redirect('andr_finance:transactions')
 
     context = {'transaction': transaction, 'form': form}
-    return render(request, 'andr_finance/edit_transaction.html', context)
+    return render(request, 'andr_finance/transaction_edit.html', context)
 
 
-def delete_transaction(request, transaction_id):
+def transaction_delete(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
     context = {'transaction': transaction}
 
     if request.method == 'GET':
-        return render(request, 'andr_finance/delete_transaction.html', context)
+        return render(request, 'andr_finance/transaction_delete.html', context)
     elif request.method == 'POST':
         transaction.delete()
         messages.success(
