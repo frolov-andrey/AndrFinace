@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 
 from .models import Account, Category, Currency, Transaction
 from .forms import CategoryForm, CurrencyForm, AccountForm, TransactionForm
@@ -150,4 +151,16 @@ def edit_transaction(request, transaction_id):
 
     context = {'transaction': transaction, 'form': form}
     return render(request, 'andr_finance/edit_transaction.html', context)
+
+
+def delete_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, pk=transaction_id)
+    context = {'transaction': transaction}
+
+    if request.method == 'GET':
+        return render(request, 'andr_finance/delete_transaction.html', context)
+    elif request.method == 'POST':
+        transaction.delete()
+        messages.success(request, 'The transaction has been deleted successfully.')
+        return redirect('andr_finance:transactions')
 
