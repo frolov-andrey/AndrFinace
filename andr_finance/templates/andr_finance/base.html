@@ -1,8 +1,6 @@
 {% load static %}
 <link  href="{% static 'andr_finance/style.css' %}" rel="stylesheet" type="text/css">
 
-{{ request.path }}
-
 <p>
     <a href="{% url 'andr_finance:index' %}"
         {% if request.path == '/' %}
