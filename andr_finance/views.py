@@ -50,7 +50,6 @@ def category_edit(request, category_id):
 
 def category_delete(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
-    context = {'category': category}
 
     if request.method == 'POST':
         category.delete()
