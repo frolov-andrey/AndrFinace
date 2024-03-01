@@ -4,3 +4,4 @@ __pycache__/
 /Temp/
 *.sqlite3
 /.run/
+/logs/
