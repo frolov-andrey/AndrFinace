@@ -1,44 +1,59 @@
-{% load static %}
-<link  href="{% static 'andr_finance/style.css' %}" rel="stylesheet" type="text/css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AndrFinance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<p>
-    <a href="{% url 'andr_finance:index' %}"
-        {% if request.path == '/' %}
-            style="font-weight: bold;"
-        {% endif %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    {% load static %}
+    <link href="{% static 'andr_finance/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'andr_finance/simple.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'andr_finance/simple_custom.css' %}" rel="stylesheet" type="text/css">
+
+   <link href="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.full.js' %}"></script>
+
+</head>
+<body>
+<script>
+    $(function () {
+        $('#id_date_added').datetimepicker({
+            format:'Y-m-d H:i',
+            defaultDate:new Date(),
+        });
+
+    });
+</script>
+<nav>
+    <a href="{% url 'andr_finance:index' %}" class="{% if select_menu == 'index' %}select_menu{% endif %}"
     >AndrFinance</a> -
 
-    <a href="{% url 'andr_finance:categories' %}"
-        {% if request.path == '/categories/' %}
-            style="font-weight: bold;"
-        {% endif %}
+    <a href="{% url 'andr_finance:categories' %}" class="{% if select_menu == 'categories' %}select_menu{% endif %}"
     >Categories</a> -
 
-    <a href="{% url 'andr_finance:currencies' %}"
-        {% if request.path == '/currencies/' %}
-            style="font-weight: bold;"
-        {% endif %}
+    <a href="{% url 'andr_finance:currencies' %}" class="{% if select_menu == 'currencies' %}select_menu{% endif %}"
     >Currencies</a> -
 
-    <a href="{% url 'andr_finance:accounts' %}"
-        {% if request.path == '/accounts/' %}
-            style="font-weight: bold;"
-        {% endif %}
+    <a href="{% url 'andr_finance:accounts' %}" class="{% if select_menu == 'accounts' %}select_menu{% endif %}"
     >Accounts</a> -
 
-    <a href="{% url 'andr_finance:transactions' %}"
-        {% if request.path == '/transactions/' %}
-            style="font-weight: bold;"
-        {% endif %}
+    <a href="{% url 'andr_finance:transactions' %}" class="{% if select_menu == 'transactions' %}select_menu{% endif %}"
     >Transaction</a>
-</p>
+</nav>
 
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
 {% endif %}
 
 {% block content %}{% endblock content %}
+
+</body>
+</html>

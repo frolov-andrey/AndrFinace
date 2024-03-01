@@ -5,7 +5,7 @@
 
 <form action="{% url 'andr_finance:account_new' %}" method='post'>
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_div }}
     <button name="submit">Add account</button>
 </form>
 

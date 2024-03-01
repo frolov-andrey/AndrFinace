@@ -1,18 +1,28 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+import logging
 
-from .models import Account, Category, Currency, Transaction
+from django.contrib import messages
+from django.db.models import Sum
+from django.shortcuts import render, redirect, get_object_or_404
+
 from .forms import CategoryForm, CurrencyForm, AccountForm, TransactionForm
+from .models import Account, Category, Currency, Transaction
+
+# todo: это правильно?
+logger = logging.getLogger(__name__)
 
 
 def index(request):
-    return render(request, 'andr_finance/index.html')
+    context = {'select_menu': 'index'}
+    return render(request, 'andr_finance/index.html', context)
 
 
 # --- Category ---
 def categories(request):
     categories = Category.objects.order_by('name')
-    context = {'categories': categories}
+    context = {
+        'categories': categories,
+        'select_menu': 'categories',
+    }
     return render(request, 'andr_finance/categories.html', context)
 
 
@@ -60,7 +70,10 @@ def category_delete(request, category_id):
 # --- Currency ---
 def currencies(request):
     currencies = Currency.objects.order_by('name')
-    context = {'currencies': currencies}
+    context = {
+        'currencies': currencies,
+        'select_menu': 'currencies',
+    }
     return render(request, 'andr_finance/currencies.html', context)
 
 
@@ -88,7 +101,10 @@ def currency_edit(request, currency_id):
             form.save()
             return redirect('andr_finance:currencies')
 
-    context = {'currency': currency, 'form': form}
+    context = {
+        'currency': currency,
+        'form': form
+    }
     return render(request, 'andr_finance/currency_edit.html', context)
 
 
@@ -102,9 +118,33 @@ def currency_delete(request, currency_id):
 
 
 # --- Account ---
+def get_balance(account_id):
+    balance = 0
+    transactions = Transaction.objects.filter(account_id=account_id)
+    for transaction in transactions:
+        # todo: Int + Decimal ?
+        balance = balance + transaction.amount
+
+    return balance
+
+
 def accounts(request):
     accounts = Account.objects.order_by('name')
-    context = {'accounts': accounts}
+    context_accounts = []
+    for account in accounts:
+        balance = get_balance(account.id)
+
+        # todo: Так можно?:
+        account.balance = balance
+
+        o_account = {'account': account, 'balance': balance}
+        context_accounts.append(o_account)
+
+    context = {
+        'context_accounts': context_accounts,
+        'select_menu': 'accounts',
+    }
+
     return render(request, 'andr_finance/accounts.html', context)
 
 
@@ -146,8 +186,29 @@ def account_delete(request, account_id):
 
 # --- Transaction ---
 def transactions(request):
-    transactions = Transaction.objects.order_by('date_added')
-    context = {'transactions': transactions}
+    filter_account = request.GET.get('filter_account')
+
+    if (request.method == 'GET'
+            and filter_account is not None
+            and filter_account != '0'):
+        transactions = Transaction.objects.filter(account=filter_account, change=Transaction.RECEIPT).order_by('date_added')
+        total_currency_name = Account.objects.get(pk=filter_account).currency.name
+    else:
+        transactions = Transaction.objects.order_by('date_added')
+        total_currency_name = ''
+
+    total_amount = transactions.aggregate(Sum('amount'))['amount__sum']
+    print(total_amount)
+
+    context = {
+        'transactions': transactions,
+        'accounts': Account.objects.order_by('name'),
+        'select_menu': 'transactions',
+        'filter_account': filter_account,
+        'total_amount': total_amount,
+        'total_currency_name': total_currency_name,
+    }
+
     return render(request, 'andr_finance/transactions.html', context)
 
 
@@ -175,7 +236,10 @@ def transaction_edit(request, transaction_id):
             form.save()
             return redirect('andr_finance:transactions')
 
-    context = {'transaction': transaction, 'form': form}
+    context = {
+        'transaction': transaction,
+        'form': form
+    }
     return render(request, 'andr_finance/transaction_edit.html', context)
 
 

@@ -43,7 +43,7 @@ class Transaction(models.Model):
     change = models.CharField(max_length=20, choices=CHANGE_CHOICES, default=RECEIPT)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, blank=True, null=True)
-    date_added = models.DateTimeField(default=timezone.now)
+    date_added = models.DateTimeField()
     title = models.CharField(max_length=200)
     description = models.TextField()
 

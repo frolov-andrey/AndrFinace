@@ -2,50 +2,87 @@
 
 {% block content %}
 
-<h3>Transactions:</h3>
+    <h3>Transactions:</h3>
 
-<table border=0 cellpadding=5 cellspacing=0 class="table_report">
-    <tr>
-        <td class="td_title">+ / -</td>
-        <td class="td_title">Category</td>
-        <td class="td_title">Date</td>
-        <td class="td_title">Amount</td>
-        <td class="td_title">Account</td>
-        <td class="td_title">Title</td>
-        <td class="td_title">Edit</td>
-        <td class="td_title">Delete</td>
-    </tr>
-    {% for transaction in transactions %}
-    <tr>
-        <td class="td_left">
-            {% if transaction.change == 'receipt' %}
-                -
-            {% elif transaction.change == 'expense' %}
-                +
-            {% elif transaction.change == 'transfer' %}
-                transfer
-            {% endif %}
-        </td>
-        <td class="td_left">{{ transaction.category.name }}</td>
-        <td class="td_left">{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
-        <td class="td_left">{{ transaction.category.amount }} {{transaction.account.currency.name }}</td>
-        <td class="td_left">{{ transaction.account.name }}</td>
-        <td class="td_left">{{ transaction.title }}</td>
-        <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Edit</a></td>
-        <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id%}">Delete</a></td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td class="td_left">Empty transaction</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    {% endfor %}
-</table>
-<br><br>
-<a href="{% url 'andr_finance:transaction_new' %}">New transaction</a>
+    <form action="{% url 'andr_finance:transactions' %}" method='get'>
+        {% csrf_token %}
+        <label for="filter_account">Account:</label>
+        <select name="filter_account" id="filter_account">
+
+            {# todo: Правильно?: id - нулём не может быть?   #}
+            <option
+                    value="0"
+                    {% if filter_account == '0' %}
+                    selected
+                    {% endif %}
+            >--- Не выбрано ---
+            </option>
+
+            {% for account in accounts %}
+                <option
+                        value="{{ account.id }}"
+                        {% if filter_account == account.id|stringformat:"s" %}
+                        selected
+                        {% endif %}
+                >{{ account.name }}</option>
+            {% endfor %}
+
+        </select>
+        <br><br>
+        <button name="submit">Send report</button>
+    </form>
+
+    <table border=0 cellpadding=5 cellspacing=0 class="table_report">
+        <thead>
+        <th>+ / -</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Account</th>
+        <th>Title</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            <tr>
+                <td class="td_left">
+                    {% if transaction.change == 'receipt' %}
+                        -
+                    {% elif transaction.change == 'expense' %}
+                        +
+                    {% elif transaction.change == 'transfer' %}
+                        transfer
+                    {% endif %}
+                </td>
+                <td class="td_left">{{ transaction.category.name }}</td>
+                <td class="td_left">{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
+                <td class="td_right">{{ transaction.amount }} {{ transaction.account.currency.name }}</td>
+                <td class="td_left">{{ transaction.account.name }}</td>
+                <td class="td_left">{{ transaction.title }}</td>
+                <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Edit</a></td>
+                <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td class="td_left">Empty transaction</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class="td_right" colspan="3">Total</td>
+            <td class="td_right">{{ total_amount }} {{ total_currency_name }}</td>
+            <td class="td_right" colspan="4"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form action="{% url 'andr_finance:transaction_new' %}">
+        <button type="submit">New transaction</button>
+    </form>
 
 {% endblock content %}

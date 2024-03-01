@@ -9,12 +9,17 @@
         <td class="td_title">Name</td>
         <td class="td_title">Currency</td>
         <td class="td_title">Edit</td>
+        <td class="td_title">Balance</td>
     </tr>
-    {% for account in accounts %}
+    {% for context_account in context_accounts %}
     <tr>
-        <td class="td_left">{{ account.name }}</td>
-        <td class="td_left">{{ account.currency }}</td>
-        <td class="td_center"><a href="{% url 'andr_finance:account_edit' account.id %}">Edit</a></td>
+        <td class="td_left">{{ context_account.account.name }}</td>
+        <td class="td_left">{{ context_account.account.currency }}</td>
+        <td class="td_center"><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Edit</a></td>
+        <td class="td_left">
+            context_account.account.balance: {{ context_account.account.balance }},<br>
+            context_account.balance: {{ context_account.balance }}
+        </td>
     </tr>
     {% empty %}
     <tr>

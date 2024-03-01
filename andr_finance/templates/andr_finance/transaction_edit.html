@@ -6,7 +6,7 @@
 
 <form action="{% url 'andr_finance:transaction_edit' transaction.id %}" method='post'>
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_div }}
     <button name="submit">Save changes</button>
 </form>
 

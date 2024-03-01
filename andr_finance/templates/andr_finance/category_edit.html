@@ -6,7 +6,7 @@
 
 <form action="{% url 'andr_finance:category_edit' category.id %}" method='post'>
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_div }}
     <button name="submit">Save changes</button>
 </form>
 
