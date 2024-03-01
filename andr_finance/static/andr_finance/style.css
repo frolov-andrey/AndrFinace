@@ -40,3 +40,8 @@
     border:.5pt solid windowtext;
     mso-pattern:black none;
 }
+
+.select_menu
+{
+    font-weight: bold;
+}
