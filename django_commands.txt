@@ -1,5 +1,5 @@
 python -m venv ll_env
-python -m venv .venv
+py -m venv .venv
 
 Set-ExecutionPolicy RemoteSigned -Scope Process
 ll_env\Scripts\activate
