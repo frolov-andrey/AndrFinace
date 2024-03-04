@@ -1,5 +1,6 @@
 __pycache__/
 /ll_env/
+/.venv/
 /.idea/
 /Temp/
 *.sqlite3
