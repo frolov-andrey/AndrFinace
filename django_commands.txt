@@ -1,11 +1,10 @@
 python -m venv ll_env
-py -m venv .venv
-
 Set-ExecutionPolicy RemoteSigned -Scope Process
 ll_env\Scripts\activate
- .venv\Scripts\activate
 
-python manage.py runserver
+python -m venv .venv
+Set-ExecutionPolicy RemoteSigned -Scope Process
+.venv\Scripts\activate
 
 django-admin startproject my_finance .
 python manage.py startapp andr_finance
@@ -20,3 +19,18 @@ python manage.py createsuperuser
 pip freeze > requirements.txt
 
 python.exe -m pip install --upgrade pip
+
+python.exe -m pip install --upgrade pip
+
+py -m venv .venv
+Set-ExecutionPolicy RemoteSigned -Scope Process
+ .venv\Scripts\activate
+pip install django
+django-admin startproject my_project .
+python manage.py migrate
+python manage.py startapp my_app
+
+python manage.py makemigrations my_app
+python manage.py createsuperuser
+
+python manage.py runserver
