@@ -1,0 +1,12 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+<p>Добавление нового счета:</p>
+
+<form action="{% url 'andr_finance:account_add' %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button name="submit">Добавить</button>
+</form>
+
+{% endblock content %}

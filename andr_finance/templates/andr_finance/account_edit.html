@@ -2,17 +2,17 @@
 
 {% block content %}
 
-<p>Edit account:</p>
+<p>Редактирование счета:</p>
 
 <form action="{% url 'andr_finance:account_edit' account.id %}" method='post'>
     {% csrf_token %}
     {{ form.as_div }}
-    <button name="submit">Save changes</button>
+    <button name="submit">Сохранить</button>
 </form>
 
 <form action="{% url 'andr_finance:account_delete' account.id %}" method='post'>
     {% csrf_token %}
-    <button name="submit">Delete</button>
+    <button name="submit">Удалить</button>
 </form>
 
 {% endblock content %}

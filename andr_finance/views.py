@@ -26,7 +26,7 @@ def categories(request):
     return render(request, 'andr_finance/categories.html', context)
 
 
-def category_new(request):
+def category_add(request):
     """ Определяем новую категорию. """
     if request.method != 'POST':
         # Данные не обновлялись, создается пустая форма
@@ -39,8 +39,11 @@ def category_new(request):
             return redirect('andr_finance:categories')
 
     # Вывести пустую или недействительную форму
-    context = {'form': form}
-    return render(request, 'andr_finance/category_new.html', context)
+    context = {
+        'form': form,
+        'select_menu': 'categories',
+    }
+    return render(request, 'andr_finance/category_add.html', context)
 
 
 def category_edit(request, category_id):
@@ -54,7 +57,11 @@ def category_edit(request, category_id):
             form.save()
             return redirect('andr_finance:categories')
 
-    context = {'category': category, 'form': form}
+    context = {
+        'category': category,
+        'form': form,
+        'select_menu': 'categories',
+    }
     return render(request, 'andr_finance/category_edit.html', context)
 
 
@@ -77,7 +84,7 @@ def currencies(request):
     return render(request, 'andr_finance/currencies.html', context)
 
 
-def currency_new(request):
+def currency_add(request):
     if request.method != 'POST':
         form = CurrencyForm
     else:
@@ -86,8 +93,11 @@ def currency_new(request):
             form.save()
             return redirect('andr_finance:currencies')
 
-    context = {'form': form}
-    return render(request, 'andr_finance/currency_new.html', context)
+    context = {
+        'form': form,
+        'select_menu': 'currencies',
+    }
+    return render(request, 'andr_finance/currency_add.html', context)
 
 
 def currency_edit(request, currency_id):
@@ -103,7 +113,8 @@ def currency_edit(request, currency_id):
 
     context = {
         'currency': currency,
-        'form': form
+        'form': form,
+        'select_menu': 'currencies',
     }
     return render(request, 'andr_finance/currency_edit.html', context)
 
@@ -148,7 +159,7 @@ def accounts(request):
     return render(request, 'andr_finance/accounts.html', context)
 
 
-def account_new(request):
+def account_add(request):
     if request.method != 'POST':
         form = AccountForm
     else:
@@ -157,8 +168,11 @@ def account_new(request):
             form.save()
             return redirect('andr_finance:accounts')
 
-    context = {'form': form}
-    return render(request, 'andr_finance/account_new.html', context)
+    context = {
+        'form': form,
+        'select_menu': 'accounts',
+    }
+    return render(request, 'andr_finance/account_add.html', context)
 
 
 def account_edit(request, account_id):
@@ -172,7 +186,11 @@ def account_edit(request, account_id):
             form.save()
             return redirect('andr_finance:accounts')
 
-    context = {'account': account, 'form': form}
+    context = {
+        'account': account,
+        'form': form,
+        'select_menu': 'accounts',
+    }
     return render(request, 'andr_finance/account_edit.html', context)
 
 
@@ -212,7 +230,7 @@ def transactions(request):
     return render(request, 'andr_finance/transactions.html', context)
 
 
-def transaction_new(request):
+def transaction_add(request):
     if request.method != 'POST':
         form = TransactionForm
     else:
@@ -221,8 +239,11 @@ def transaction_new(request):
             form.save()
             return redirect('andr_finance:transactions')
 
-    context = {'form': form}
-    return render(request, 'andr_finance/transaction_new.html', context)
+    context = {
+        'form': form,
+        'select_menu': 'transactions',
+    }
+    return render(request, 'andr_finance/transaction_add.html', context)
 
 
 def transaction_edit(request, transaction_id):
@@ -238,7 +259,8 @@ def transaction_edit(request, transaction_id):
 
     context = {
         'transaction': transaction,
-        'form': form
+        'form': form,
+        'select_menu': 'transactions',
     }
     return render(request, 'andr_finance/transaction_edit.html', context)
 

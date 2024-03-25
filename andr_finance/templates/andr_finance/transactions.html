@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h3>Transactions:</h3>
+    <h3>Транзакции:</h3>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get'>
         {% csrf_token %}
@@ -29,19 +29,19 @@
 
         </select>
         <br><br>
-        <button name="submit">Send report</button>
+        <button name="submit">Сформировать</button>
     </form>
 
     <table border=0 cellpadding=5 cellspacing=0 class="table_report">
         <thead>
         <th>+ / -</th>
-        <th>Category</th>
-        <th>Date</th>
-        <th>Amount</th>
-        <th>Account</th>
-        <th>Title</th>
-        <th>Edit</th>
-        <th>Delete</th>
+        <th>Категория</th>
+        <th>Дата</th>
+        <th>Сумма</th>
+        <th>Счет</th>
+        <th>Описание</th>
+        <th>Редактировать</th>
+        <th>Удалить</th>
         </thead>
         <tbody>
         {% for transaction in transactions %}
@@ -52,7 +52,7 @@
                     {% elif transaction.change == 'expense' %}
                         +
                     {% elif transaction.change == 'transfer' %}
-                        transfer
+                        Перевод
                     {% endif %}
                 </td>
                 <td class="td_left">{{ transaction.category.name }}</td>
@@ -60,13 +60,13 @@
                 <td class="td_right">{{ transaction.amount }} {{ transaction.account.currency.name }}</td>
                 <td class="td_left">{{ transaction.account.name }}</td>
                 <td class="td_left">{{ transaction.title }}</td>
-                <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Edit</a></td>
-                <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Delete</a>
+                <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Редактировать</a></td>
+                <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Удалить</a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td class="td_left">Empty transaction</td>
+                <td class="td_left">Нет транзакций</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -75,14 +75,14 @@
             </tr>
         {% endfor %}
         <tr>
-            <td class="td_right" colspan="3">Total</td>
+            <td class="td_right" colspan="3">Итого</td>
             <td class="td_right">{{ total_amount }} {{ total_currency_name }}</td>
             <td class="td_right" colspan="4"></td>
         </tr>
         </tbody>
     </table>
-    <form action="{% url 'andr_finance:transaction_new' %}">
-        <button type="submit">New transaction</button>
+    <form action="{% url 'andr_finance:transaction_add' %}">
+        <button type="submit">Добавить новую транзацию</button>
     </form>
 
 {% endblock content %}

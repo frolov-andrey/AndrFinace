@@ -2,20 +2,20 @@
 
 {% block content %}
 
-<h3>Accounts:</h3>
+<h3>Счета:</h3>
 
 <table border=0 cellpadding=5 cellspacing=0 class="table_report">
     <tr>
-        <td class="td_title">Name</td>
-        <td class="td_title">Currency</td>
-        <td class="td_title">Edit</td>
-        <td class="td_title">Balance</td>
+        <td class="td_title">Название</td>
+        <td class="td_title">Валюта</td>
+        <td class="td_title">Редактировать</td>
+        <td class="td_title">Баланс</td>
     </tr>
     {% for context_account in context_accounts %}
     <tr>
         <td class="td_left">{{ context_account.account.name }}</td>
         <td class="td_left">{{ context_account.account.currency }}</td>
-        <td class="td_center"><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Edit</a></td>
+        <td class="td_center"><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Редактировать</a></td>
         <td class="td_left">
             context_account.account.balance: {{ context_account.account.balance }},<br>
             context_account.balance: {{ context_account.balance }}
@@ -23,7 +23,7 @@
     </tr>
     {% empty %}
     <tr>
-        <td>Empty currency</td>
+        <td>Нет счетов</td>
         <td></td>
         <td></td>
         <td></td>
@@ -32,6 +32,6 @@
 </table>
 
 <br><br>
-<a href="{% url 'andr_finance:account_new' %}">New account</a>
+<a href="{% url 'andr_finance:account_add' %}">Добавить новый счет</a>
 
 {% endblock content %}

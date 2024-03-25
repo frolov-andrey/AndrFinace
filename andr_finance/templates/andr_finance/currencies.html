@@ -2,20 +2,20 @@
 
 {% block content %}
 
-<h3>Currencies:</h3>
+<h2>Валюты:</h2>
 
 <table border=0 cellpadding=5 cellspacing=0 class="table_report">
     <tr>
-        <td class="td_title">Name</td>
-        <td class="td_title">Code</td>
-        <td class="td_title">Edit</td>
+        <td class="td_title">Название</td>
+        <td class="td_title">Код</td>
+        <td class="td_title">Редактировать</td>
     </tr>
     {% for currency in currencies %}
     <tr>
         <td class="td_left">{{ currency.name }}</td>
         <td class="td_left">{{ currency.code }}</td>
         <td class="td_left">
-            <a href="{% url 'andr_finance:currency_edit' currency.id %}">Edit</a>
+            <a href="{% url 'andr_finance:currency_edit' currency.id %}">Редактировать</a>
         </td>
     </tr>
     {% empty %}
@@ -29,6 +29,6 @@
 </table>
 
 <br><br>
-<a href="{% url 'andr_finance:currency_new' %}">New currency</a>
+<a href="{% url 'andr_finance:currency_add' %}">Добавить новую валюту</a>
 
 {% endblock content %}

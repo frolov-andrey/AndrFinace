@@ -3,9 +3,9 @@ from .models import Category, Currency, Account, Transaction
 
 
 class CurrencyForm(forms.ModelForm):
-    name = forms.CharField(max_length=200)
-    code = forms.CharField(max_length=200)
-    icon = forms.ImageField()
+    name = forms.CharField(max_length=200, label='Название')
+    code = forms.CharField(max_length=200, label='Код')
+    icon = forms.ImageField(label='Иконка')
 
     class Meta:
         model = Currency
@@ -17,7 +17,7 @@ class CurrencyForm(forms.ModelForm):
 
 
 class CategoryForm(forms.ModelForm):
-    name = forms.CharField(max_length=200)
+    name = forms.CharField(max_length=200, label='Название')
 
     class Meta:
         model = Category
@@ -25,9 +25,10 @@ class CategoryForm(forms.ModelForm):
 
 
 class AccountForm(forms.ModelForm):
-    name = forms.CharField(max_length=200)
-    start_balance = forms.DecimalField(max_digits=12, decimal_places=2)
-    icon = forms.ImageField()
+    name = forms.CharField(max_length=200, label='Название')
+    start_balance = forms.DecimalField(max_digits=12, decimal_places=2, label='Начальный баланс')
+    currency = forms.ModelChoiceField(queryset=Currency.objects.all(), empty_label='Валюта не выбрана', label='Валюта')
+    icon = forms.ImageField(label='Иконка')
 
     class Meta:
         model = Account
@@ -39,9 +40,9 @@ class AccountForm(forms.ModelForm):
 
 
 class TransactionForm(forms.ModelForm):
-    amount = forms.DecimalField(max_digits=12, decimal_places=2)
-    date_added = forms.DateTimeField(widget=forms.TextInput(attrs={'autocomplete':'off','readonly': 'readonly'}))
-    title = forms.CharField(max_length=200)
+    amount = forms.DecimalField(max_digits=12, decimal_places=2, label='Сумма')
+    date_added = forms.DateTimeField(widget=forms.TextInput(attrs={'autocomplete':'off','readonly': 'readonly'}), label='Дата создания')
+    title = forms.CharField(max_length=200, label='Описание')
     description = forms.Textarea(attrs={'col': 80})
 
     class Meta:

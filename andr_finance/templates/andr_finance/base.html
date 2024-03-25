@@ -10,9 +10,7 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
     {% load static %}
-    <link href="{% static 'andr_finance/style.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'andr_finance/simple.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'andr_finance/simple_custom.css' %}" rel="stylesheet" type="text/css">
 
    <link href="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.full.js' %}"></script>
@@ -33,16 +31,16 @@
     >AndrFinance</a> -
 
     <a href="{% url 'andr_finance:categories' %}" class="{% if select_menu == 'categories' %}select_menu{% endif %}"
-    >Categories</a> -
+    >Категории</a> -
 
     <a href="{% url 'andr_finance:currencies' %}" class="{% if select_menu == 'currencies' %}select_menu{% endif %}"
-    >Currencies</a> -
+    >Валюты</a> -
 
     <a href="{% url 'andr_finance:accounts' %}" class="{% if select_menu == 'accounts' %}select_menu{% endif %}"
-    >Accounts</a> -
+    >Счета</a> -
 
     <a href="{% url 'andr_finance:transactions' %}" class="{% if select_menu == 'transactions' %}select_menu{% endif %}"
-    >Transaction</a>
+    >Транзакции</a>
 </nav>
 
 {% if messages %}

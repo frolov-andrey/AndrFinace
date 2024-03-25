@@ -2,17 +2,17 @@
 
 {% block content %}
 
-<p>Edit category:</p>
+<p>Редактирование категории:</p>
 
 <form action="{% url 'andr_finance:category_edit' category.id %}" method='post'>
     {% csrf_token %}
     {{ form.as_div }}
-    <button name="submit">Save changes</button>
+    <button name="submit">Сохранить</button>
 </form>
 
 <form action="{% url 'andr_finance:category_delete' category.id %}" method='post'>
     {% csrf_token %}
-    <button name="submit">Delete</button>
+    <button name="submit">Удалить</button>
 </form>
 
 {% endblock content %}

@@ -2,17 +2,17 @@
 
 {% block content %}
 
-<p>Edit currency:</p>
+<p>Редактирование валюты:</p>
 
 <form action="{% url 'andr_finance:currency_edit' currency.id %}" method='post'>
     {% csrf_token %}
     {{ form.as_div }}
-    <button name="submit">Save changes</button>
+    <button name="submit">Сохранить</button>
 </form>
 
 <form action="{% url 'andr_finance:currency_delete' currency.id %}" method='post'>
     {% csrf_token %}
-    <button name="submit">Delete</button>
+    <button name="submit">Удалить</button>
 </form>
 
 {% endblock content %}

@@ -2,16 +2,16 @@
 
 {% block content %}
 
-<h3>Categories:</h3>
+<h3>Категории:</h3>
 
 <ul>
     {% for category in categories %}
     <li><a href="{% url 'andr_finance:category_edit' category.id %}">{{ category.name }}</a></li>
     {% empty %}
-    <li>Empty category</li>
+    <li>Нет категорий</li>
     {% endfor%}
 </ul>
 
-<a href="{% url 'andr_finance:category_new' %}">New category</a>
+<a href="{% url 'andr_finance:category_add' %}">Добавить новую категорию</a>
 
 {% endblock content %}

@@ -1,0 +1,12 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+<p>Создание категории:</p>
+
+<form action="{% url 'andr_finance:category_add' %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button name="submit">Добавить категорию</button>
+</form>
+
+{% endblock content %}
