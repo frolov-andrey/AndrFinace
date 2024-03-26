@@ -2,12 +2,12 @@
 
 {% block content %}
 
-    <h3>Транзакции:</h3>
+    <h2>Транзакции:</h2>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get'>
         {% csrf_token %}
-        <label for="filter_account">Account:</label>
-        <select name="filter_account" id="filter_account">
+        <label for="filter_account" class="form-label">Счет:</label>
+        <select name="filter_account" id="filter_account" class="form-select">
 
             {# todo: Правильно?: id - нулём не может быть?   #}
             <option
@@ -26,27 +26,27 @@
                         {% endif %}
                 >{{ account.name }}</option>
             {% endfor %}
-
         </select>
-        <br><br>
-        <button name="submit">Сформировать</button>
+        <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Отобрать по счету</button>
     </form>
 
-    <table border=0 cellpadding=5 cellspacing=0 class="table_report">
+    <table class="table table-hover mt-3">
         <thead>
-        <th>+ / -</th>
-        <th>Категория</th>
-        <th>Дата</th>
-        <th>Сумма</th>
-        <th>Счет</th>
-        <th>Описание</th>
-        <th>Редактировать</th>
-        <th>Удалить</th>
+        <tr>
+            <th scope="col">+ / -</th>
+            <th scope="col">Категория</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Счет</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить</th>
+        </tr>
         </thead>
         <tbody>
         {% for transaction in transactions %}
             <tr>
-                <td class="td_left">
+                <td>
                     {% if transaction.change == 'receipt' %}
                         -
                     {% elif transaction.change == 'expense' %}
@@ -55,18 +55,19 @@
                         Перевод
                     {% endif %}
                 </td>
-                <td class="td_left">{{ transaction.category.name }}</td>
-                <td class="td_left">{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
-                <td class="td_right">{{ transaction.amount }} {{ transaction.account.currency.name }}</td>
-                <td class="td_left">{{ transaction.account.name }}</td>
-                <td class="td_left">{{ transaction.title }}</td>
-                <td class="td_center"><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">Редактировать</a></td>
-                <td class="td_center"><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Удалить</a>
+                <td>{{ transaction.category.name }}</td>
+                <td>{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
+                <td class="td_right">{{ transaction.amount|floatformat:"2g"}}</td>
+                <td>{{ transaction.account.name }}</td>
+                <td>{{ transaction.title }}</td>
+                <td><a
+                        href="{% url 'andr_finance:transaction_edit' transaction.id %}">Редактировать</a></td>
+                <td><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Удалить</a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td class="td_left">Нет транзакций</td>
+                <td>Нет транзакций</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -74,15 +75,18 @@
                 <td></td>
             </tr>
         {% endfor %}
-        <tr>
-            <td class="td_right" colspan="3">Итого</td>
-            <td class="td_right">{{ total_amount }} {{ total_currency_name }}</td>
-            <td class="td_right" colspan="4"></td>
-        </tr>
         </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3">Итого</th>
+            <th class="td_right">{{ total_amount }} {{ total_currency_name }}</th>
+            <th colspan="4"></th>
+        </tr>
+        </tfoot>
     </table>
+
     <form action="{% url 'andr_finance:transaction_add' %}">
-        <button type="submit">Добавить новую транзацию</button>
+        <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить новую транзакцию</button>
     </form>
 
 {% endblock content %}

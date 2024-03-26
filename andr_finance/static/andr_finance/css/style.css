@@ -1,0 +1,18 @@
+﻿/*body {*/
+/*  margin: 0 auto;*/
+/*  width: 1000px; !* Задайте желаемую ширину страницы *!*/
+/*}*/
+
+
+input.form-control:focus {
+    box-shadow: none;
+}
+
+select.form-select:focus {
+    box-shadow: none;
+}
+
+table tr td.td_right,
+table tr th.td_right {
+    text-align: right;
+}

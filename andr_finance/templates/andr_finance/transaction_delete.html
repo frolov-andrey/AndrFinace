@@ -12,7 +12,7 @@
         {{ transaction.date_added|date:"d.m.Y H:m" }}, {{transaction.title }}
     </p>
     <div>
-        <button type="submit">Yes, Delete</button>
+        <button type="submit">Удалить?</button>
         <a href="{% url 'andr_finance:transactions' %}">Cancel</a>
     </div>
 </form>

@@ -27,18 +27,14 @@ def categories(request):
 
 
 def category_add(request):
-    """ Определяем новую категорию. """
     if request.method != 'POST':
-        # Данные не обновлялись, создается пустая форма
         form = CategoryForm
     else:
-        # Отправлены данные POST, обрабатывать данные
         form = CategoryForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect('andr_finance:categories')
 
-    # Вывести пустую или недействительную форму
     context = {
         'form': form,
         'select_menu': 'categories',

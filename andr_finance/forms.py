@@ -1,10 +1,12 @@
 from django import forms
+from django.forms import TextInput, NumberInput, Select
+
 from .models import Category, Currency, Account, Transaction
 
 
 class CurrencyForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, label='Название')
-    code = forms.CharField(max_length=200, label='Код')
+    name = forms.CharField(max_length=200, label='Название', widget=TextInput(attrs={'class': 'form-control'}))
+    code = forms.CharField(max_length=200, label='Код', widget=TextInput(attrs={'class': 'form-control'}))
     icon = forms.ImageField(label='Иконка')
 
     class Meta:
@@ -17,7 +19,7 @@ class CurrencyForm(forms.ModelForm):
 
 
 class CategoryForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, label='Название')
+    name = forms.CharField(max_length=200, label='Название', widget=TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Category
@@ -25,9 +27,23 @@ class CategoryForm(forms.ModelForm):
 
 
 class AccountForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, label='Название')
-    start_balance = forms.DecimalField(max_digits=12, decimal_places=2, label='Начальный баланс')
-    currency = forms.ModelChoiceField(queryset=Currency.objects.all(), empty_label='Валюта не выбрана', label='Валюта')
+    name = forms.CharField(
+        max_length=200,
+        label='Название',
+        widget=TextInput(attrs={'class': 'form-select'})
+    )
+    start_balance = forms.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        label='Начальный баланс',
+        widget=NumberInput(attrs={'class': 'form-control'})
+    )
+    currency = forms.ModelChoiceField(
+        queryset=Currency.objects.all(),
+        empty_label='Валюта не выбрана',
+        label='Валюта',
+        widget=Select(attrs={'class': 'form-select'})
+    )
     icon = forms.ImageField(label='Иконка')
 
     class Meta:
@@ -40,10 +56,34 @@ class AccountForm(forms.ModelForm):
 
 
 class TransactionForm(forms.ModelForm):
-    amount = forms.DecimalField(max_digits=12, decimal_places=2, label='Сумма')
-    date_added = forms.DateTimeField(widget=forms.TextInput(attrs={'autocomplete':'off','readonly': 'readonly'}), label='Дата создания')
-    title = forms.CharField(max_length=200, label='Описание')
-    description = forms.Textarea(attrs={'col': 80})
+    account = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        widget=Select(attrs={'class': 'form-select mb-3'}),
+        label='Счет'
+    )
+    account_recipient = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        widget=Select(attrs={'class': 'form-select mb-3'}),
+        label='Счет получатель'
+    )
+    amount = forms.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        label='Сумма',
+        widget=NumberInput(attrs={'class': 'form-control mb-3'})
+    )
+    date_added = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
+        label='Дата создания'
+    )
+    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}))
+    title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
+    description = forms.Textarea(attrs={'col': 80, 'class': 'form-control mb-3'})
+    change = forms.ChoiceField(
+        choices=Transaction.CHANGE_CHOICES,
+        widget=Select(attrs={'class': 'form-select mb-3'}),
+        label='Тип транзакции',
+    )
 
     class Meta:
         model = Transaction
@@ -54,4 +94,3 @@ class TransactionForm(forms.ModelForm):
         self.fields['account_recipient'].required = False
         self.fields['category'].required = False
         self.fields['title'].required = False
-

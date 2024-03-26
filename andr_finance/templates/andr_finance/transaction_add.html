@@ -2,13 +2,25 @@
 
 
 {% block content %}
+    <h2>Добавление новой транзакции</h2>
 
-<p>Добавление новой транзакции:</p>
-
-<form action="{% url 'andr_finance:transaction_add' %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button name="submit">Добавить</button>
-</form>
+    <div class="row">
+        <div class="col-6">
+            <form action="{% url "andr_finance:transaction_add" %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="form-error">{{ form.non_field_errors }}</div>
+                </div>
+                {% for f_elem in form %}
+                    <div class="form-group">
+                        <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
+                        {{ f_elem }}
+                        <div class="form-error">{{ f_elem.errors }}</div>
+                    </div>
+                {% endfor %}
+                <button name="submit" class="btn btn-outline-primary btn-sm mt-3">Добавить</button>
+            </form>
+        </div>
+    </div>
 
 {% endblock content %}

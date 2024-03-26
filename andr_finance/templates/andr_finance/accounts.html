@@ -2,36 +2,39 @@
 
 {% block content %}
 
-<h3>Счета:</h3>
+    <h2>Счета</h2>
 
-<table border=0 cellpadding=5 cellspacing=0 class="table_report">
-    <tr>
-        <td class="td_title">Название</td>
-        <td class="td_title">Валюта</td>
-        <td class="td_title">Редактировать</td>
-        <td class="td_title">Баланс</td>
-    </tr>
-    {% for context_account in context_accounts %}
-    <tr>
-        <td class="td_left">{{ context_account.account.name }}</td>
-        <td class="td_left">{{ context_account.account.currency }}</td>
-        <td class="td_center"><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Редактировать</a></td>
-        <td class="td_left">
-            context_account.account.balance: {{ context_account.account.balance }},<br>
-            context_account.balance: {{ context_account.balance }}
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td>Нет счетов</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    {% endfor %}
-</table>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Валюта</th>
+            <th>Редактировать</th>
+            <th>Баланс</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for context_account in context_accounts %}
+            <tr>
+                <td>{{ context_account.account.name }}</td>
+                <td>{{ context_account.account.currency }}</td>
+                <td><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Редактировать</a></td>
+                <td>
+                    context_account.account.balance: {{ context_account.account.balance }},<br>
+                    context_account.balance: {{ context_account.balance }}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>Нет счетов</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-<br><br>
-<a href="{% url 'andr_finance:account_add' %}">Добавить новый счет</a>
+    <a href="{% url 'andr_finance:account_add' %}" class="btn btn-outline-primary btn-sm mt-2">Добавить новый счет</a>
 
 {% endblock content %}

@@ -2,17 +2,26 @@
 
 {% block content %}
 
-<p>Редактирование транзакции:</p>
+    <h2 class="mb-3">Редактирование транзакции</h2>
 
-<form action="{% url 'andr_finance:transaction_edit' transaction.id %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button name="submit">Сохранить</button>
-</form>
+    <form action="{% url 'andr_finance:transaction_edit' transaction.id %}" method='post'>
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="form-error">{{ form.non_field_errors }}</div>
+        </div>
+        {% for f_elem in form %}
+            <div class="form-group">
+                <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
+                {{ f_elem }}
+                <div class="form-error">{{ f_elem.errors }}</div>
+            </div>
+        {% endfor %}
+        <button name="submit" class="btn btn-outline-primary btn-sm mt-3">Сохранить</button>
+    </form>
 
-<form action="{% url 'andr_finance:transaction_delete' transaction.id %}" method='post'>
-    {% csrf_token %}
-    <button name="submit">Удалить</button>
-</form>
+    <form action="{% url 'andr_finance:transaction_delete' transaction.id %}" method='post'>
+        {% csrf_token %}
+        <button name="submit" class="btn btn-outline-primary btn-sm mt-3">Удалить</button>
+    </form>
 
 {% endblock content %}

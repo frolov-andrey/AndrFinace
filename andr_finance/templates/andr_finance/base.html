@@ -4,54 +4,88 @@
     <meta charset="UTF-8">
     <title>AndrFinance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-    {% load static %}
-    <link href="{% static 'andr_finance/simple.css' %}" rel="stylesheet" type="text/css">
-
-   <link href="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.min.css' %}" rel="stylesheet"
+          type="text/css">
     <script src="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.full.js' %}"></script>
 
+    <link href="{% static 'andr_finance/bootstrap/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'andr_finance/bootstrap/bootstrap.bundle.js' %}"></script>
+
+    <link href="{% static 'andr_finance/css/style.css' %}" rel="stylesheet" type="text/css">
 </head>
 <body>
-<script>
-    $(function () {
-        $('#id_date_added').datetimepicker({
-            format:'Y-m-d H:i',
-            defaultDate:new Date(),
+<div class="container">
+    <script>
+        $(function () {
+            $('#id_date_added').datetimepicker({
+                format: 'Y-m-d H:i',
+                defaultDate: new Date(),
+            });
+
         });
+    </script>
 
-    });
-</script>
-<nav>
-    <a href="{% url 'andr_finance:index' %}" class="{% if select_menu == 'index' %}select_menu{% endif %}"
-    >AndrFinance</a> -
+    <header>
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li>
+                    <a
+                            href="{% url 'andr_finance:index' %}"
+                            class="nav-link px-2 {% if select_menu == 'index' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'index' %}aria-current="page"{% endif %}
+                    >AndrFinance</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:categories' %}"
+                            class="nav-link px-2 {% if select_menu == 'categories' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'categories' %}aria-current="page"{% endif %}
+                    >Категории</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:currencies' %}"
+                            class="nav-link px-2 {% if select_menu == 'currencies' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'currencies' %}aria-current="page"{% endif %}
+                    >Валюты</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:accounts' %}"
+                            class="nav-link px-2 {% if select_menu == 'accounts' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'accounts' %}aria-current="page"{% endif %}
+                    >Счета</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:transactions' %}"
+                            class="nav-link px-2 {% if select_menu == 'transactions' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'transactions' %}aria-current="page"{% endif %}
+                    >Транзакции</a>
+                </li>
+            </ul>
+        </header>
+    </header>
 
-    <a href="{% url 'andr_finance:categories' %}" class="{% if select_menu == 'categories' %}select_menu{% endif %}"
-    >Категории</a> -
+    <main>
+        <div class="container">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
-    <a href="{% url 'andr_finance:currencies' %}" class="{% if select_menu == 'currencies' %}select_menu{% endif %}"
-    >Валюты</a> -
-
-    <a href="{% url 'andr_finance:accounts' %}" class="{% if select_menu == 'accounts' %}select_menu{% endif %}"
-    >Счета</a> -
-
-    <a href="{% url 'andr_finance:transactions' %}" class="{% if select_menu == 'transactions' %}select_menu{% endif %}"
-    >Транзакции</a>
-</nav>
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% block content %}{% endblock content %}
-
+        {% block content %}{% endblock content %}
+    </main>
+</div>
 </body>
 </html>

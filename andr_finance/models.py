@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.db import models
 
 
@@ -29,9 +28,18 @@ class Account(models.Model):
 
 
 class Transaction(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='accounts', verbose_name='Счет')
-    account_recipient = models.ForeignKey(Account, on_delete=models.DO_NOTHING, related_name='account_recipient',
-                                          blank=True, null=True, verbose_name='Счет получатель')
+    account = models.ForeignKey(
+        Account,
+        on_delete=models.DO_NOTHING,
+        related_name='accounts',
+        verbose_name='Счет'
+    )
+    account_recipient = models.ForeignKey(
+        Account, on_delete=models.DO_NOTHING,
+        related_name='account_recipient',
+        blank=True, null=True,
+        verbose_name='Счет получатель'
+    )
     RECEIPT = 'receipt'
     EXPENSE = 'expense'
     TRANSFER = 'transfer'
@@ -40,9 +48,19 @@ class Transaction(models.Model):
         EXPENSE: 'Расход',
         TRANSFER: 'Перевод',
     }
-    change = models.CharField(max_length=20, choices=CHANGE_CHOICES, default=RECEIPT, verbose_name='Тип транзакции')
+    change = models.CharField(
+        max_length=20,
+        choices=CHANGE_CHOICES,
+        default=RECEIPT,
+        verbose_name='Тип транзакции 2'
+    )
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Сумма')
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name='Категория')
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.DO_NOTHING,
+        blank=True, null=True,
+        verbose_name='Категория'
+    )
     date_added = models.DateTimeField()
     title = models.CharField(max_length=200)
     description = models.TextField()
