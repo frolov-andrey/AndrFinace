@@ -219,3 +219,8 @@ def transaction_delete(request, transaction_id):
             transaction.date_added.strftime('%d.%m.%Y %H:%M')
         )
         return redirect('andr_finance:transactions')
+
+
+def reports(request):
+    context = {}
+    return render(request, 'andr_finance/reports.html', context)
