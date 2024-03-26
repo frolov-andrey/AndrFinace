@@ -8,7 +8,6 @@
     <p>Are you sure that you want to delete the transaction?:</p>
     <p>
         {{ transaction.account.name }}, {{ transaction.change }}, {{ transaction.amount }}
-        {{transaction.account.currency.name }},
         {{ transaction.date_added|date:"d.m.Y H:m" }}, {{transaction.title }}
     </p>
     <div>

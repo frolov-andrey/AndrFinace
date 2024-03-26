@@ -50,13 +50,6 @@
                 </li>
                 <li>
                     <a
-                            href="{% url 'andr_finance:currencies' %}"
-                            class="nav-link px-2 {% if select_menu == 'currencies' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'currencies' %}aria-current="page"{% endif %}
-                    >Валюты</a>
-                </li>
-                <li>
-                    <a
                             href="{% url 'andr_finance:accounts' %}"
                             class="nav-link px-2 {% if select_menu == 'accounts' %}link-secondary active{% endif %}"
                             {% if select_menu == 'accounts' %}aria-current="page"{% endif %}

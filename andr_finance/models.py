@@ -1,15 +1,6 @@
 from django.db import models
 
 
-class Currency(models.Model):
-    name = models.CharField(max_length=200)
-    code = models.CharField(max_length=200)
-    icon = models.ImageField()
-
-    def __str__(self):
-        return self.name
-
-
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -20,11 +11,10 @@ class Category(models.Model):
 class Account(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название')
     start_balance = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Начальный баланс')
-    currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING, verbose_name='Валюта')
     icon = models.ImageField()
 
     def __str__(self):
-        return self.name + ', ' + self.currency.name
+        return self.name
 
 
 class Transaction(models.Model):

@@ -11,11 +11,6 @@ urlpatterns = [
     path('category_edit/<int:category_id>/', views.category_edit, name='category_edit'),
     path('category_delete/<int:category_id>/', views.category_delete, name='category_delete'),
 
-    path('currencies/', views.currencies, name='currencies'),
-    path('currency_add/', views.currency_add, name='currency_add'),
-    path('currency_edit/<int:currency_id>/', views.currency_edit, name='currency_edit'),
-    path('currency_delete/<int:currency_id>/', views.currency_delete, name='currency_delete'),
-
     path('accounts/', views.accounts, name='accounts'),
     path('account_add/', views.account_add, name='account_add'),
     path('account_edit/<int:account_id>/', views.account_edit, name='account_edit'),

@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import CategoryForm, CurrencyForm, AccountForm, TransactionForm
-from .models import Account, Category, Currency, Transaction
+from .forms import CategoryForm, AccountForm, TransactionForm
+from .models import Account, Category, Transaction
 
 # todo: это правильно?
 logger = logging.getLogger(__name__)
@@ -68,60 +68,6 @@ def category_delete(request, category_id):
         category.delete()
         messages.success(request, 'The category has been deleted successfully: ' + category.name)
         return redirect('andr_finance:categories')
-
-
-# --- Currency ---
-def currencies(request):
-    currencies = Currency.objects.order_by('name')
-    context = {
-        'currencies': currencies,
-        'select_menu': 'currencies',
-    }
-    return render(request, 'andr_finance/currencies.html', context)
-
-
-def currency_add(request):
-    if request.method != 'POST':
-        form = CurrencyForm
-    else:
-        form = CurrencyForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('andr_finance:currencies')
-
-    context = {
-        'form': form,
-        'select_menu': 'currencies',
-    }
-    return render(request, 'andr_finance/currency_add.html', context)
-
-
-def currency_edit(request, currency_id):
-    currency = Currency.objects.get(id=currency_id)
-
-    if request.method != 'POST':
-        form = CurrencyForm(instance=currency)
-    else:
-        form = CurrencyForm(instance=currency, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('andr_finance:currencies')
-
-    context = {
-        'currency': currency,
-        'form': form,
-        'select_menu': 'currencies',
-    }
-    return render(request, 'andr_finance/currency_edit.html', context)
-
-
-def currency_delete(request, currency_id):
-    currency = get_object_or_404(Currency, pk=currency_id)
-
-    if request.method == 'POST':
-        currency.delete()
-        messages.success(request, 'The currency has been deleted successfully: ' + currency.name)
-        return redirect('andr_finance:currencies')
 
 
 # --- Account ---
@@ -206,7 +152,7 @@ def transactions(request):
             and filter_account is not None
             and filter_account != '0'):
         transactions = Transaction.objects.filter(account=filter_account, change=Transaction.RECEIPT).order_by('date_added')
-        total_currency_name = Account.objects.get(pk=filter_account).currency.name
+        total_currency_name = ''
     else:
         transactions = Transaction.objects.order_by('date_added')
         total_currency_name = ''

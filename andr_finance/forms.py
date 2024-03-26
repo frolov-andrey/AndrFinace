@@ -1,21 +1,7 @@
 from django import forms
 from django.forms import TextInput, NumberInput, Select
 
-from .models import Category, Currency, Account, Transaction
-
-
-class CurrencyForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, label='Название', widget=TextInput(attrs={'class': 'form-control'}))
-    code = forms.CharField(max_length=200, label='Код', widget=TextInput(attrs={'class': 'form-control'}))
-    icon = forms.ImageField(label='Иконка')
-
-    class Meta:
-        model = Currency
-        fields = ['name', 'code', 'icon']
-
-    def __init__(self, *args, **kwargs):
-        super(CurrencyForm, self).__init__(*args, **kwargs)
-        self.fields['icon'].required = False
+from .models import Category, Account, Transaction
 
 
 class CategoryForm(forms.ModelForm):
@@ -38,17 +24,11 @@ class AccountForm(forms.ModelForm):
         label='Начальный баланс',
         widget=NumberInput(attrs={'class': 'form-control'})
     )
-    currency = forms.ModelChoiceField(
-        queryset=Currency.objects.all(),
-        empty_label='Валюта не выбрана',
-        label='Валюта',
-        widget=Select(attrs={'class': 'form-select'})
-    )
     icon = forms.ImageField(label='Иконка')
 
     class Meta:
         model = Account
-        fields = ['name', 'start_balance', 'currency', 'icon']
+        fields = ['name', 'start_balance', 'icon']
 
     def __init__(self, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
