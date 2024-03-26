@@ -5,7 +5,6 @@
     <h2>Транзакции:</h2>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get'>
-        {% csrf_token %}
         <label for="filter_account" class="form-label">Счет:</label>
         <select name="filter_account" id="filter_account" class="form-select">
 
@@ -30,64 +29,65 @@
         <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Отобрать по счету</button>
     </form>
 
-    <table class="table table-hover mt-3">
-        <thead>
-        <tr>
-            <th scope="col">+ / -</th>
-            <th scope="col">Дата</th>
-            <th scope="col">Категория</th>
-            <th scope="col">Сумма</th>
-            <th scope="col">Счет</th>
-            <th scope="col">Описание</th>
-            <th scope="col">Удалить</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for transaction in transactions %}
+    <div class="table-responsive">
+        <table class="table table-hover table-sm mt-3">
+            <thead class="table-light">
             <tr>
-                {% if transaction.type_transaction == 'minus' %}
-                    <td>Расход</td>
-                {% elif transaction.type_transaction == 'plus' %}
-                    <td class="text-success">Доход</td>
-                {% elif transaction.type_transaction == 'transfer' %}
-                    <td class="text-primary">Перевод</td>
-                {% endif %}
-                <td><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">{{ transaction.date_added|date:"d.m.Y H:m" }}</a></td>
-                <td>{{ transaction.category.name }}</td>
-
-                {% if transaction.type_transaction == 'minus' %}
-                    <td class="td_right">- {{ transaction.amount|floatformat:"2g" }}</td>
-                {% elif transaction.type_transaction == 'plus' %}
-                    <td class="td_right text-success">{{ transaction.amount|floatformat:"2g" }}</td>
-                {% elif transaction.type_transaction == 'transfer' %}
-                    <td class="td_right text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
-                {% endif %}
-
-
-                <td>{{ transaction.account.name }}</td>
-                <td>{{ transaction.title }}</td>
-                <td><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Удалить</a>
-                </td>
+                <th scope="col">Категория</th>
+                <th scope="col">Сумма</th>
+                <th scope="col">Счет</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Удалить</th>
             </tr>
-        {% empty %}
+            </thead>
+            <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.category.name }}</td>
+                    {% if transaction.type_transaction == 'minus' %}
+                        <td class="td_right">- {{ transaction.amount|floatformat:"2g" }}</td>
+                    {% elif transaction.type_transaction == 'plus' %}
+                        <td class="td_right text-success">{{ transaction.amount|floatformat:"2g" }}</td>
+                    {% elif transaction.type_transaction == 'transfer' %}
+                        <td class="td_right text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
+                    {% endif %}
+                    <td>{{ transaction.account.name }}</td>
+                    <td>
+                        <a href="{% url 'andr_finance:transaction_edit' transaction.type_transaction transaction.id %}">{{ transaction.date_added|date:"d.m.Y H:m" }}</a>
+                    </td>
+                    <td>{{ transaction.title }}</td>
+                    <td class="align-middle text-center">
+                        <a href="{% url 'andr_finance:transaction_delete' transaction.id %}" title="Удалить">
+                            <svg class="bi bi-exclamation-triangle text-danger" width="16" height="16"
+                                 fill="currentColor"
+                                 viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>Нет транзакций</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot class="table-light">
             <tr>
-                <td>Нет транзакций</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <th>Итого</th>
+                <th class="td_right">{{ total_amount|floatformat:"2g" }}</th>
+                <th colspan="4"></th>
             </tr>
-        {% endfor %}
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="3">Итого</th>
-            <th class="td_right">{{ total_amount|floatformat:"2g" }}</th>
-            <th colspan="4"></th>
-        </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
+    </div>
 
     <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
         <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить новую транзакцию</button>

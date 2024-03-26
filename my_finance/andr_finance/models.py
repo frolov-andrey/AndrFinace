@@ -3,6 +3,7 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    icon = models.ImageField(default=None, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -11,7 +12,7 @@ class Category(models.Model):
 class Account(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название')
     start_balance = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Начальный баланс')
-    icon = models.ImageField()
+    icon = models.ImageField(default=None, null=True, blank=True)
 
     def __str__(self):
         return self.name

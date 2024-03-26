@@ -6,10 +6,11 @@ from .models import Category, Account, Transaction
 
 class CategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=200, label='Название', widget=TextInput(attrs={'class': 'form-control'}))
+    icon = forms.ImageField(label='Иконка')
 
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['name', 'icon']
 
 
 class AccountForm(forms.ModelForm):

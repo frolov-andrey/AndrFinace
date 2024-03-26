@@ -17,6 +17,7 @@
                     </div>
                 {% endfor %}
                 <button name="submit" class="btn btn-outline-primary btn-sm mt-3">Сохранить</button>
+                <a href="{% url 'andr_finance:accounts' %}" class="btn btn-outline-primary btn-sm mt-3">Отмена</a>
             </form>
 
             <form action="{% url 'andr_finance:account_delete' account.id %}" method='post'>
