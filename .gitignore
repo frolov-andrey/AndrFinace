@@ -8,5 +8,6 @@ __pycache__/
 /logs/
 
 /logs/*
-/andr_finance/logs/*
+/my_finance/logs/*
+/my_finance/*.sqlite3
 
