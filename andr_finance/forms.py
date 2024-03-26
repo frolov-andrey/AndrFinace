@@ -35,11 +35,11 @@ class AccountForm(forms.ModelForm):
         self.fields['icon'].required = False
 
 
-class TransactionForm(forms.ModelForm):
+class TransactionFormTransfer(forms.ModelForm):
     account = forms.ModelChoiceField(
         queryset=Account.objects.all(),
         widget=Select(attrs={'class': 'form-select mb-3'}),
-        label='Счет'
+        label='Счет отправитель'
     )
     account_recipient = forms.ModelChoiceField(
         queryset=Account.objects.all(),
@@ -54,23 +54,47 @@ class TransactionForm(forms.ModelForm):
     )
     date_added = forms.DateTimeField(
         widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
-        label='Дата создания'
+        label='Дата'
     )
-    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}))
+    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}),
+                                      label='Категория')
     title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
-    description = forms.Textarea(attrs={'col': 80, 'class': 'form-control mb-3'})
-    change = forms.ChoiceField(
-        choices=Transaction.CHANGE_CHOICES,
-        widget=Select(attrs={'class': 'form-select mb-3'}),
-        label='Тип транзакции',
-    )
 
     class Meta:
         model = Transaction
-        fields = ['account', 'account_recipient', 'change', 'amount', 'date_added', 'category', 'title']
+        fields = ['account', 'account_recipient', 'amount', 'date_added', 'category', 'title']
 
     def __init__(self, *args, **kwargs):
-        super(TransactionForm, self).__init__(*args, **kwargs)
-        self.fields['account_recipient'].required = False
+        super().__init__(*args, **kwargs)
+        self.fields['category'].required = False
+        self.fields['title'].required = False
+
+
+class TransactionFormMinusPlus(forms.ModelForm):
+    account = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        widget=Select(attrs={'class': 'form-select mb-3'}),
+        label='Счет'
+    )
+    amount = forms.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        label='Сумма',
+        widget=NumberInput(attrs={'class': 'form-control mb-3'})
+    )
+    date_added = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
+        label='Дата'
+    )
+    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}),
+                                      label='Категория')
+    title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
+
+    class Meta:
+        model = Transaction
+        fields = ['account', 'amount', 'date_added', 'category', 'title']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.fields['category'].required = False
         self.fields['title'].required = False

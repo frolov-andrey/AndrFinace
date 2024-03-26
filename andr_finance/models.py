@@ -30,19 +30,21 @@ class Transaction(models.Model):
         blank=True, null=True,
         verbose_name='Счет получатель'
     )
-    RECEIPT = 'receipt'
-    EXPENSE = 'expense'
+
+    MINUS = 'minus'
+    PLUS = 'plus'
     TRANSFER = 'transfer'
-    CHANGE_CHOICES = {
-        RECEIPT: 'Доход',
-        EXPENSE: 'Расход',
+
+    TYPE_TRANSACTION = {
+        MINUS: 'Расход',
+        PLUS: 'Доход',
         TRANSFER: 'Перевод',
     }
-    change = models.CharField(
+    type_transaction = models.CharField(
         max_length=20,
-        choices=CHANGE_CHOICES,
-        default=RECEIPT,
-        verbose_name='Тип транзакции 2'
+        choices=TYPE_TRANSACTION,
+        default=MINUS,
+        verbose_name='Тип транзакции'
     )
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Сумма')
     category = models.ForeignKey(
@@ -53,7 +55,6 @@ class Transaction(models.Model):
     )
     date_added = models.DateTimeField()
     title = models.CharField(max_length=200)
-    description = models.TextField()
 
     def __str__(self):
-        return self.change + ', ' + self.amount + ' ' + str(self.date_added)
+        return self.type_transaction + ', ' + str(self.amount) + ' ' + str(self.date_added)

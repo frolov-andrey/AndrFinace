@@ -34,34 +34,38 @@
         <thead>
         <tr>
             <th scope="col">+ / -</th>
-            <th scope="col">Категория</th>
             <th scope="col">Дата</th>
+            <th scope="col">Категория</th>
             <th scope="col">Сумма</th>
             <th scope="col">Счет</th>
             <th scope="col">Описание</th>
-            <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
         </tr>
         </thead>
         <tbody>
         {% for transaction in transactions %}
             <tr>
-                <td>
-                    {% if transaction.change == 'receipt' %}
-                        -
-                    {% elif transaction.change == 'expense' %}
-                        +
-                    {% elif transaction.change == 'transfer' %}
-                        Перевод
-                    {% endif %}
-                </td>
+                {% if transaction.type_transaction == 'minus' %}
+                    <td>Расход</td>
+                {% elif transaction.type_transaction == 'plus' %}
+                    <td class="text-success">Доход</td>
+                {% elif transaction.type_transaction == 'transfer' %}
+                    <td class="text-primary">Перевод</td>
+                {% endif %}
+                <td><a href="{% url 'andr_finance:transaction_edit' transaction.id %}">{{ transaction.date_added|date:"d.m.Y H:m" }}</a></td>
                 <td>{{ transaction.category.name }}</td>
-                <td>{{ transaction.date_added|date:"d.m.Y H:m" }}</td>
-                <td class="td_right">{{ transaction.amount|floatformat:"2g"}}</td>
+
+                {% if transaction.type_transaction == 'minus' %}
+                    <td class="td_right">- {{ transaction.amount|floatformat:"2g" }}</td>
+                {% elif transaction.type_transaction == 'plus' %}
+                    <td class="td_right text-success">{{ transaction.amount|floatformat:"2g" }}</td>
+                {% elif transaction.type_transaction == 'transfer' %}
+                    <td class="td_right text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
+                {% endif %}
+
+
                 <td>{{ transaction.account.name }}</td>
                 <td>{{ transaction.title }}</td>
-                <td><a
-                        href="{% url 'andr_finance:transaction_edit' transaction.id %}">Редактировать</a></td>
                 <td><a href="{% url 'andr_finance:transaction_delete' transaction.id %}">Удалить</a>
                 </td>
             </tr>
@@ -79,13 +83,13 @@
         <tfoot>
         <tr>
             <th colspan="3">Итого</th>
-            <th class="td_right">{{ total_amount }} {{ total_currency_name }}</th>
+            <th class="td_right">{{ total_amount|floatformat:"2g" }}</th>
             <th colspan="4"></th>
         </tr>
         </tfoot>
     </table>
 
-    <form action="{% url 'andr_finance:transaction_add' %}">
+    <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
         <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить новую транзакцию</button>
     </form>
 

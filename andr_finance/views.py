@@ -2,13 +2,18 @@ import logging
 
 from django.contrib import messages
 from django.db.models import Sum
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import CategoryForm, AccountForm, TransactionForm
+from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
 
 # todo: это правильно?
 logger = logging.getLogger(__name__)
+
+
+def page_not_found(request):
+    return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
 
 def index(request):
@@ -151,11 +156,10 @@ def transactions(request):
     if (request.method == 'GET'
             and filter_account is not None
             and filter_account != '0'):
-        transactions = Transaction.objects.filter(account=filter_account, change=Transaction.RECEIPT).order_by('date_added')
-        total_currency_name = ''
+        transactions = Transaction.objects.filter(account=filter_account, change=Transaction.MINUS).order_by(
+            'date_added')
     else:
         transactions = Transaction.objects.order_by('date_added')
-        total_currency_name = ''
 
     total_amount = transactions.aggregate(Sum('amount'))['amount__sum']
     print(total_amount)
@@ -166,26 +170,67 @@ def transactions(request):
         'select_menu': 'transactions',
         'filter_account': filter_account,
         'total_amount': total_amount,
-        'total_currency_name': total_currency_name,
     }
 
     return render(request, 'andr_finance/transactions.html', context)
 
 
-def transaction_add(request):
+def transaction_add(request, type_transaction):
+    logger.debug('type_transaction = ' + str(type_transaction))
     if request.method != 'POST':
-        form = TransactionForm
+        if type_transaction == Transaction.MINUS or type_transaction == Transaction.PLUS:
+            form = TransactionFormMinusPlus()
+        elif type_transaction == type_transaction == Transaction.TRANSFER:
+            form = TransactionFormTransfer()
+        else:
+            return page_not_found(request)
     else:
-        form = TransactionForm(data=request.POST)
+        if type_transaction == Transaction.MINUS or type_transaction == Transaction.PLUS:
+            form = TransactionFormMinusPlus(data=request.POST)
+        elif type_transaction == type_transaction == Transaction.TRANSFER:
+            form = TransactionFormTransfer(data=request.POST)
+        else:
+            return page_not_found(request)
+
         if form.is_valid():
-            form.save()
+            transaction = form.save(commit=False)
+
+            if type_transaction == Transaction.MINUS:
+                transaction.type_transaction = Transaction.MINUS
+            elif type_transaction == Transaction.PLUS:
+                transaction.type_transaction = Transaction.PLUS
+            elif type_transaction == Transaction.TRANSFER:
+                transaction.type_transaction = Transaction.TRANSFER
+
+            transaction.save()
+
             return redirect('andr_finance:transactions')
 
     context = {
         'form': form,
         'select_menu': 'transactions',
+        'type_transaction': type_transaction,
     }
     return render(request, 'andr_finance/transaction_add.html', context)
+
+
+# def transaction_add_minus(request):
+#     if request.method != 'POST':
+#         form = TransactionFormMinus()
+#     else:
+#         form = TransactionFormMinus(data=request.POST)
+#         if form.is_valid():
+#             form.save(commit=False)
+#             form.change = Transaction.MINUS
+#             form.save()
+#             return redirect('andr_finance:transactions')
+#
+#     context = {
+#         'form': form,
+#         'select_menu': 'transactions',
+#         'type_transaction': Transaction.MINUS,
+#     }
+#     return render(request, 'andr_finance/transaction_add.html', context)
 
 
 def transaction_edit(request, transaction_id):

@@ -8,19 +8,14 @@
         <thead>
         <tr>
             <th>Название</th>
-            <th>Редактировать</th>
             <th>Баланс</th>
         </tr>
         </thead>
         <tbody>
         {% for context_account in context_accounts %}
             <tr>
-                <td>{{ context_account.account.name }}</td>
-                <td><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">Редактировать</a></td>
-                <td>
-                    context_account.account.balance: {{ context_account.account.balance }},<br>
-                    context_account.balance: {{ context_account.balance }}
-                </td>
+                <td><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">{{ context_account.account.name }}</a></td>
+                <td>{{ context_account.balance }}</td>
             </tr>
         {% empty %}
             <tr>
