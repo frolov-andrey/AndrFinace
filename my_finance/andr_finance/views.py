@@ -2,6 +2,8 @@ import logging
 import os
 from pprint import pprint
 
+# from ..my_finance.settings import BASE_DIR
+from django.conf import settings
 from django.contrib import messages
 from django.db.models import Sum
 from django.http import HttpResponseNotFound
@@ -9,8 +11,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-# from ..my_finance.settings import BASE_DIR
-from django.conf import settings
 
 # todo: это правильно?
 logger = logging.getLogger(__name__)
@@ -38,7 +38,6 @@ def categories(request):
 
 
 def category_add(request):
-
     # images_dir = settings.IMAGES_DIR
     BASE_DIR = settings.BASE_DIR
     # logger.debug('BASE_DIR = ' + str(BASE_DIR))
@@ -176,7 +175,8 @@ def transactions(request):
     if (request.method == 'GET'
             and filter_account is not None
             and filter_account != '0'):
-        transactions = Transaction.objects.filter(account=filter_account, type_transaction=Transaction.MINUS).order_by('date_added')
+        transactions = Transaction.objects.filter(account=filter_account, type_transaction=Transaction.MINUS).order_by(
+            'date_added')
     else:
         transactions = Transaction.objects.order_by('date_added')
 
