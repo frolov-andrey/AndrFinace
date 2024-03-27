@@ -1,4 +1,5 @@
 {% extends "andr_finance/base.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -26,13 +27,18 @@
                 >{{ account.name }}</option>
             {% endfor %}
         </select>
-        <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Отобрать по счету</button>
+        <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Сформировать</button>
+    </form>
+
+    <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
+        <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
     </form>
 
     <div class="table-responsive">
         <table class="table table-hover table-sm mt-3">
             <thead class="table-light">
             <tr>
+                <th scope="col"></th>
                 <th scope="col">Категория</th>
                 <th scope="col">Сумма</th>
                 <th scope="col">Счет</th>
@@ -44,6 +50,15 @@
             <tbody>
             {% for transaction in transactions %}
                 <tr>
+                    <td>
+                        <img
+                                {% if transaction.category.icon_folder is not None %}
+                                    src="{% static 'andr_finance/images/' %}{{ transaction.category.icon_folder }}/{{ transaction.category.icon_file }}"
+                                {% else %}
+                                    src="{{ icon_default }}"
+                                {% endif %}
+                                    width="20" height="20">
+                    </td>
                     <td>{{ transaction.category.name }}</td>
                     {% if transaction.type_transaction == 'minus' %}
                         <td class="td_right">- {{ transaction.amount|floatformat:"2g" }}</td>
@@ -81,6 +96,7 @@
             </tbody>
             <tfoot class="table-light">
             <tr>
+                <th></th>
                 <th>Итого</th>
                 <th class="td_right">{{ total_amount|floatformat:"2g" }}</th>
                 <th colspan="4"></th>
@@ -88,9 +104,5 @@
             </tfoot>
         </table>
     </div>
-
-    <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
-        <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить новую транзакцию</button>
-    </form>
 
 {% endblock content %}

@@ -250,6 +250,7 @@ def transactions(request):
         'transactions': transactions,
         'accounts': Account.objects.order_by('name'),
         'select_menu': 'transactions',
+        'icon_default': icon_default,
         'filter_account': filter_account,
         'total_amount': total_amount,
     }

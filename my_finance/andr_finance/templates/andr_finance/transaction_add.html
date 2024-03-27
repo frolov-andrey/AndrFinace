@@ -57,5 +57,13 @@
         </div>
     </div>
 
+    <script>
+        $(document).ready(function(){
+            $('#id_date_added').datetimepicker({
+                format: 'Y-m-d H:i',
+                defaultDate: new Date(),
+            });
+        });
+    </script>
 
 {% endblock content %}
