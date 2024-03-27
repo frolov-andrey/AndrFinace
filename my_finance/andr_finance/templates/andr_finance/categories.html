@@ -1,13 +1,28 @@
 {% extends "andr_finance/base.html" %}
+{% load static %}
 
 {% block content %}
 
     <div class="container">
-        <h3>Категории</h3>
+        <h3 class="mb-3">Категории</h3>
 
         <ul class="list-unstyled">
             {% for category in categories %}
-                <li><a href="{% url 'andr_finance:category_edit' category.id %}">{{ category.name }}</a></li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:category_edit' category.id %}"
+                            class="icon-link"
+                    >
+                        <img
+                                {% if category.icon_folder is not None%}
+                                src="{% static 'andr_finance/images/' %}{{ category.icon_folder }}/{{ category.icon_file }}"
+                                {% else %}
+                                src="{{ icon_default }}"
+                                {% endif %}
+                                width="30" height="30">
+                        {{ category.name }}
+                    </a>
+                </li>
             {% empty %}
                 <li>Нет категорий</li>
             {% endfor %}

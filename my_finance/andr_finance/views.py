@@ -18,6 +18,8 @@ folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
     {'name': 'foot', 'name_rus': 'Еда'},
 ]
+images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
+icon_default = images_path + 'default/default_icon.png'
 
 
 def page_not_found(request):
@@ -70,12 +72,12 @@ def categories(request):
     context = {
         'categories': categories,
         'select_menu': 'categories',
+        'icon_default': icon_default,
     }
     return render(request, 'andr_finance/categories.html', context)
 
 
 def category_add(request):
-    images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
     images = get_images(images_path)
 
     if request.method != 'POST':
@@ -155,38 +157,45 @@ def accounts(request):
     context_accounts = []
     for account in accounts:
         balance = get_balance(account.id)
-
-        # todo: Так можно?:
-        account.balance = balance
-
         o_account = {'account': account, 'balance': balance}
         context_accounts.append(o_account)
 
     context = {
         'context_accounts': context_accounts,
         'select_menu': 'accounts',
+        'icon_default': icon_default,
     }
 
     return render(request, 'andr_finance/accounts.html', context)
 
 
 def account_add(request):
+    images = get_images(images_path)
+
     if request.method != 'POST':
         form = AccountForm
     else:
         form = AccountForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            account = form.save(commit=False)
+            account.icon_folder = form.data['icon_folder']
+            account.icon_file = form.data['icon_file']
+            account.save()
             return redirect('andr_finance:accounts')
 
     context = {
         'form': form,
         'select_menu': 'accounts',
+        'images': images,
+        'images_path': images_path,
+        'image_default_folder': 'default',
+        'image_default_file': 'default_icon.png',
     }
     return render(request, 'andr_finance/account_add.html', context)
 
 
 def account_edit(request, account_id):
+    images = get_images(images_path)
     account = Account.objects.get(id=account_id)
 
     if request.method != 'POST':
@@ -194,13 +203,22 @@ def account_edit(request, account_id):
     else:
         form = AccountForm(instance=account, data=request.POST)
         if form.is_valid():
-            form.save()
+            account = form.save(commit=False)
+            account.icon_folder = form.data['icon_folder']
+            account.icon_file = form.data['icon_file']
+            account.save()
             return redirect('andr_finance:accounts')
 
     context = {
         'account': account,
         'form': form,
         'select_menu': 'accounts',
+        'images': images,
+        'images_path': images_path,
+        'image_default_folder': 'default',
+        'image_default_file': 'default_icon.png',
+        'icon_file': account.icon_file,
+        'icon_folder': account.icon_folder,
     }
     return render(request, 'andr_finance/account_edit.html', context)
 

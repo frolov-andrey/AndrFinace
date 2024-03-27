@@ -1,12 +1,16 @@
 {% extends "andr_finance/base.html" %}
+{% load static %}
 
 {% block content %}
 
     <h2>Счета</h2>
 
+    <div class="row">
+        <div class="col-8">
     <table class="table table-hover">
         <thead>
         <tr>
+            <th>Иконка</th>
             <th>Название</th>
             <th>Баланс</th>
         </tr>
@@ -14,7 +18,18 @@
         <tbody>
         {% for context_account in context_accounts %}
             <tr>
-                <td><a href="{% url 'andr_finance:account_edit' context_account.account.id %}">{{ context_account.account.name }}</a></td>
+                <td>
+                    <img
+                            {% if context_account.account.icon_folder is not None %}
+                                src="{% static 'andr_finance/images/' %}{{ context_account.account.icon_folder }}/{{ context_account.account.icon_file }}"
+                            {% else %}
+                                src="{{ icon_default }}"
+                            {% endif %}
+                                width="30" height="30">
+                </td>
+                <td>
+                    <a href="{% url 'andr_finance:account_edit' context_account.account.id %}">{{ context_account.account.name }}</a>
+                </td>
                 <td>{{ context_account.balance }}</td>
             </tr>
         {% empty %}
@@ -22,12 +37,12 @@
                 <td>Нет счетов</td>
                 <td></td>
                 <td></td>
-                <td></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
+        </div>
+    </div>
     <a href="{% url 'andr_finance:account_add' %}" class="btn btn-outline-primary btn-sm mt-2">Добавить новый счет</a>
 
 {% endblock content %}

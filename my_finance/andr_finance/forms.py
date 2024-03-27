@@ -24,15 +24,10 @@ class AccountForm(forms.ModelForm):
         label='Начальный баланс',
         widget=NumberInput(attrs={'class': 'form-control'})
     )
-    icon = forms.ImageField(label='Иконка')
 
     class Meta:
         model = Account
-        fields = ['name', 'start_balance', 'icon']
-
-    def __init__(self, *args, **kwargs):
-        super(AccountForm, self).__init__(*args, **kwargs)
-        self.fields['icon'].required = False
+        fields = ['name', 'start_balance']
 
 
 class TransactionFormTransfer(forms.ModelForm):
