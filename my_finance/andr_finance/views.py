@@ -26,29 +26,33 @@ def page_not_found(request):
 
 def get_images(images_path, catalog=None):
     images = []
-    active = ''
-    show = ''
+    is_find_image = False
     for folder in folders:
         images_files = os.listdir(str(settings.BASE_DIR) + '/andr_finance' + images_path + folder['name'])
-        if catalog is not None:
-            if catalog.icon_folder == folder['name']:
-                active = 'active'
-                show = 'show'
+        if catalog is not None and catalog.icon_folder == folder['name']:
+            active = 'active'
+            show = 'show'
+            aria_selected = True
 
-        images.append(
-            {
-                'folder': folder['name'],
-                'name_rus': folder['name_rus'],
-                'images': images_files,
-                'aria_selected': True,
-                'active': active,
-                'show': show,
-            }
-        )
+            is_find_image = True
+        else:
+            active = ''
+            show = ''
+            aria_selected = False
 
-    if active == '':
+        images.append({
+            'folder': folder['name'],
+            'name_rus': folder['name_rus'],
+            'images': images_files,
+            'aria_selected': aria_selected,
+            'active': active,
+            'show': show,
+        })
+
+    if is_find_image == False:
         images[0]['active'] = 'active'
         images[0]['show'] = 'show'
+        images[0]['aria_selected'] = True
 
     return images
 

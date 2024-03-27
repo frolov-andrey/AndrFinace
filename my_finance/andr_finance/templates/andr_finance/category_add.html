@@ -1,4 +1,5 @@
 {% extends "andr_finance/base.html" %}
+{% load andr_finance_extras %}
 
 {% block content %}
 
@@ -42,98 +43,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Выбор иконки</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
-                <div class="modal-body" id="modal_select_image">
-                    <div class="container-fluid">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            {% for image in images %}
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link {{ image.active }}" id="{{ image.folder }}-tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#{{ image.folder }}-tab-pane" type="button" role="tab"
-                                            aria-controls="{{ image.folder }}-tab-pane"
-                                            aria-selected="{{ image.aria_selected }}">{{ image.name_rus }}
-                                    </button>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <div class="tab-content mt-3" id="myTabContent">
-                            {% for image in images %}
-                                <div class="tab-pane fade {{ image.show }} {{ image.active }}"
-                                     id="{{ image.folder }}-tab-pane" role="tabpanel"
-                                     aria-labelledby="{{ image.folder }}-tab" tabindex="0">
-
-                                    <div class="row row-cols-auto">
-                                        {% for image_item in image.images %}
-                                            <div class="col">
-                                                <img
-                                                        src="{{ images_path }}{{ image.folder }}/{{ image_item }}"
-                                                        alt="" width="48" height="48"
-                                                        data-img-folder="{{ image.folder }}"
-                                                        data-img-file="{{ image_item }}"
-                                                >
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="sendSelectImg()">
-                        Выбрать иконку
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let select_img_src = '';
-        let select_img_folder = '';
-        let select_img_file = '';
-
-        $(document).ready(function () {
-
-            $('#modal_select_image img').on('click', function (event) {
-                $('img').not(this).removeClass('selected');
-                $(this).toggleClass('selected');
-
-                select_img_src = $(this).attr('src');
-                select_img_folder = $(this).attr('data-img-folder');
-                select_img_file = $(this).attr('data-img-file');
-            });
-
-        });
-
-        function sendSelectImg() {
-            if (select_img_src !== '') {
-                $('img#id_img_icon').attr('src', select_img_src)
-                $('input[name=icon_folder]').val(select_img_folder)
-                $('input[name=icon_file]').val(select_img_file)
-            }
-        }
-    </script>
-
-    <style>
-        #modal_select_image img.selected {
-            border: 2px solid blue;
-        }
-
-        #id_img_icon {
-            border: 1px solid #dee2e6;
-        }
-    </style>
+    {% modal_dialog_select_icon images=images images_path=images_path icon_file='' %}
 
 {% endblock content %}
