@@ -1,8 +1,9 @@
 {% extends "andr_finance/base.html" %}
 
-{% load static %}
-
 {% block content %}
+
+    {% load static %}
+
     <h2>Создание категории:</h2>
     <div class="row">
         <div class="col-6">
@@ -12,6 +13,21 @@
                 <div class="form-group">
                     <div class="form-error">{{ form.non_field_errors }}</div>
                 </div>
+                <div class="form-group mb-3">
+                    <img
+                            src="{{ images_path }}{{ image_default_folder }}/{{ image_default_file }}"
+                            alt="" width="48" height="48" id="id_img_icon"
+                            class="mb-2"
+                    >
+                    <input name="icon_folder" type="hidden" value="{{ image_default_folder }}">
+                    <input name="icon_file" type="hidden" value="{{ image_default_file }}">
+
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-2" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                        Выбрать иконку
+                    </button>
+                </div>
+
                 {% for f_elem in form %}
                     <div class="form-group">
                         <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
@@ -26,138 +42,98 @@
         </div>
     </div>
 
+    <!-- Модальное окно -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Выбор иконки</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body" id="modal_select_image">
+                    <div class="container-fluid">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            {% for image in images %}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link {{ image.active }}" id="{{ image.folder }}-tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#{{ image.folder }}-tab-pane" type="button" role="tab"
+                                            aria-controls="{{ image.folder }}-tab-pane"
+                                            aria-selected="{{ image.aria_selected }}">{{ image.name_rus }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content mt-3" id="myTabContent">
+                            {% for image in images %}
+                                <div class="tab-pane fade {{ image.show }} {{ image.active }}"
+                                     id="{{ image.folder }}-tab-pane" role="tabpanel"
+                                     aria-labelledby="{{ image.folder }}-tab" tabindex="0">
 
-    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+                                    <div class="row row-cols-auto">
+                                        {% for image_item in image.images %}
+                                            <div class="col">
+                                                <img
+                                                        src="{{ images_path }}{{ image.folder }}/{{ image_item }}"
+                                                        alt="" width="48" height="48"
+                                                        data-img-folder="{{ image.folder }}"
+                                                        data-img-file="{{ image_item }}"
+                                                >
+                                            </div>
+                                        {% endfor %}
+                                    </div>
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="nav nav-pills mb-3" id="filters">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-filter="*">Все</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-filter=".category-1">Финансы</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#" data-filter=".category-2">Еда</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
 
-        <div class="row isotope-grid row row-cols-auto">
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-английский-фунт-48.png' %}"
-                     alt="Image 1" width="48" height="48">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="sendSelectImg()">
+                        Выбрать иконку
+                    </button>
+                </div>
             </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-цент-48.png' %}"
-                     alt="Image 2" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-сейф-48.png' %}"
-                     alt="Image 3" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-рубль-48.png' %}"
-                     alt="Image 4" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-обмен-доллар-евро-48.png' %}"
-                     alt="Image 5" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-мастеркард-48.png' %}"
-                     alt="Image 6" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-1" data-category="category-1">
-                <img src="{% static 'andr_finance/images/finance/icons8-виза-48.png' %}"
-                     alt="Image 7" width="48" height="48">
-            </div>
-
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-яблоко-48.png' %}"
-                     alt="Image 8" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-хлеб-48.png' %}"
-                     alt="Image 9" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-еда-и-вино-48.png' %}"
-                     alt="Image 10" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-торт-ко-дню-рождения-48.png' %}"
-                     alt="Image 11" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-спагетти-48.png' %}"
-                     alt="Image 12" width="48" height="48">
-            </div>
-            <div class="col isotope-item category-2" data-category="category-2">
-                <img src="{% static 'andr_finance/images/foot/icons8-салями-48.png' %}"
-                     alt="Image 12" width="48" height="48">
-            </div>
-
         </div>
     </div>
 
     <script>
+        let select_img_src = '';
+        let select_img_folder = '';
+        let select_img_file = '';
 
         $(document).ready(function () {
 
-            // Инициализация Isotope
-            var isotope = new Isotope('.isotope-grid', {
-                itemSelector: '.isotope-item',
-                layoutMode: 'fitRows',
-                filter: '.category-2'
-            });
-
-            // Фильтрация по категориям
-            $('#filters').on('click', 'a', function (event) {
-                var filterValue = $(this).attr('data-filter');
-                isotope.arrange({filter: filterValue});
-
-                // Удаление класса active со всех кнопок
-                $('#filters').find('.nav-link').removeClass('active');
-
-                // Добавление класса active к выбранной кнопке
-                $(this).addClass('active');
-            });
-
-            // Убираем выделение со всех элементов, кроме выбранного
-            $('.isotope-grid').on('click', '.isotope-item', function (event) {
-                $('.isotope-item').not(this).removeClass('selected');
+            $('#modal_select_image img').on('click', function (event) {
+                $('img').not(this).removeClass('selected');
                 $(this).toggleClass('selected');
+
+                select_img_src = $(this).attr('src');
+                select_img_folder = $(this).attr('data-img-folder');
+                select_img_file = $(this).attr('data-img-file');
             });
+
         });
 
+        function sendSelectImg() {
+            if (select_img_src !== '') {
+                $('img#id_img_icon').attr('src', select_img_src)
+                $('input[name=icon_folder]').val(select_img_folder)
+                $('input[name=icon_file]').val(select_img_file)
+            }
+        }
     </script>
 
     <style>
-        .isotope-grid {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .isotope-item {
-            margin: 3px;
-            padding: 3px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .isotope-item img {
-            display: block;
-            margin: 0 auto;
-        }
-
-        .isotope-item.selected {
+        #modal_select_image img.selected {
             border: 2px solid blue;
         }
 
+        #id_img_icon {
+            border: 1px solid #dee2e6;
+        }
     </style>
 
 {% endblock content %}

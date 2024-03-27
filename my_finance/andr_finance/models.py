@@ -3,7 +3,8 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    icon = models.ImageField(default=None, null=True, blank=True)
+    icon_folder = models.FilePathField(allow_folders=True, allow_files=False, verbose_name='Папка иконки', default=None, null=True, blank=True)
+    icon_file = models.ImageField(verbose_name='Файл иконки', default=None, null=True, blank=True)
 
     def __str__(self):
         return self.name

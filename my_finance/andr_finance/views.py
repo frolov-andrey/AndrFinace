@@ -1,6 +1,5 @@
 import logging
 import os
-from pprint import pprint
 
 # from ..my_finance.settings import BASE_DIR
 from django.conf import settings
@@ -15,9 +14,43 @@ from .models import Account, Category, Transaction
 # todo: это правильно?
 logger = logging.getLogger(__name__)
 
+folders = [
+    {'name': 'finance', 'name_rus': 'Финансы'},
+    {'name': 'foot', 'name_rus': 'Еда'},
+]
+
 
 def page_not_found(request):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+
+
+def get_images(images_path, catalog=None):
+    images = []
+    active = ''
+    show = ''
+    for folder in folders:
+        images_files = os.listdir(str(settings.BASE_DIR) + '/andr_finance' + images_path + folder['name'])
+        if catalog is not None:
+            if catalog.icon_folder == folder['name']:
+                active = 'active'
+                show = 'show'
+
+        images.append(
+            {
+                'folder': folder['name'],
+                'name_rus': folder['name_rus'],
+                'images': images_files,
+                'aria_selected': True,
+                'active': active,
+                'show': show,
+            }
+        )
+
+    if active == '':
+        images[0]['active'] = 'active'
+        images[0]['show'] = 'show'
+
+    return images
 
 
 def index(request):
@@ -38,49 +71,57 @@ def categories(request):
 
 
 def category_add(request):
-    # images_dir = settings.IMAGES_DIR
-    BASE_DIR = settings.BASE_DIR
-    # logger.debug('BASE_DIR = ' + str(BASE_DIR))
-    # C:\Python\my_django\AndrFinance\my_finance\andr_finance\static\andr_finance\images\finance
-    # C:\\Python\\my_django\\AndrFinance\\my_finance\\my_finance\\andr_finance\\static\\images\\finance
-    # my_finance / andr_finance / static / andr_finance / images / finance
-    images_finance = os.listdir(str(BASE_DIR) + '\\andr_finance\\static\\andr_finance\\images\\finance')
-    images_foot = os.listdir(str(BASE_DIR) + '\\andr_finance\\static\\andr_finance\\images\\foot')
-
-    pprint(images_finance)
+    images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
+    images = get_images(images_path)
 
     if request.method != 'POST':
         form = CategoryForm
     else:
         form = CategoryForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.icon_folder = form.data['icon_folder']
+            category.icon_file = form.data['icon_file']
+            category.save()
             return redirect('andr_finance:categories')
 
     context = {
         'form': form,
         'select_menu': 'categories',
-        'images_finance': images_finance,
-        'images_foot': images_foot,
+        'images': images,
+        'images_path': images_path,
+        'image_default_folder': 'default',
+        'image_default_file': 'default_icon.png',
     }
     return render(request, 'andr_finance/category_add.html', context)
 
 
 def category_edit(request, category_id):
+    images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
     category = Category.objects.get(id=category_id)
+    images = get_images(images_path, category)
 
     if request.method != 'POST':
         form = CategoryForm(instance=category)
     else:
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.icon_folder = form.data['icon_folder']
+            category.icon_file = form.data['icon_file']
+            category.save()
             return redirect('andr_finance:categories')
 
     context = {
         'category': category,
         'form': form,
         'select_menu': 'categories',
+        'images': images,
+        'images_path': images_path,
+        'image_default_folder': 'default',
+        'image_default_file': 'default_icon.png',
+        'icon_file': category.icon_file,
+        'icon_folder': category.icon_folder,
     }
     return render(request, 'andr_finance/category_edit.html', context)
 
