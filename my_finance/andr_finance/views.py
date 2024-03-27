@@ -1,10 +1,11 @@
 import logging
 import os
+from decimal import Decimal
 
 # from ..my_finance.settings import BASE_DIR
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -142,12 +143,47 @@ def category_delete(request, category_id):
 
 
 # --- Account ---
-def get_balance(account_id):
-    balance = 0
-    transactions = Transaction.objects.filter(account_id=account_id)
-    for transaction in transactions:
-        # todo: Int + Decimal ?
-        balance = balance + transaction.amount
+def get_total_transaction(account_id=None, main_account=True, transaction_type=''):
+    transactions = Transaction.objects.all()
+    if account_id is not None:
+        if main_account:
+            transactions = transactions.filter(account_id=account_id)
+        else:
+            transactions = transactions.filter(account_recipient_id=account_id)
+
+    if transaction_type != '':
+        transactions = transactions.filter(type_transaction=transaction_type)
+
+    transaction_sum = transactions.aggregate(Sum('amount'))
+    if transaction_sum['amount__sum'] is not None:
+        total_sum = Decimal(transaction_sum['amount__sum'])
+    else:
+        total_sum = Decimal(0)
+
+    return total_sum
+
+
+def get_balance(account_id=None):
+    total_plus = get_total_transaction(account_id=account_id, main_account=True,
+                                       transaction_type=Transaction.PLUS)
+    total_mimus = get_total_transaction(account_id=account_id, main_account=True,
+                                        transaction_type=Transaction.MINUS)
+    total_transfer = get_total_transaction(account_id=account_id, main_account=True,
+                                           transaction_type=Transaction.TRANSFER)
+    total_transfer_recipient = get_total_transaction(account_id=account_id, main_account=False,
+                                                     transaction_type=Transaction.TRANSFER)
+
+    # print('total_plus', total_plus)
+    # print('total_mimus', total_mimus)
+    # print('total_transfer', total_transfer)
+    # print('total_transfer_recipient', total_transfer_recipient)
+
+    balance = (
+            total_plus
+            - total_mimus
+            - total_transfer
+            + total_transfer_recipient
+    )
 
     return balance
 
@@ -234,25 +270,37 @@ def account_delete(request, account_id):
 # --- Transaction ---
 def transactions(request):
     filter_account = request.GET.get('filter_account')
+    filter_category = request.GET.get('filter_category')
+    filter_type_transaction = request.GET.get('filter_type_transaction')
 
-    if (request.method == 'GET'
-            and filter_account is not None
-            and filter_account != '0'):
-        transactions = Transaction.objects.filter(account=filter_account, type_transaction=Transaction.MINUS).order_by(
-            'date_added')
+    if filter_account is not None and filter_account != '0':
+        transactions = Transaction.objects.filter(Q(account=filter_account) | Q(account_recipient=filter_account)).all()
+        total_amount = get_balance(filter_account)
     else:
-        transactions = Transaction.objects.order_by('date_added')
+        transactions = Transaction.objects.all()
+        total_amount = get_balance()
 
-    total_amount = transactions.aggregate(Sum('amount'))['amount__sum']
-    # print(total_amount)
+    transactions = transactions.order_by('date_added')
+
+    type_transactions = [
+        {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.MINUS]},
+        {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.PLUS]},
+        {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[Transaction.TRANSFER]},
+    ]
 
     context = {
         'transactions': transactions,
         'accounts': Account.objects.order_by('name'),
+        'categories': Category.objects.order_by('name'),
+        'type_transactions': type_transactions,
         'select_menu': 'transactions',
         'icon_default': icon_default,
-        'filter_account': filter_account,
         'total_amount': total_amount,
+
+        'filter_account': filter_account,
+        'filter_category': filter_category,
+        'filter_type_transaction': filter_type_transaction,
+
     }
 
     return render(request, 'andr_finance/transactions.html', context)

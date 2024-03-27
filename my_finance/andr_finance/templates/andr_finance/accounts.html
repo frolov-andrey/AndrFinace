@@ -30,7 +30,9 @@
                 <td>
                     <a href="{% url 'andr_finance:account_edit' context_account.account.id %}">{{ context_account.account.name }}</a>
                 </td>
-                <td>{{ context_account.balance }}</td>
+                <td
+                        class="{% if context_account.balance < 0 %}text-danger{% else %}{% endif %} text-end"
+                >{{ context_account.balance|floatformat:"2g" }}</td>
             </tr>
         {% empty %}
             <tr>

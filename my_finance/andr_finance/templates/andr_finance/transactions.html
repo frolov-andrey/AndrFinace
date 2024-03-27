@@ -6,27 +6,74 @@
     <h2>Транзакции:</h2>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get'>
-        <label for="filter_account" class="form-label">Счет:</label>
-        <select name="filter_account" id="filter_account" class="form-select">
-
-            {# todo: Правильно?: id - нулём не может быть?   #}
-            <option
-                    value="0"
-                    {% if filter_account == '0' %}
-                    selected
-                    {% endif %}
-            >--- Не выбрано ---
-            </option>
-
-            {% for account in accounts %}
-                <option
-                        value="{{ account.id }}"
-                        {% if filter_account == account.id|stringformat:"s" %}
-                        selected
-                        {% endif %}
-                >{{ account.name }}</option>
-            {% endfor %}
-        </select>
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <select name="filter_account" id="filter_account" class="form-select">
+                        <option
+                                value="0"
+                                {% if filter_account == '0' %}
+                                selected
+                                {% endif %} >
+                            --- Не выбрано ---
+                        </option>
+                        {% for account in accounts %}
+                            <option
+                                    value="{{ account.id }}"
+                                    {% if filter_account == account.id|stringformat:"s" %}
+                                    selected
+                                    {% endif %}
+                            >{{ account.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="filter_account">Счет:</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <select name="filter_category" id="filter_category" class="form-select">
+                        <option
+                                value="0"
+                                {% if filter_category == '0' %}
+                                selected
+                                {% endif %} >
+                            --- Не выбрано ---
+                        </option>
+                        {% for category in categories %}
+                            <option
+                                    value="{{ category.id }}"
+                                    {% if filter_category == category.id|stringformat:"s" %}
+                                    selected
+                                    {% endif %}
+                            >{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="filter_category">Категория:</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <select name="filter_type_transaction" id="filter_type_transaction" class="form-select">
+                        <option
+                                value="0"
+                                {% if filter_category == '0' %}
+                                selected
+                                {% endif %} >
+                            --- Не выбрано ---
+                        </option>
+                        {% for type_transaction in type_transactions %}
+                            <option
+                                    value="{{ type_transaction.code }}"
+                                    {% if filter_type_transaction == type_transaction.code %}
+                                    selected
+                                    {% endif %}
+                            >{{ type_transaction.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="filter_type_transaction">Тип транзакции:</label>
+                </div>
+            </div>
+        </div>
         <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Сформировать</button>
     </form>
 
@@ -61,13 +108,19 @@
                     </td>
                     <td>{{ transaction.category.name }}</td>
                     {% if transaction.type_transaction == 'minus' %}
-                        <td class="td_right">- {{ transaction.amount|floatformat:"2g" }}</td>
+                        <td class="text-end">- {{ transaction.amount|floatformat:"2g" }}</td>
                     {% elif transaction.type_transaction == 'plus' %}
-                        <td class="td_right text-success">{{ transaction.amount|floatformat:"2g" }}</td>
+                        <td class="text-end text-success">{{ transaction.amount|floatformat:"2g" }}</td>
                     {% elif transaction.type_transaction == 'transfer' %}
-                        <td class="td_right text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
+                        <td class="text-end text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
                     {% endif %}
-                    <td>{{ transaction.account.name }}</td>
+                    <td>
+                        {% if transaction.type_transaction == 'minus' or transaction.type_transaction == 'plus'%}
+                        {{ transaction.account.name }}
+                        {% elif transaction.type_transaction == 'transfer' %}
+                            {{ transaction.account.name }} &#8594; {{ transaction.account_recipient.name }}
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{% url 'andr_finance:transaction_edit' transaction.type_transaction transaction.id %}">{{ transaction.date_added|date:"d.m.Y H:m" }}</a>
                     </td>
@@ -99,7 +152,7 @@
             <tr>
                 <th></th>
                 <th>Итого</th>
-                <th class="td_right">{{ total_amount|floatformat:"2g" }}</th>
+                <th class="td_right {% if total_amount < 0 %}text-danger{% else %}{% endif %}">{{ total_amount|floatformat:"2g" }}</th>
                 <th colspan="4"></th>
             </tr>
             </tfoot>
