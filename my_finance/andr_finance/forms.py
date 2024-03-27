@@ -32,12 +32,12 @@ class AccountForm(forms.ModelForm):
 
 class TransactionFormTransfer(forms.ModelForm):
     account = forms.ModelChoiceField(
-        queryset=Account.objects.all(),
+        queryset=Account.objects.all().order_by('name'),
         widget=Select(attrs={'class': 'form-select mb-3'}),
         label='Счет отправитель'
     )
     account_recipient = forms.ModelChoiceField(
-        queryset=Account.objects.all(),
+        queryset=Account.objects.all().order_by('name'),
         widget=Select(attrs={'class': 'form-select mb-3'}),
         label='Счет получатель'
     )
@@ -51,7 +51,7 @@ class TransactionFormTransfer(forms.ModelForm):
         widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
         label='Дата'
     )
-    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}),
+    category = forms.ModelChoiceField(Category.objects.all().order_by('name'), widget=Select(attrs={'class': 'form-select mb-3'}),
                                       label='Категория')
     title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
 
@@ -67,7 +67,7 @@ class TransactionFormTransfer(forms.ModelForm):
 
 class TransactionFormMinusPlus(forms.ModelForm):
     account = forms.ModelChoiceField(
-        queryset=Account.objects.all(),
+        queryset=Account.objects.all().order_by('name'),
         widget=Select(attrs={'class': 'form-select mb-3'}),
         label='Счет'
     )
@@ -81,7 +81,7 @@ class TransactionFormMinusPlus(forms.ModelForm):
         widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
         label='Дата'
     )
-    category = forms.ModelChoiceField(Category.objects.all(), widget=Select(attrs={'class': 'form-select mb-3'}),
+    category = forms.ModelChoiceField(Category.objects.all().order_by('name'), widget=Select(attrs={'class': 'form-select mb-3'}),
                                       label='Категория')
     title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
 
