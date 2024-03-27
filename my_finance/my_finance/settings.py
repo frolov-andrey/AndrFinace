@@ -34,14 +34,13 @@ ALLOWED_HOSTS = []
 
 # noinspection PyPackageRequirements
 INSTALLED_APPS = [
-    'andr_finance',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'andr_finance',
 ]
 
 MIDDLEWARE = [
