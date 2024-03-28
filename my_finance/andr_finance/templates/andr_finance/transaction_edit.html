@@ -46,7 +46,19 @@
                 {% for f_elem in form %}
                     <div class="form-group">
                         <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
-                        {{ f_elem }}
+                        {% if f_elem.html_name == 'date_added' %}
+                            <input
+                                    type="text"
+                                    name="{{ f_elem.html_name }}"
+                                    value="{{ f_elem.value|date:"d.m.Y H:i" }}"
+                                    format="%d.%m.%Y %H:%i"
+                                    class="form-control mb-3 py-1"
+                                    required=""
+                                    id="{{ f_elem.id_for_label }}"
+                            >
+                        {% else %}
+                            {{ f_elem }}
+                        {% endif %}
                         <div class="form-error">{{ f_elem.errors }}</div>
                     </div>
                 {% endfor %}
@@ -62,12 +74,14 @@
     </div>
 
     <script>
-        $(document).ready(function(){
+
+        $(document).ready(function () {
             $('#id_date_added').datetimepicker({
-                format: 'Y-m-d H:i',
-                defaultDate: new Date(),
+                format: 'd.m.Y H:i',
+                mask: true,
             });
         });
+
     </script>
 
 {% endblock content %}

@@ -1,19 +1,18 @@
-import logging
 import os
-from decimal import Decimal
+from pprint import pprint
 
 # from ..my_finance.settings import BASE_DIR
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Sum, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
+from .table_filter import get_filter_transaction, get_balance, get_transaction
 
 # todo: это правильно?
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
@@ -62,7 +61,7 @@ def get_images(images_path, catalog=None):
 
 def index(request):
     BASE_DIR = settings.BASE_DIR
-    logger.debug('BASE_DIR = ' + str(BASE_DIR))
+    # logger.debug('BASE_DIR = ' + str(BASE_DIR))
     context = {'select_menu': 'index'}
     return render(request, 'andr_finance/index.html', context)
 
@@ -143,56 +142,12 @@ def category_delete(request, category_id):
 
 
 # --- Account ---
-def get_total_transaction(account_id=None, main_account=True, transaction_type=''):
-    transactions = Transaction.objects.all()
-    if account_id is not None:
-        if main_account:
-            transactions = transactions.filter(account_id=account_id)
-        else:
-            transactions = transactions.filter(account_recipient_id=account_id)
-
-    if transaction_type != '':
-        transactions = transactions.filter(type_transaction=transaction_type)
-
-    transaction_sum = transactions.aggregate(Sum('amount'))
-    if transaction_sum['amount__sum'] is not None:
-        total_sum = Decimal(transaction_sum['amount__sum'])
-    else:
-        total_sum = Decimal(0)
-
-    return total_sum
-
-
-def get_balance(account_id=None):
-    total_plus = get_total_transaction(account_id=account_id, main_account=True,
-                                       transaction_type=Transaction.PLUS)
-    total_mimus = get_total_transaction(account_id=account_id, main_account=True,
-                                        transaction_type=Transaction.MINUS)
-    total_transfer = get_total_transaction(account_id=account_id, main_account=True,
-                                           transaction_type=Transaction.TRANSFER)
-    total_transfer_recipient = get_total_transaction(account_id=account_id, main_account=False,
-                                                     transaction_type=Transaction.TRANSFER)
-
-    # print('total_plus', total_plus)
-    # print('total_mimus', total_mimus)
-    # print('total_transfer', total_transfer)
-    # print('total_transfer_recipient', total_transfer_recipient)
-
-    balance = (
-            total_plus
-            - total_mimus
-            - total_transfer
-            + total_transfer_recipient
-    )
-
-    return balance
-
-
 def accounts(request):
     accounts = Account.objects.order_by('name')
     context_accounts = []
     for account in accounts:
-        balance = get_balance(account.id)
+        transactions = get_transaction({'account_id': account.id})
+        balance = get_balance(transactions, {'account_id': account.id})
         o_account = {'account': account, 'balance': balance}
         context_accounts.append(o_account)
 
@@ -269,18 +224,10 @@ def account_delete(request, account_id):
 
 # --- Transaction ---
 def transactions(request):
-    filter_account = request.GET.get('filter_account')
-    filter_category = request.GET.get('filter_category')
-    filter_type_transaction = request.GET.get('filter_type_transaction')
-
-    if filter_account is not None and filter_account != '0':
-        transactions = Transaction.objects.filter(Q(account=filter_account) | Q(account_recipient=filter_account)).all()
-        total_amount = get_balance(filter_account)
-    else:
-        transactions = Transaction.objects.all()
-        total_amount = get_balance()
-
-    transactions = transactions.order_by('date_added')
+    filters = get_filter_transaction(request)
+    transactions = get_transaction(filters)
+    print(transactions)
+    total_amount = get_balance(transactions, filters)
 
     type_transactions = [
         {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.MINUS]},
@@ -297,9 +244,9 @@ def transactions(request):
         'icon_default': icon_default,
         'total_amount': total_amount,
 
-        'filter_account': filter_account,
-        'filter_category': filter_category,
-        'filter_type_transaction': filter_type_transaction,
+        'filter_account': request.GET.get('filter_account'),
+        'filter_category': request.GET.get('filter_category'),
+        'filter_type_transaction': request.GET.get('filter_type_transaction'),
 
     }
 
@@ -307,7 +254,6 @@ def transactions(request):
 
 
 def transaction_add(request, type_transaction):
-    # logger.debug('type_transaction = ' + str(type_transaction))
     if request.method != 'POST':
         if type_transaction == Transaction.MINUS or type_transaction == Transaction.PLUS:
             form = TransactionFormMinusPlus()

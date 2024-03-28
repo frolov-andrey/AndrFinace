@@ -68,22 +68,24 @@ class TransactionFormTransfer(forms.ModelForm):
 class TransactionFormMinusPlus(forms.ModelForm):
     account = forms.ModelChoiceField(
         queryset=Account.objects.all().order_by('name'),
-        widget=Select(attrs={'class': 'form-select mb-3'}),
+        widget=Select(attrs={'class': 'form-select mb-3 py-1'}),
         label='Счет'
     )
     amount = forms.DecimalField(
         max_digits=12,
         decimal_places=2,
         label='Сумма',
-        widget=NumberInput(attrs={'class': 'form-control mb-3'})
+        widget=NumberInput(attrs={'class': 'form-control mb-3 py-1'})
     )
     date_added = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
+        widget=forms.DateTimeInput(attrs={'format': '%d.%m.%Y %H:%i', 'class': 'form-control mb-3 py-1'}),
         label='Дата'
     )
-    category = forms.ModelChoiceField(Category.objects.all().order_by('name'), widget=Select(attrs={'class': 'form-select mb-3'}),
+    category = forms.ModelChoiceField(Category.objects.all().order_by('name'),
+                                      widget=Select(attrs={'class': 'form-select mb-3 py-1'}),
                                       label='Категория')
-    title = forms.CharField(max_length=200, label='Описание', widget=TextInput(attrs={'class': 'form-control mb-3'}))
+    title = forms.CharField(max_length=200, label='Описание',
+                            widget=TextInput(attrs={'class': 'form-control mb-3 py-1'}))
 
     class Meta:
         model = Transaction

@@ -46,7 +46,7 @@
                 </div>
                 {% for f_elem in form %}
                     <div class="form-group">
-                        <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
+                        <label class="form-label mb-0" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
                         {{ f_elem }}
                         <div class="form-error">{{ f_elem.errors }}</div>
                     </div>
@@ -60,8 +60,9 @@
     <script>
         $(document).ready(function(){
             $('#id_date_added').datetimepicker({
-                format: 'Y-m-d H:i',
+                format: 'd.m.Y H:i',
                 defaultDate: new Date(),
+                mask:true,
             });
         });
     </script>
