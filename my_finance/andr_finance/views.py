@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .table_filter import get_filter_transaction, get_balance, get_transaction
+from .table_filter import get_filter_transaction, get_balance, get_transaction, get_transactions_group
 
 # todo: это правильно?
 # logger = logging.getLogger(__name__)
@@ -225,8 +225,16 @@ def account_delete(request, account_id):
 # --- Transaction ---
 def transactions(request):
     filters = get_filter_transaction(request)
+
+    if 'filter_group' in filters:
+        group_by = filters['filter_group']
+        transactions_group = get_transactions_group(filters)
+    else:
+        group_by = ''
+        transactions_group = []
+
     transactions = get_transaction(filters)
-    print(transactions)
+
     total_amount = get_balance(transactions, filters)
 
     type_transactions = [
@@ -235,8 +243,18 @@ def transactions(request):
         {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[Transaction.TRANSFER]},
     ]
 
+    send_filter_date_start = request.GET.get('filter_date_start')
+    if (send_filter_date_start is None):
+        send_filter_date_start = ''
+
+    send_filter_date_end = request.GET.get('filter_date_end')
+    if (send_filter_date_end is None):
+        send_filter_date_end = ''
+
     context = {
+        'group_by': group_by,
         'transactions': transactions,
+        'transactions_group': transactions_group,
         'accounts': Account.objects.order_by('name'),
         'categories': Category.objects.order_by('name'),
         'type_transactions': type_transactions,
@@ -247,6 +265,9 @@ def transactions(request):
         'filter_account': request.GET.get('filter_account'),
         'filter_category': request.GET.get('filter_category'),
         'filter_type_transaction': request.GET.get('filter_type_transaction'),
+        'filter_date_start': send_filter_date_start,
+        'filter_date_end': send_filter_date_end,
+        'filter_group': request.GET.get('filter_group'),
 
     }
 

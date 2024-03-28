@@ -1,4 +1,6 @@
+import datetime
 from decimal import Decimal
+from pprint import pprint
 
 from django.db.models import Sum, Q
 
@@ -25,6 +27,27 @@ def get_filter_transaction(request):
             or filter_type_transaction == Transaction.PLUS
             or filter_type_transaction == Transaction.TRANSFER):
         filters['type_transaction'] = filter_type_transaction
+
+    filter_group = request.GET.get('filter_group')
+    if filter_group == 'category' or filter_group == 'date':
+        filters['filter_group'] = filter_group
+
+    filter_date_start = request.GET.get('filter_date_start')
+    try:
+        filter_date_start = datetime.datetime.strptime(filter_date_start, '%d.%m.%Y')
+    except:
+        filter_date_start = ''
+    if filter_date_start != '':
+        filters['date_start'] = filter_date_start
+
+    filter_date_end = request.GET.get('filter_date_end')
+    try:
+        filter_date_end = datetime.datetime.strptime(filter_date_end, '%d.%m.%Y')
+    except:
+        filter_date_end = ''
+    if filter_date_end != '':
+        filter_date_end = filter_date_end + datetime.timedelta(days=1)
+        filters['date_end'] = filter_date_end
 
     return filters
 
@@ -55,7 +78,8 @@ def get_balance(transactions, filters):
     total_plus = get_sum_transaction_type(Transaction.PLUS, transactions, account_id, main_account=True)
     total_mimus = get_sum_transaction_type(Transaction.MINUS, transactions, account_id, main_account=True)
     total_transfer = get_sum_transaction_type(Transaction.TRANSFER, transactions, account_id, main_account=True)
-    total_transfer_recipient = get_sum_transaction_type(Transaction.TRANSFER, transactions, account_id, main_account=False)
+    total_transfer_recipient = get_sum_transaction_type(Transaction.TRANSFER, transactions, account_id,
+                                                        main_account=False)
 
     # print('total_plus', total_plus)
     # print('total_mimus', total_mimus)
@@ -73,10 +97,12 @@ def get_balance(transactions, filters):
 
 
 def get_transaction(filters):
+    order_by = ''
+
     transactions = Transaction.objects
 
     if len(filters) == 0:
-        return transactions.all()
+        return transactions.all().order_by('date_added')
 
     if 'account_id' in filters:
         transactions = transactions.filter(
@@ -88,6 +114,36 @@ def get_transaction(filters):
     if 'type_transaction' in filters:
         transactions = transactions.filter(type_transaction=filters['type_transaction'])
 
+    if 'date_start' in filters:
+        transactions = transactions.filter(date_added__gte=filters['date_start'])
+
+    if 'date_end' in filters:
+        transactions = transactions.filter(date_added__lt=filters['date_end'])
+
     transactions = transactions.order_by('date_added')
 
     return transactions
+
+
+def get_transactions_group(filters):
+    result = []
+    transactions = get_transaction(filters)
+
+    if 'filter_group' in filters:
+        if filters['filter_group'] == 'category':
+            transactions_group = transactions.values('category').annotate(total=Sum('amount')). \
+                order_by('category__name')
+            for transaction_group in transactions_group:
+                transactions_category = transactions.filter(category=transaction_group['category'])
+                if transaction_group['category'] is not None:
+                    category_name = Category.objects.get(pk=transaction_group['category']).name
+                else:
+                    category_name = '---нет---'
+                result.append({
+                    'category_id': str(transaction_group['category']),
+                    'category_name': category_name,
+                    'total': transaction_group['total'],
+                    'transactions': transactions_category,
+                })
+
+    return result

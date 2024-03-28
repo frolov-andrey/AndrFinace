@@ -1,7 +1,22 @@
 {% extends "andr_finance/base.html" %}
 {% load static %}
+{% load andr_finance_extras %}
 
 {% block content %}
+
+    <script>
+        $(document).ready(function () {
+            $('#sandbox-container .input-daterange').datepicker({
+                todayBtn: "linked",
+                clearBtn: true,
+                language: "ru",
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
 
     <h2>Транзакции:</h2>
 
@@ -73,7 +88,45 @@
                     <label for="filter_type_transaction">Тип транзакции:</label>
                 </div>
             </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <select name="filter_group" id="filter_group" class="form-select">
+                        <option
+                                value="0"
+                                {% if filter_group == 'not_group' %}selected{% endif %}
+                        >--- Не группировать ---
+                        </option>
+                        <option
+                                value="category"
+                                {% if filter_group == 'category' %}selected{% endif %}
+                        >Категориям
+                        </option>
+                        <option
+                                value="date"
+                                {% if filter_group == 'date' %}selected{% endif %}
+                        >Датам
+                        </option>
+                    </select>
+                    <label for="filter_group">Группировать по:</label>
+                </div>
+            </div>
         </div>
+
+        <div class="row g-2 mt-1">
+            <div class="col-md-3">
+                <div class="" id="sandbox-container">
+                    <label>Период:</label>
+                    <div class="input-daterange input-group" id="datepicker">
+                        <input type="text" class="input-sm form-control" name="filter_date_start"
+                               value="{{ filter_date_start }}" autocomplete="off"/>
+                        <span class="input-group-addon">до</span>
+                        <input type="text" class="input-sm form-control" name="filter_date_end"
+                               value="{{ filter_date_end }}" autocomplete="off"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Сформировать</button>
     </form>
 
@@ -95,64 +148,46 @@
             </tr>
             </thead>
             <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td>
-                        <img
-                                {% if transaction.category.icon_folder is not None %}
-                                    src="{% static 'andr_finance/images/' %}{{ transaction.category.icon_folder }}/{{ transaction.category.icon_file }}"
-                                {% else %}
-                                    src="{{ icon_default }}"
-                                {% endif %}
-                                    width="20" height="20">
-                    </td>
-                    <td>{{ transaction.category.name }}</td>
-                    {% if transaction.type_transaction == 'minus' %}
-                        <td class="text-end">- {{ transaction.amount|floatformat:"2g" }}</td>
-                    {% elif transaction.type_transaction == 'plus' %}
-                        <td class="text-end text-success">{{ transaction.amount|floatformat:"2g" }}</td>
-                    {% elif transaction.type_transaction == 'transfer' %}
-                        <td class="text-end text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
-                    {% endif %}
-                    <td>
-                        {% if transaction.type_transaction == 'minus' or transaction.type_transaction == 'plus'%}
-                        {{ transaction.account.name }}
-                        {% elif transaction.type_transaction == 'transfer' %}
-                            {{ transaction.account.name }} &#8594; {{ transaction.account_recipient.name }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{% url 'andr_finance:transaction_edit' transaction.type_transaction transaction.id %}">{{ transaction.date_added|date:"d.m.Y H:i" }}</a>
-                    </td>
-                    <td>{{ transaction.title }}</td>
-                    <td class="align-middle text-center">
-                        <a href="{% url 'andr_finance:transaction_delete' transaction.id %}" title="Удалить">
-                            <svg class="bi bi-exclamation-triangle text-danger" width="16" height="16"
-                                 fill="currentColor"
-                                 viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                            </svg>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td>Нет транзакций</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            {% endfor %}
+            {% if group_by != "" %}
+                {% for transaction_group in transactions_group %}
+                    <tr
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapse_td_{{ transaction_group.category_id }}"
+                            aria-expanded="false"
+                            aria-controls="collapse_td_{{ transaction_group.category_id }}"
+                    >
+                        <td></td>
+                        <td
+                                class="fw-bold"
+                        >{{ transaction_group.category_name }}</td>
+                        <td class="fw-bold text-end">{{ transaction_group.total }}</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    {% for transaction in transaction_group.transactions %}
+                        {% tr_transaction transaction transaction_group.category_id %}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% for transaction in transactions %}
+                    {% tr_transaction transaction %}
+                {% empty %}
+                    <tr>
+                        <td>Нет транзакций</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
             </tbody>
             <tfoot class="table-light">
             <tr>
                 <th></th>
                 <th>Итого</th>
-                <th class="td_right {% if total_amount < 0 %}text-danger{% else %}{% endif %}">{{ total_amount|floatformat:"2g" }}</th>
+                <th class="text-end {% if total_amount < 0 %}text-danger{% else %}{% endif %}">{{ total_amount|floatformat:"2g" }}</th>
                 <th colspan="4"></th>
             </tr>
             </tfoot>
