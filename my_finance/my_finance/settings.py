@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'andr_finance',
 ]
 
@@ -123,20 +124,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ----------- My settings --------------------------
-LOGGING = {
-    "version": 1,  # the dictConfig format version
-    "disable_existing_loggers": False,  # retain the default loggers
-
-    "handlers": {
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": "logs/general.log",
-        },
-    },
-    "loggers": {
-        "": {
-            "level": "DEBUG",
-            "handlers": ["file"],
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,  # the dictConfig format version
+#     "disable_existing_loggers": False,  # retain the default loggers
+#
+#     "handlers": {
+#         "file": {
+#             "class": "logging.FileHandler",
+#             "filename": "logs/general.log",
+#         },
+#     },
+#     "loggers": {
+#         "": {
+#             "level": "DEBUG",
+#             "handlers": ["file"],
+#         },
+#     },
+# }
