@@ -47,7 +47,7 @@ class TransactionFormTransfer(forms.ModelForm):
         label='Сумма',
         widget=NumberInput(attrs={'class': 'form-control mb-3'})
     )
-    date_added = forms.DateTimeField(
+    date_add = forms.DateTimeField(
         widget=forms.TextInput(attrs={'autocomplete': 'off', 'readonly': 'readonly', 'class': 'form-control mb-3'}),
         label='Дата'
     )
@@ -57,7 +57,7 @@ class TransactionFormTransfer(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['account', 'account_recipient', 'amount', 'date_added', 'category', 'title']
+        fields = ['account', 'account_recipient', 'amount', 'date_add', 'category', 'title']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,7 +77,7 @@ class TransactionFormMinusPlus(forms.ModelForm):
         label='Сумма',
         widget=NumberInput(attrs={'class': 'form-control mb-3 py-1'})
     )
-    date_added = forms.DateTimeField(
+    date_add = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={'format': '%d.%m.%Y %H:%i', 'class': 'form-control mb-3 py-1'}),
         label='Дата'
     )
@@ -89,7 +89,7 @@ class TransactionFormMinusPlus(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['account', 'amount', 'date_added', 'category', 'title']
+        fields = ['account', 'amount', 'date_add', 'category', 'title']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

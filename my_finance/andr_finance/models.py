@@ -64,8 +64,8 @@ class Transaction(models.Model):
         verbose_name='Категория',
         db_index=True,
     )
-    date_added = models.DateTimeField(db_index=True)
+    date_add = models.DateTimeField(db_index=True)
     title = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.type_transaction + ', ' + str(self.amount) + ' ' + str(self.date_added)
+        return self.type_transaction + ', ' + str(self.amount) + ' ' + str(self.date_add)

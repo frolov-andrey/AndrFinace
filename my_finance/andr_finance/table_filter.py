@@ -102,7 +102,7 @@ def get_transaction(filters):
     transactions = Transaction.objects
 
     if len(filters) == 0:
-        return transactions.all().order_by('date_added')
+        return transactions.all().order_by('date_add')
 
     if 'account_id' in filters:
         transactions = transactions.filter(
@@ -120,7 +120,7 @@ def get_transaction(filters):
     if 'date_end' in filters:
         transactions = transactions.filter(date_added__lt=filters['date_end'])
 
-    transactions = transactions.order_by('date_added')
+    transactions = transactions.order_by('date_add')
 
     return transactions
 

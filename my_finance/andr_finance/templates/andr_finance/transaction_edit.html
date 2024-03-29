@@ -46,7 +46,7 @@
                 {% for f_elem in form %}
                     <div class="form-group">
                         <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
-                        {% if f_elem.html_name == 'date_added' %}
+                        {% if f_elem.html_name == 'date_add' %}
                             <input
                                     type="text"
                                     name="{{ f_elem.html_name }}"

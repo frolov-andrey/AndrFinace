@@ -35,7 +35,7 @@
     </td>
     <td>
         <a href="{% url 'andr_finance:transaction_edit' transaction.type_transaction transaction.id %}">
-            {{ transaction.date_added|date:"d.m.Y H:i" }}
+            {{ transaction.date_add|date:"d.m.Y H:i" }}
         </a>
     </td>
     <td>{{ transaction.title }}</td>

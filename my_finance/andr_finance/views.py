@@ -370,7 +370,7 @@ def transaction_delete(request, transaction_id):
         messages.success(
             request,
             'The transaction has been deleted successfully: ' +
-            transaction.date_added.strftime('%d.%m.%Y %H:%M')
+            transaction.date_add.strftime('%d.%m.%Y %H:%M')
         )
         return redirect('andr_finance:transactions')
 
