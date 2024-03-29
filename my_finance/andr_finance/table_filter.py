@@ -1,6 +1,5 @@
 import datetime
 from decimal import Decimal
-from pprint import pprint
 
 from django.db.models import Sum, Q
 
@@ -9,6 +8,19 @@ from .models import Transaction, Account, Category
 
 def get_filter_transaction(request):
     filters = {}
+
+    sort_field = request.GET.get('sort_field')
+    if sort_field == 'balance':
+        filters['sort_field'] = sort_field
+
+    for field in Transaction._meta.fields:
+        if field.name == sort_field:
+            filters['sort_field'] = sort_field
+            break
+
+    sort_order = request.GET.get('sort_order')
+    if sort_order == 'asc' or sort_order == 'desc':
+        filters['sort_order'] = sort_order
 
     filter_account = request.GET.get('filter_account')
     if filter_account is not None and filter_account != '0':
@@ -97,8 +109,6 @@ def get_balance(transactions, filters):
 
 
 def get_transaction(filters):
-    order_by = ''
-
     transactions = Transaction.objects
 
     if len(filters) == 0:
@@ -120,9 +130,32 @@ def get_transaction(filters):
     if 'date_end' in filters:
         transactions = transactions.filter(date_added__lt=filters['date_end'])
 
-    transactions = transactions.order_by('date_add')
+    if 'sort_field' in filters:
+        sort_field = filters['sort_field']
+        if sort_field == 'category':
+            sort_field = 'category__name'
+        elif sort_field == 'account':
+            sort_field = 'account__name'
+    else:
+        sort_field = 'date_add'
+
+    transactions = transactions.order_by(get_sort_order(filters) + sort_field)
 
     return transactions
+
+
+def get_sort_order(filters):
+    if 'sort_order' in filters:
+        if filters['sort_order'] == 'asc':
+            sort_order = ''
+        elif filters['sort_order'] == 'desc':
+            sort_order = '-'
+        else:
+            sort_order = '-'
+    else:
+        sort_order = ''
+
+    return sort_order
 
 
 def get_transactions_group(filters):
@@ -139,6 +172,7 @@ def get_transactions_group(filters):
                     category_name = Category.objects.get(pk=transaction_group['category']).name
                 else:
                     category_name = '---нет---'
+
                 result.append({
                     'category_id': str(transaction_group['category']),
                     'category_name': category_name,

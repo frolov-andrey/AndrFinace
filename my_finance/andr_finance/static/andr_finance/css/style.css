@@ -20,3 +20,6 @@ table tr th.td_right {
 .tr_group:hover {
     cursor: pointer;
 }
+table.table_transaction thead th span.name_col {
+    cursor: pointer;
+}

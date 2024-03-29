@@ -4,24 +4,11 @@
 
 {% block content %}
 
-    <script>
-        $(document).ready(function () {
-            $('#sandbox-container .input-daterange').datepicker({
-                todayBtn: "linked",
-                clearBtn: true,
-                language: "ru",
-                autoclose: true,
-                todayHighlight: true
-            });
-        });
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
-
     <h2>Транзакции:</h2>
 
-    <form action="{% url 'andr_finance:transactions' %}" method='get'>
-        <input name="sorting" value="{{ sorting }}" type="hidden">
+    <form action="{% url 'andr_finance:transactions' %}" method='get' id="form_filter">
+        <input name="sort_field" value="{{ sort_field }}" type="hidden">
+        <input name="sort_order" value="{{ sort_order }}" type="hidden">
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
@@ -128,7 +115,7 @@
             </div>
         </div>
 
-        <button name="submit" class="btn btn-outline-primary btn-sm mt-2">Сформировать</button>
+        <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
     </form>
 
     <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
@@ -136,28 +123,93 @@
     </form>
 
     <div class="table-responsive">
-        <table class="table table-hover table-sm mt-3">
+        <table class="table table-hover table-sm mt-3 table_transaction">
             <thead class="table-light">
-            <tr>
+            <tr class="tr_sort">
                 <th scope="col"></th>
                 <th scope="col">
-                    <a href="" class="text-decoration-none text-secondary-emphasis">
-                        Категория
-                    </a>
+                    <span
+                            class="text-secondary-emphasis name_col"
+                            data-sort-field="category"
+                            data-sort-order="{% if sort_field == 'category' %}{{ sort_order }}{% endif %}"
+
+                    >Категория
+                        {% if sort_field == 'category' %}
+                            {% if sort_order == 'asc' %}
+                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                            {% elif sort_order == 'desc' %}
+                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+                            {% endif %}
+                        {% endif %}
+                    </span>
                 </th>
                 <th scope="col">
-                    <a href="" class="text-decoration-none text-secondary-emphasis">
-                        Сумма
-                    </a>
+                    <span
+                            class="text-secondary-emphasis name_col"
+                            data-sort-field="amount"
+                            data-sort-order="{% if sort_field == 'amount' %}{{ sort_order }}{% endif %}"
+                    >Сумма
+                        {% if sort_field == 'amount' %}
+                            {% if sort_order == 'asc' %}
+                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                            {% elif sort_order == 'desc' %}
+                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+                            {% endif %}
+                        {% endif %}
+                    </span>
                 </th>
-                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Счет</a></th>
                 <th scope="col">
-                    <a href="" class="text-decoration-none text-secondary-emphasis">
-                        Дата
-                        <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                    </a></th>
-                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Описание</a></th>
-                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Удалить</a></th>
+                    <span
+                            class="text-secondary-emphasis"
+                            data-sort-field="balance"
+                            data-sort-order=""
+                    >Баланс</span>
+                </th>
+                <th scope="col">
+                    <span
+                            class="text-secondary-emphasis name_col"
+                            data-sort-field="account"
+                            data-sort-order="{% if sort_field == 'account' %}{{ sort_order }}{% endif %}"
+                    >Счет
+                        {% if sort_field == 'account' %}
+                            {% if sort_order == 'asc' %}
+                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                            {% elif sort_order == 'desc' %}
+                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <span
+                            class="text-secondary-emphasis name_col"
+                            data-sort-field="date_add"
+                            data-sort-order="{% if sort_field == 'date_add' %}{{ sort_order }}{% endif %}"
+                    >Дата
+                        {% if sort_field == 'date_add' %}
+                            {% if sort_order == 'asc' %}
+                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                            {% elif sort_order == 'desc' %}
+                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </th>
+                <th scope="col">
+                    <span
+                            class="text-secondary-emphasis name_col"
+                            data-sort-field="title"
+                            data-sort-order="{% if sort_field == 'title' %}{{ sort_order }}{% endif %}"
+                    >Описание
+                        {% if sort_field == 'title' %}
+                            {% if sort_order == 'asc' %}
+                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                            {% elif sort_order == 'desc' %}
+                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+                            {% endif %}
+                        {% endif %}
+                    </span></th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -183,7 +235,7 @@
                                 class="fw-bold"
                         >{{ transaction_group.category_name }}</td>
                         <td class="fw-bold text-end">{{ transaction_group.total }}</td>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                     </tr>
                     {% for transaction in transaction_group.transactions %}
                         {% tr_transaction transaction transaction_group.category_id icon_default %}
@@ -210,10 +262,45 @@
                 <th></th>
                 <th>Итого</th>
                 <th class="text-end {% if total_amount < 0 %}text-danger{% else %}{% endif %}">{{ total_amount|floatformat:"2g" }}</th>
-                <th colspan="4"></th>
+                <th colspan="5"></th>
             </tr>
             </tfoot>
         </table>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            
+            $('table.table_transaction thead th span.name_col').click(function (event) {
+                $('input[name=sort_field]').val($(this).attr('data-sort-field'))
+
+                let sort_order = $(this).attr('data-sort-order')
+                if (sort_order === 'asc') {
+                    sort_order = 'desc'
+                }
+                else if (sort_order === 'desc') {
+                    sort_order = 'asc'
+                }
+                else {
+                    sort_order = 'asc'
+                }
+                $('input[name=sort_order]').val(sort_order)
+
+                $('form#form_filter').submit();
+            });
+            
+            
+            $('#sandbox-container .input-daterange').datepicker({
+                todayBtn: "linked",
+                clearBtn: true,
+                language: "ru",
+                autoclose: true,
+                todayHighlight: true
+            });
+            
+        });
+        
+    </script>
+
 
 {% endblock content %}

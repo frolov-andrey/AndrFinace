@@ -103,7 +103,6 @@ def category_add(request):
 
 
 def category_edit(request, category_id):
-    images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
     category = Category.objects.get(id=category_id)
     images = get_images(images_path, category)
 
@@ -237,6 +236,14 @@ def transactions(request):
 
     total_amount = get_balance(transactions, filters)
 
+    # transactions_list = transactions.values()
+    # pprint(transactions_list)
+    #
+    # for transaction_list in transactions_list:
+    #     transaction_list['balance'] = 11
+    #
+    # pprint(transactions_list)
+
     type_transactions = [
         {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.MINUS]},
         {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.PLUS]},
@@ -251,8 +258,15 @@ def transactions(request):
     if (send_filter_date_end is None):
         send_filter_date_end = ''
 
-    sort_field = ''
-    sort_order = '' # ASC, DESC
+    if 'sort_field' in filters:
+        sort_field = filters['sort_field']
+    else:
+        sort_field = 'date_add'
+
+    if 'sort_order' in filters:
+        sort_order = filters['sort_order']
+    else:
+        sort_order = 'asc'  # asc, desc
 
     context = {
         'sort_field': sort_field,
@@ -376,5 +390,8 @@ def transaction_delete(request, transaction_id):
 
 
 def reports(request):
-    context = {}
+    context = {
+        'select_menu': 'reports',
+    }
     return render(request, 'andr_finance/reports.html', context)
+

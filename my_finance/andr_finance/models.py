@@ -3,10 +3,8 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, db_index=True)
-    icon_folder = models.FilePathField(
-        allow_folders=True, allow_files=False, verbose_name='Папка иконки',
-        default=None, null=True, blank=True)
-    icon_file = models.ImageField(verbose_name='Файл иконки', default=None, null=True, blank=True)
+    icon_folder = models.CharField(max_length=200, default='', null=True, blank=True)
+    icon_file = models.CharField(max_length=200, default='', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -15,10 +13,8 @@ class Category(models.Model):
 class Account(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название', db_index=True)
     start_balance = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Начальный баланс')
-    icon_folder = models.FilePathField(
-        allow_folders=True, allow_files=False, verbose_name='Папка иконки',
-        default=None, null=True, blank=True)
-    icon_file = models.ImageField(verbose_name='Файл иконки', default=None, null=True, blank=True)
+    icon_folder = models.CharField(max_length=200, default='', null=True, blank=True)
+    icon_file = models.CharField(max_length=200, default='', null=True, blank=True)
 
     def __str__(self):
         return self.name

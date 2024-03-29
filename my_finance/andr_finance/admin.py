@@ -2,8 +2,15 @@ from django.contrib import admin
 
 from .models import Category, Account, Transaction
 
-admin.site.register(Category)
-admin.site.register(Account)
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_balance', 'icon_folder', 'icon_file')
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'icon_folder', 'icon_file')
 
 
 @admin.register(Transaction)
