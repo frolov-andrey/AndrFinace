@@ -13,6 +13,7 @@
             <th>Иконка</th>
             <th>Название</th>
             <th>Баланс</th>
+            <th>Начальный баланс</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,9 @@
                 <td
                         class="{% if context_account.balance < 0 %}text-danger{% else %}{% endif %} text-end"
                 >{{ context_account.balance|floatformat:"2g" }}</td>
+                <td
+                        class="{% if context_account.account.start_balance < 0 %}text-danger{% else %}{% endif %} text-end"
+                >{{ context_account.account.start_balance|floatformat:"2g" }}</td>
             </tr>
         {% empty %}
             <tr>

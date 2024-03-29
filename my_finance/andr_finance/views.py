@@ -9,10 +9,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .table_filter import get_filter_transaction, get_balance, get_transaction, get_transactions_group
+from .table_filter import get_filter_transaction, get_balance, get_transaction, get_transactions_group, get_balances
 
-# todo: это правильно?
-# logger = logging.getLogger(__name__)
 
 folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
@@ -60,9 +58,9 @@ def get_images(images_path, catalog=None):
 
 
 def index(request):
-    BASE_DIR = settings.BASE_DIR
-    # logger.debug('BASE_DIR = ' + str(BASE_DIR))
-    context = {'select_menu': 'index'}
+    context = {
+        'select_menu': 'index'
+    }
     return render(request, 'andr_finance/index.html', context)
 
 
@@ -223,6 +221,7 @@ def account_delete(request, account_id):
 
 # --- Transaction ---
 def transactions(request):
+
     filters = get_filter_transaction(request)
 
     if 'filter_group' in filters:
@@ -233,16 +232,7 @@ def transactions(request):
         transactions_group = []
 
     transactions = get_transaction(filters)
-
-    total_amount = get_balance(transactions, filters)
-
-    # transactions_list = transactions.values()
-    # pprint(transactions_list)
-    #
-    # for transaction_list in transactions_list:
-    #     transaction_list['balance'] = 11
-    #
-    # pprint(transactions_list)
+    balances = get_balances(transactions, filters)
 
     type_transactions = [
         {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.MINUS]},
@@ -273,13 +263,13 @@ def transactions(request):
         'sort_order': sort_order,
         'group_by': group_by,
         'transactions': transactions,
+        'balances': balances,
         'transactions_group': transactions_group,
         'accounts': Account.objects.order_by('name'),
         'categories': Category.objects.order_by('name'),
         'type_transactions': type_transactions,
         'select_menu': 'transactions',
         'icon_default': icon_default,
-        'total_amount': total_amount,
 
         'filter_account': request.GET.get('filter_account'),
         'filter_category': request.GET.get('filter_category'),

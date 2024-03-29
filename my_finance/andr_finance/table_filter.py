@@ -1,4 +1,5 @@
 import datetime
+import json
 from decimal import Decimal
 
 from django.db.models import Sum, Q
@@ -125,10 +126,10 @@ def get_transaction(filters):
         transactions = transactions.filter(type_transaction=filters['type_transaction'])
 
     if 'date_start' in filters:
-        transactions = transactions.filter(date_added__gte=filters['date_start'])
+        transactions = transactions.filter(date_add__gte=filters['date_start'])
 
     if 'date_end' in filters:
-        transactions = transactions.filter(date_added__lt=filters['date_end'])
+        transactions = transactions.filter(date_add__lt=filters['date_end'])
 
     if 'sort_field' in filters:
         sort_field = filters['sort_field']
@@ -139,9 +140,53 @@ def get_transaction(filters):
     else:
         sort_field = 'date_add'
 
-    transactions = transactions.order_by(get_sort_order(filters) + sort_field)
+    transactions = transactions.order_by(get_sort_order(filters) + sort_field, 'id')
 
     return transactions
+
+
+def get_balances(transactions, filters):
+    balances = {}
+    balance = Decimal(0)
+
+    if 'account_id' in filters:
+        accounts = Account.objects.filter(pk=filters['account_id'])
+        if accounts.exists():
+            balance = balance + accounts.get().start_balance
+    else:
+        account_ids = transactions.order_by('account_id').values("account_id").distinct()
+        for account_id in account_ids:
+            accounts = Account.objects.filter(pk=account_id['account_id'])
+            if accounts.exists():
+                balance = balance + accounts.get().start_balance
+
+    if 'date_start' in filters:
+        pass
+
+    transactions_balance = transactions.order_by('date_add', 'id')
+    for transaction_balance in transactions_balance:
+        if transaction_balance.type_transaction == Transaction.MINUS:
+            balance = balance - transaction_balance.amount
+            balances[transaction_balance.id] = balance
+        elif transaction_balance.type_transaction == Transaction.PLUS:
+            balance = balance + transaction_balance.amount
+            balances[transaction_balance.id] = balance
+        elif transaction_balance.type_transaction == Transaction.TRANSFER:
+            if 'account_id' in filters:
+                if filters['account_id'] == transaction_balance.account_id:
+                    balance = balance - transaction_balance.amount
+                    balances[transaction_balance.id] = balance
+                elif filters['account_id'] == transaction_balance.account_recipient_id:
+                    balance = balance + transaction_balance.amount
+                    balances[transaction_balance.id] = balance
+                else:
+                    raise Exception("Такого не может быть!: " +
+                                    "filters['account_id'] == transaction_balance.account_id, " +
+                                    "filters['account_id'] == transaction_balance.account_recipient_id,  ")
+            else:
+                balances[transaction_balance.id] = balance
+
+    return balances
 
 
 def get_sort_order(filters):

@@ -200,7 +200,7 @@
                             class="text-secondary-emphasis name_col"
                             data-sort-field="title"
                             data-sort-order="{% if sort_field == 'title' %}{{ sort_order }}{% endif %}"
-                    >Описание
+                    >Оп.
                         {% if sort_field == 'title' %}
                             {% if sort_order == 'asc' %}
                             <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
@@ -238,12 +238,12 @@
                         <td colspan="6"></td>
                     </tr>
                     {% for transaction in transaction_group.transactions %}
-                        {% tr_transaction transaction transaction_group.category_id icon_default %}
+                        {% tr_transaction transaction balances transaction_group.category_id icon_default %}
                     {% endfor %}
                 {% endfor %}
             {% else %}
                 {% for transaction in transactions %}
-                    {% tr_transaction transaction None icon_default %}
+                    {% tr_transaction transaction balances None icon_default %}
                 {% empty %}
                     <tr>
                         <td>Нет транзакций</td>
@@ -257,14 +257,6 @@
                 {% endfor %}
             {% endif %}
             </tbody>
-            <tfoot class="table-light">
-            <tr>
-                <th></th>
-                <th>Итого</th>
-                <th class="text-end {% if total_amount < 0 %}text-danger{% else %}{% endif %}">{{ total_amount|floatformat:"2g" }}</th>
-                <th colspan="5"></th>
-            </tr>
-            </tfoot>
         </table>
     </div>
 

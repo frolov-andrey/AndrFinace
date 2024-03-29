@@ -19,19 +19,24 @@
     <td>{{ transaction.category.name }}</td>
 
     {% if transaction.type_transaction == 'minus' %}
-    <td class="text-end">- {{ transaction.amount|floatformat:"2g" }}</td>
+    <td class="text-end">-{{ transaction.amount|floatformat:"2g" }}</td>
     {% elif transaction.type_transaction == 'plus' %}
     <td class="text-end text-success">{{ transaction.amount|floatformat:"2g" }}</td>
     {% elif transaction.type_transaction == 'transfer' %}
     <td class="text-end text-primary">{{ transaction.amount|floatformat:"2g" }}</td>
     {% endif %}
 
-    <td></td>
+    {% if balance >= 0 %}
+    <td class="text-end">{{ balance|floatformat:"2g" }}</td>
+    {% else %}
+    <td class="text-end text-danger">{{ balance|floatformat:"2g" }}</td>
+    {% endif %}
+
     <td>
         {% if transaction.type_transaction == 'minus' or transaction.type_transaction == 'plus' %}
             {{ transaction.account.name }}
         {% elif transaction.type_transaction == 'transfer' %}
-            {{ transaction.account.name }} &#8594; {{ transaction.account_recipient.name }}
+            {{ transaction.account.name }} &#8594;<br>{{ transaction.account_recipient.name }}
         {% endif %}
     </td>
     <td>
