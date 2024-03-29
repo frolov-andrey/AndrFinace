@@ -8,7 +8,7 @@
     <td>
         <img
                 {% if transaction.category.icon_folder is not None %}
-                    src="{% static 'andr_finance/images/' %}{{ transaction.category.icon_folder }}/{{ transaction.category.icon_file }}"
+                    src="{% static 'andr_finance/item_images/' %}{{ transaction.category.icon_folder }}/{{ transaction.category.icon_file }}"
                 {% else %}
                     src="{{ icon_default }}"
                 {% endif %}

@@ -16,3 +16,7 @@ table tr td.td_right,
 table tr th.td_right {
     text-align: right;
 }
+
+.tr_group:hover {
+    cursor: pointer;
+}

@@ -18,7 +18,7 @@ folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
     {'name': 'foot', 'name_rus': 'Еда'},
 ]
-images_path = str(settings.STATIC_URL) + 'andr_finance/images/'
+images_path = str(settings.STATIC_URL) + 'andr_finance/item_images/'
 icon_default = images_path + 'default/default_icon.png'
 
 
@@ -251,7 +251,12 @@ def transactions(request):
     if (send_filter_date_end is None):
         send_filter_date_end = ''
 
+    sort_field = ''
+    sort_order = '' # ASC, DESC
+
     context = {
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'group_by': group_by,
         'transactions': transactions,
         'transactions_group': transactions_group,

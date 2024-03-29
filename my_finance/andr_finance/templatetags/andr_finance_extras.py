@@ -9,5 +9,5 @@ def modal_dialog_select_icon(images, images_path, icon_file=''):
 
 
 @register.inclusion_tag('andr_finance/tr_transaction.html')
-def tr_transaction(transaction, group_object_id=None):
-    return {'transaction': transaction, 'group_object_id': group_object_id}
+def tr_transaction(transaction, group_object_id=None, icon_default=''):
+    return {'transaction': transaction, 'group_object_id': group_object_id, 'icon_default': icon_default}

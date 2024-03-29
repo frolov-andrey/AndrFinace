@@ -21,6 +21,7 @@
     <h2>Транзакции:</h2>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get'>
+        <input name="sorting" value="{{ sorting }}" type="hidden">
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
@@ -139,12 +140,24 @@
             <thead class="table-light">
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Категория</th>
-                <th scope="col">Сумма</th>
-                <th scope="col">Счет</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Описание</th>
-                <th scope="col">Удалить</th>
+                <th scope="col">
+                    <a href="" class="text-decoration-none text-secondary-emphasis">
+                        Категория
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="" class="text-decoration-none text-secondary-emphasis">
+                        Сумма
+                    </a>
+                </th>
+                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Счет</a></th>
+                <th scope="col">
+                    <a href="" class="text-decoration-none text-secondary-emphasis">
+                        Дата
+                        <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                    </a></th>
+                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Описание</a></th>
+                <th scope="col"><a href="" class="text-decoration-none text-secondary-emphasis">Удалить</a></th>
             </tr>
             </thead>
             <tbody>
@@ -155,8 +168,17 @@
                             data-bs-target="#collapse_td_{{ transaction_group.category_id }}"
                             aria-expanded="false"
                             aria-controls="collapse_td_{{ transaction_group.category_id }}"
+                            class="tr_group"
                     >
-                        <td></td>
+                        <td>
+                            <span class="group_chevron_right">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </span>
+                        </td>
                         <td
                                 class="fw-bold"
                         >{{ transaction_group.category_name }}</td>
@@ -164,12 +186,12 @@
                         <td colspan="5"></td>
                     </tr>
                     {% for transaction in transaction_group.transactions %}
-                        {% tr_transaction transaction transaction_group.category_id %}
+                        {% tr_transaction transaction transaction_group.category_id icon_default %}
                     {% endfor %}
                 {% endfor %}
             {% else %}
                 {% for transaction in transactions %}
-                    {% tr_transaction transaction %}
+                    {% tr_transaction transaction None icon_default %}
                 {% empty %}
                     <tr>
                         <td>Нет транзакций</td>
