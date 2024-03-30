@@ -1,0 +1,7 @@
+python -m venv djvenv
+.\djvenv\Scripts\activate
+source djvenv/bin/activate
+
+pip install django==4.1.13
+
+touch tmp/restart.txt
