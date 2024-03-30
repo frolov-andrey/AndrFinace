@@ -1,13 +1,7 @@
 __pycache__/
-/.venv/
-/venv/
+/.run/
+/djvenv/
 /.idea/
 /Temp/
 *.sqlite3
-/.run/
-/logs/
-
-/logs/*
-/my_finance/logs/*
-/my_finance/*.sqlite3
 
