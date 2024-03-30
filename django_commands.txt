@@ -1,3 +1,6 @@
+source djvenv/bin/activate
+ssh localhost -p222
+
 print(json.dumps(list(transactions.values()), indent=4, sort_keys=True, default=str))
 
 python -m venv ll_env
