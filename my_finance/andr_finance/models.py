@@ -40,11 +40,11 @@ class Transaction(models.Model):
     PLUS = 'plus'
     TRANSFER = 'transfer'
 
-    TYPE_TRANSACTION = {
-        MINUS: 'Расход',
-        PLUS: 'Доход',
-        TRANSFER: 'Перевод',
-    }
+    TYPE_TRANSACTION = [
+        (MINUS, 'Расход'),
+        (PLUS, 'Доход'),
+        (TRANSFER, 'Перевод'),
+    ]
     type_transaction = models.CharField(
         max_length=20,
         choices=TYPE_TRANSACTION,

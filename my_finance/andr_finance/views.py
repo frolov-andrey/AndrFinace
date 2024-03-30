@@ -235,9 +235,9 @@ def transactions(request):
     balances = get_balances(transactions, filters)
 
     type_transactions = [
-        {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.MINUS]},
-        {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[Transaction.PLUS]},
-        {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[Transaction.TRANSFER]},
+        {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[0][1]},
+        {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[1][1]},
+        {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[2][1]},
     ]
 
     send_filter_date_start = request.GET.get('filter_date_start')

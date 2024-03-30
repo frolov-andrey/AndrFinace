@@ -78,7 +78,7 @@ class TransactionFormMinusPlus(forms.ModelForm):
         widget=NumberInput(attrs={'class': 'form-control mb-3 py-1'})
     )
     date_add = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'format': '%d.%m.%Y %H:%i', 'class': 'form-control mb-3 py-1'}),
+        widget=forms.DateTimeInput(attrs={'autocomplete':'off', 'format': '%d.%m.%Y %H:%i', 'class': 'form-control mb-3 py-1'}),
         label='Дата'
     )
     category = forms.ModelChoiceField(Category.objects.all().order_by('name'),
