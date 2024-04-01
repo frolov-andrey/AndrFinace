@@ -8,14 +8,16 @@ from andr_finance.models import Account, Transaction, Category
 
 
 def load_demo_data():
-    with open(str(settings.BASE_DIR) + '\\andr_finance\\demo\\accounts.json', 'rt', encoding='utf-8') as file_accounts:
+    path_folder_demo = str(settings.BASE_DIR) + '/andr_finance/' + str(settings.STATIC_URL) +'andr_finance/demo/'
+
+    with open(path_folder_demo + 'accounts.json', 'rt', encoding='utf-8') as file_accounts:
         data_accounts = json.load(file_accounts)
 
-    with open(str(settings.BASE_DIR) + '\\andr_finance\\demo\\categories.json', 'rt',
+    with open(path_folder_demo + 'categories.json', 'rt',
               encoding='utf-8') as file_categories:
         data_categories = json.load(file_categories)
 
-    with open(str(settings.BASE_DIR) + '\\andr_finance\\demo\\transactions.json', 'rt',
+    with open(path_folder_demo + 'transactions.json', 'rt',
               encoding='utf-8') as file_transactions:
         data_transactions = json.load(file_transactions)
 

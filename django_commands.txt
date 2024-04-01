@@ -6,8 +6,12 @@ pip install django==4.1.13
 
 ssh localhost -p222
 
+cd afroloec.beget.tech
 cd afroloec.beget.tech/my_finance/
 cd my_finance
+
+python manage.py makemigrations
+python manage.py migrate
 
 touch tmp/restart.txt
 
