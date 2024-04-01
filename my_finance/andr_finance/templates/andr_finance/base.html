@@ -7,7 +7,7 @@
     <title>AndrFinance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="{% static 'andr_finance/jquery/jquery-3.6.0.js' %}"></script>
 
     <link href="{% static 'andr_finance/datetimepicker/jquery.datetimepicker.min.css' %}" rel="stylesheet"
           type="text/css">
@@ -61,6 +61,13 @@
                             class="nav-link px-2 {% if select_menu == 'reports' %}link-secondary active{% endif %}"
                             {% if select_menu == 'reports' %}aria-current="page"{% endif %}
                     >График</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:my_settings' %}"
+                            class="nav-link px-2 {% if select_menu == 'my_settings' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'my_settings' %}aria-current="page"{% endif %}
+                    >Настройки</a>
                 </li>
             </ul>
         </header>

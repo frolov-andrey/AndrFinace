@@ -4,12 +4,22 @@
 
 {% block content %}
 
-    <h2>Транзакции:</h2>
+    <div class="row mb-3">
+        <div class="col-1">
+            <h2>Транзакции</h2>
+        </div>
+        <div class="col-8"></div>
+        <div class="col-3 text-end">
+            <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
+                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
+            </form>
+        </div>
+    </div>
 
     <form action="{% url 'andr_finance:transactions' %}" method='get' id="form_filter">
         <input name="sort_field" value="{{ sort_field }}" type="hidden">
         <input name="sort_order" value="{{ sort_order }}" type="hidden">
-        <div class="row g-2">
+        <div class="row g-2 align-items-end">
             <div class="col-md">
                 <div class="form-floating">
                     <select name="filter_account" id="filter_account" class="form-select">
@@ -76,32 +86,11 @@
                     <label for="filter_type_transaction">Тип транзакции:</label>
                 </div>
             </div>
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_group" id="filter_group" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_group == 'not_group' %}selected{% endif %}
-                        >--- Не группировать ---
-                        </option>
-                        <option
-                                value="category"
-                                {% if filter_group == 'category' %}selected{% endif %}
-                        >Категориям
-                        </option>
-                        <option
-                                value="date"
-                                {% if filter_group == 'date' %}selected{% endif %}
-                        >Датам
-                        </option>
-                    </select>
-                    <label for="filter_group">Группировать по:</label>
-                </div>
-            </div>
         </div>
 
-        <div class="row g-2 mt-1">
-            <div class="col-md-3">
+        <div class="row g-2 mt-1 align-items-end">
+
+            <div class="col-md">
                 <div class="" id="sandbox-container">
                     <label>Период:</label>
                     <div class="input-daterange input-group" id="datepicker">
@@ -113,19 +102,33 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md">
+                <div class="form-floating">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                               {% if filter_group_category == 'on' %}checked{% endif %} name="filter_group_category"
+                        >
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Группировать по категориям</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md">
+                <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
+                <button class="btn btn-outline-primary btn-sm mt-2" type="submit" id="filter_clean">Сбросить фильтры
+                </button>
+            </div>
         </div>
 
-        <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
-    </form>
 
-    <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
-        <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
     </form>
 
     <div class="table-responsive">
         <table class="table table-hover table-sm mt-3 table_transaction">
             <thead class="table-light">
             <tr class="tr_sort">
+                <th scope="col"></th>
                 <th scope="col"></th>
                 <th scope="col">
                     <span
@@ -136,14 +139,14 @@
                     >Категория
                         {% if sort_field == 'category' %}
                             {% if sort_order == 'asc' %}
-                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
                             {% elif sort_order == 'desc' %}
                                 <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
                             {% endif %}
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-end">
                     <span
                             class="text-secondary-emphasis name_col"
                             data-sort-field="amount"
@@ -151,14 +154,14 @@
                     >Сумма
                         {% if sort_field == 'amount' %}
                             {% if sort_order == 'asc' %}
-                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
                             {% elif sort_order == 'desc' %}
                                 <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
                             {% endif %}
                         {% endif %}
                     </span>
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-end">
                     <span
                             class="text-secondary-emphasis"
                             data-sort-field="balance"
@@ -173,7 +176,7 @@
                     >Счет
                         {% if sort_field == 'account' %}
                             {% if sort_order == 'asc' %}
-                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
                             {% elif sort_order == 'desc' %}
                                 <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
                             {% endif %}
@@ -188,7 +191,7 @@
                     >Дата
                         {% if sort_field == 'date_add' %}
                             {% if sort_order == 'asc' %}
-                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
                             {% elif sort_order == 'desc' %}
                                 <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
                             {% endif %}
@@ -203,7 +206,7 @@
                     >Оп.
                         {% if sort_field == 'title' %}
                             {% if sort_order == 'asc' %}
-                            <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
                             {% elif sort_order == 'desc' %}
                                 <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
                             {% endif %}
@@ -224,18 +227,24 @@
                     >
                         <td>
                             <span class="group_chevron_right">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd"
-                                          d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                </svg>
+                                <img src="{% static 'andr_finance/images/chevron-right.svg' %}" alt="">
                             </span>
                         </td>
-                        <td
-                                class="fw-bold"
-                        >{{ transaction_group.category_name }}</td>
-                        <td class="fw-bold text-end">{{ transaction_group.total }}</td>
-                        <td colspan="6"></td>
+                        <td>
+                            <img
+                                    {% if transaction_group.category_icon_folder is not None %}
+                                        src="
+                                                {% static 'andr_finance/item_images/' %}{{ transaction_group.category_icon_folder }}/{{ transaction_group.category_icon_file }}"
+                                    {% else %}
+                                        src="{{ icon_default }}"
+                                    {% endif %}
+                                        width="20" height="20"
+                                        alt=""
+                            />
+                        </td>
+                        <td class="text-muted">{{ transaction_group.category_name }}</td>
+                        <td class="text-end">{{ transaction_group.total|floatformat:"2g" }}</td>
+                        <td colspan="5"></td>
                     </tr>
                     {% for transaction in transaction_group.transactions %}
                         {% tr_transaction transaction balances transaction_group.category_id icon_default %}
@@ -262,36 +271,48 @@
 
     <script>
         $(document).ready(function () {
-            
+
             $('table.table_transaction thead th span.name_col').click(function (event) {
                 $('input[name=sort_field]').val($(this).attr('data-sort-field'))
 
                 let sort_order = $(this).attr('data-sort-order')
                 if (sort_order === 'asc') {
                     sort_order = 'desc'
-                }
-                else if (sort_order === 'desc') {
+                } else if (sort_order === 'desc') {
                     sort_order = 'asc'
-                }
-                else {
+                } else {
                     sort_order = 'asc'
                 }
                 $('input[name=sort_order]').val(sort_order)
 
                 $('form#form_filter').submit();
             });
-            
-            
+
+
             $('#sandbox-container .input-daterange').datepicker({
                 todayBtn: "linked",
                 clearBtn: true,
                 language: "ru",
                 autoclose: true,
-                todayHighlight: true
+                todayHighlight: true,
+                keepEmptyValues: true
             });
-            
+
+            $('form#form_filter').change(function () {
+                $('form#form_filter').submit();
+            });
+
+            $('button#filter_clean').click(function (event) {
+                $('select[name=filter_account]').val(0)
+                $('select[name=filter_category]').val(0)
+                $('select[name=filter_type_transaction]').val(0)
+                $('input[name=filter_date_start]').val('')
+                $('input[name=filter_date_end]').val('')
+                $('input[name=filter_group_category]').val('')
+            });
+
         });
-        
+
     </script>
 
 

@@ -4,4 +4,14 @@ source djvenv/bin/activate
 
 pip install django==4.1.13
 
+ssh localhost -p222
+
+cd afroloec.beget.tech/my_finance/
+cd my_finance
+
 touch tmp/restart.txt
+
+
+
+https://qna.habr.com/q/1269136
+python manage.py dumpdata --indent=2 --exclude auth.permission --exclude contenttypes -o db.json

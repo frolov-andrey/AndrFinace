@@ -1,0 +1,5 @@
+[
+  {"name": "Карта Тинькофф", "start_balance":  80000, "icon_folder":  "finance", "icon_file":  "icons8-мир-48.png"},
+  {"name": "Наличные", "start_balance":  2500, "icon_folder":  "finance", "icon_file":  "icons8-бумажник-48.png"},
+  {"name": "Счет в банке", "start_balance":  30000, "icon_folder":  "finance", "icon_file":  "icons8-в-сейф-48.png"}
+]

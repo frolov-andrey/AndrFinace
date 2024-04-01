@@ -53,8 +53,6 @@ class Transaction(models.Model):
         db_index=True,
     )
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Сумма', db_index=True)
-    balance = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Баланс', db_index=True,
-                                  null=True, default=None, blank=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.DO_NOTHING,

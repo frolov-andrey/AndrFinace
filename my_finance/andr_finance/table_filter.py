@@ -1,5 +1,4 @@
 import datetime
-import json
 from decimal import Decimal
 
 from django.db.models import Sum, Q
@@ -41,9 +40,9 @@ def get_filter_transaction(request):
             or filter_type_transaction == Transaction.TRANSFER):
         filters['type_transaction'] = filter_type_transaction
 
-    filter_group = request.GET.get('filter_group')
-    if filter_group == 'category' or filter_group == 'date':
-        filters['filter_group'] = filter_group
+    filter_group_category = request.GET.get('filter_group_category')
+    if filter_group_category == 'on':
+        filters['filter_group_category'] = 'on'
 
     filter_date_start = request.GET.get('filter_date_start')
     try:
@@ -82,7 +81,7 @@ def get_sum_transaction_type(transaction_type, transactions, account_id=0, main_
     return total_sum
 
 
-def get_balance(transactions, filters):
+def get_sum_transaction(transactions, filters):
     if 'account_id' in filters:
         account_id = filters['account_id']
     else:
@@ -154,11 +153,10 @@ def get_balances(transactions, filters):
         if accounts.exists():
             balance = balance + accounts.get().start_balance
     else:
-        account_ids = transactions.order_by('account_id').values("account_id").distinct()
-        for account_id in account_ids:
-            accounts = Account.objects.filter(pk=account_id['account_id'])
-            if accounts.exists():
-                balance = balance + accounts.get().start_balance
+        accounts = Account.objects.all()
+        for account in accounts:
+            if account.start_balance > 0:
+                balance = balance + account.start_balance
 
     if 'date_start' in filters:
         pass
@@ -207,20 +205,27 @@ def get_transactions_group(filters):
     result = []
     transactions = get_transaction(filters)
 
-    if 'filter_group' in filters:
-        if filters['filter_group'] == 'category':
+    if 'filter_group_category' in filters:
+        if filters['filter_group_category'] == 'on':
             transactions_group = transactions.values('category').annotate(total=Sum('amount')). \
                 order_by('category__name')
             for transaction_group in transactions_group:
                 transactions_category = transactions.filter(category=transaction_group['category'])
                 if transaction_group['category'] is not None:
-                    category_name = Category.objects.get(pk=transaction_group['category']).name
+                    category = Category.objects.get(pk=transaction_group['category'])
+                    category_name = category.name
+                    category_icon_folder = category.icon_folder
+                    category_icon_file = category.icon_file
                 else:
                     category_name = '---нет---'
+                    category_icon_folder = ''
+                    category_icon_file = ''
 
                 result.append({
                     'category_id': str(transaction_group['category']),
                     'category_name': category_name,
+                    'category_icon_folder': category_icon_folder,
+                    'category_icon_file': category_icon_file,
                     'total': transaction_group['total'],
                     'transactions': transactions_category,
                 })

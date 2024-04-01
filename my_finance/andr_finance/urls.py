@@ -22,4 +22,5 @@ urlpatterns = [
     path('transactions/delete/<int:transaction_id>/', views.transaction_delete, name='transaction_delete'),
 
     path('reports/', views.reports, name='reports'),
+    path('settings/', views.my_settings, name='my_settings'),
 ]

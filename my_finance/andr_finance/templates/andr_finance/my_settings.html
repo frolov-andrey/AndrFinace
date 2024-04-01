@@ -1,0 +1,32 @@
+{% extends "andr_finance/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <h2 class="mb-3">Счета</h2>
+    <div class="row">
+        <div class="col-12">
+            <form action="{% url 'andr_finance:my_settings' %}" method='get' id="form_settings">
+                <input name="load_demo" type="hidden" value="">
+                <div>
+                    <button id="button_load_demo" class="btn btn-outline-primary btn-sm mt-2">Загрузить
+                        Демо-данные
+                    </button>
+                    <p>Удаляться все текущие данные</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#button_load_demo').click(function (event) {
+                $('input[name=load_demo]').val('load_demo')
+                $('form#form_settings').submit();
+            });
+        });
+
+    </script>
+
+{% endblock content %}

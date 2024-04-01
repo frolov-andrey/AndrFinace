@@ -1,0 +1,11 @@
+[
+  {"name": "Зарплата", "icon_folder":  "finance", "icon_file":  "icons8-наличные-48.png"},
+  {"name": "Продукты, бытовая химия", "icon_folder":  "foot", "icon_file":  "icons8-хлеб-48.png"},
+  {"name": "Переводы между счетами", "icon_folder":  "finance", "icon_file":  "icons8-обмен-доллар-евро-48.png"},
+  {"name": "Лекарства", "icon_folder":  "different", "icon_file":  "icons8-саквояж-врача-48.png"},
+  {"name": "Телефон", "icon_folder":  "different", "icon_file":  "icons8-телефон-48.png"},
+  {"name": "ЖКХ", "icon_folder":  "different", "icon_file":  "icons8-радиатор-отопления-48.png"},
+  {"name": "Ипотека", "icon_folder":  "different", "icon_file":  "icons8-экстерьер-48.png"},
+  {"name": "Интернет", "icon_folder":  "different", "icon_file":  "icons8-интернет-48.png"},
+  {"name": "Одежда", "icon_folder":  "different", "icon_file":  "icons8-банный-халат-48.png"}
+]

@@ -1,20 +1,23 @@
 import os
-from pprint import pprint
+from decimal import Decimal
 
-# from ..my_finance.settings import BASE_DIR
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 
+from .demo import load_demo_data
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .table_filter import get_filter_transaction, get_balance, get_transaction, get_transactions_group, get_balances
-
+from .table_filter import get_filter_transaction, get_transaction, get_transactions_group, get_balances, \
+    get_sum_transaction
 
 folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
+    {'name': 'people', 'name_rus': 'Люди'},
     {'name': 'foot', 'name_rus': 'Еда'},
+    {'name': 'animals', 'name_rus': 'Животные'},
+    {'name': 'different', 'name_rus': 'Разное'},
 ]
 images_path = str(settings.STATIC_URL) + 'andr_finance/item_images/'
 icon_default = images_path + 'default/default_icon.png'
@@ -143,8 +146,14 @@ def accounts(request):
     accounts = Account.objects.order_by('name')
     context_accounts = []
     for account in accounts:
+        if account.start_balance:
+            balance = account.start_balance
+        else:
+            balance = Decimal(0)
+
         transactions = get_transaction({'account_id': account.id})
-        balance = get_balance(transactions, {'account_id': account.id})
+        sum_transaction = get_sum_transaction(transactions, {'account_id': account.id})
+        balance = balance + sum_transaction
         o_account = {'account': account, 'balance': balance}
         context_accounts.append(o_account)
 
@@ -221,11 +230,10 @@ def account_delete(request, account_id):
 
 # --- Transaction ---
 def transactions(request):
-
     filters = get_filter_transaction(request)
 
-    if 'filter_group' in filters:
-        group_by = filters['filter_group']
+    if 'filter_group_category' in filters:
+        group_by = filters['filter_group_category']
         transactions_group = get_transactions_group(filters)
     else:
         group_by = ''
@@ -276,7 +284,7 @@ def transactions(request):
         'filter_type_transaction': request.GET.get('filter_type_transaction'),
         'filter_date_start': send_filter_date_start,
         'filter_date_end': send_filter_date_end,
-        'filter_group': request.GET.get('filter_group'),
+        'filter_group_category': request.GET.get('filter_group_category'),
 
     }
 
@@ -385,3 +393,14 @@ def reports(request):
     }
     return render(request, 'andr_finance/reports.html', context)
 
+
+def my_settings(request):
+    if request.method == 'GET':
+        load_demo = request.GET.get('load_demo')
+        if load_demo == 'load_demo':
+            load_demo_data()
+
+    context = {
+        'select_menu': 'my_settings',
+    }
+    return render(request, 'andr_finance/my_settings.html', context)

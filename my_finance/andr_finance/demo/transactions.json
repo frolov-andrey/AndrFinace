@@ -1,0 +1,191 @@
+[
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 5000,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "02.03.2024 13:28",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "plus",
+        "amount": 60000,
+        "category_name": "Зарплата",
+        "date_add": "05.03.2024 10:30",
+        "title": "За февраль вторая"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "Счет в банке",
+        "type_transaction": "transfer",
+        "amount": 40000,
+        "category_name": "Переводы между счетами",
+        "date_add": "05.03.2024 21:20",
+        "title": "Отложим"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 5000,
+        "category_name": "Интернет",
+        "date_add": "06.03.2024 10:00",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 400,
+        "category_name": "Телефон",
+        "date_add": "06.03.2024 22:03",
+        "title": "МТС"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 300,
+        "category_name": "Телефон",
+        "date_add": "06.03.2024 22:05",
+        "title": "Теле2"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 600,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "07.03.2024 19:08",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 5600,
+        "category_name": "ЖКХ",
+        "date_add": "07.03.2024 20:09",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 22000,
+        "category_name": "Ипотека",
+        "date_add": "07.03.2024 20:11",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 5000,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "09.03.2024 11:09",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 700,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "11.03.2024 20:03",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "Наличные",
+        "type_transaction": "transfer",
+        "amount": 2000,
+        "category_name": "Переводы между счетами",
+        "date_add": "12.03.2024 21:00",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 800,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "14.03.2024 20:33",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "plus",
+        "amount": 63000,
+        "category_name": "Зарплата",
+        "date_add": "16.03.2024 10:33",
+        "title": "За март первая"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 900,
+        "category_name": "Одежда",
+        "date_add": "21.03.2024 11:45",
+        "title": "Шапка"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 5700,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "21.03.2024 10:40",
+        "title": ""
+    },
+    {
+        "account_name": "Наличные",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 1000,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "21.03.2024 10:48",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 1700,
+        "category_name": "Одежда",
+        "date_add": "21.03.2024 12:50",
+        "title": "Перчатки"
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 1200,
+        "category_name": "Лекарства",
+        "date_add": "24.03.2024 23:00",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 400,
+        "category_name": "Одежда",
+        "date_add": "22.03.2024 14:50",
+        "title": ""
+    },
+    {
+        "account_name": "Карта Тинькофф",
+        "account_recipient_name": "",
+        "type_transaction": "minus",
+        "amount": 1800,
+        "category_name": "Продукты, бытовая химия",
+        "date_add": "30.03.2024 13:28",
+        "title": ""
+    }
+]
