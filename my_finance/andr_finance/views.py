@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .demo import load_demo_data
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .table_filter import get_filter_transaction, get_transaction, get_transactions_group, get_balances, \
+from .report_chart import get_chart_line, get_chart_bar, get_chart_str
+from .report_table import get_filter_transaction, get_transaction, get_transactions_group, get_balances, \
     get_sum_transaction
 
 folders = [
@@ -249,11 +250,11 @@ def transactions(request):
     ]
 
     send_filter_date_start = request.GET.get('filter_date_start')
-    if (send_filter_date_start is None):
+    if send_filter_date_start is None:
         send_filter_date_start = ''
 
     send_filter_date_end = request.GET.get('filter_date_end')
-    if (send_filter_date_end is None):
+    if send_filter_date_end is None:
         send_filter_date_end = ''
 
     if 'sort_field' in filters:
@@ -376,8 +377,7 @@ def transaction_edit(request, type_transaction, transaction_id):
 def transaction_delete(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
 
-    # todo: Возможно тут проблемка
-    if request.method == 'POST' or request.method == 'GET':
+    if request.method == 'GET':
         transaction.delete()
         messages.success(
             request,
@@ -388,10 +388,33 @@ def transaction_delete(request, transaction_id):
 
 
 def reports(request):
+    filters = {}
+
+    transactions_by_date_plus = get_chart_bar(filters, 'plus')
+    chart_bar_plus = get_chart_str(transactions_by_date_plus, 'plus')
+
+    transactions_by_date_minus = get_chart_bar(filters, 'minus')
+    chart_bar_minus = get_chart_str(transactions_by_date_minus, 'minus')
+
+    chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus)
+
+    send_filter_date_start = request.GET.get('filter_date_start')
+    if send_filter_date_start is None:
+        send_filter_date_start = ''
+
+    send_filter_date_end = request.GET.get('filter_date_end')
+    if send_filter_date_end is None:
+        send_filter_date_end = ''
+
     context = {
         'select_menu': 'reports',
+        'chart_line': chart_line,
+        'chart_bar_plus': chart_bar_plus,
+        'chart_bar_minus': chart_bar_minus,
+        'filter_date_start': send_filter_date_start,
+        'filter_date_end': send_filter_date_end,
     }
-    return render(request, 'andr_finance/reports.html', context)
+    return render(request, 'andr_finance/reports_chart.html', context)
 
 
 def my_settings(request):

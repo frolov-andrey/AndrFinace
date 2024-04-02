@@ -1,0 +1,133 @@
+{% extends "andr_finance/base.html" %}
+
+{% block content %}
+
+    <form action="{% url 'andr_finance:reports' %}" method='get' id="form_filter">
+        <div class="row">
+            <div class="col-4">
+
+                <div class="" id="sandbox-container">
+                    <label>Период:</label>
+                    <div class="input-daterange input-group" id="datepicker">
+                        <input type="text" class="input-sm form-control" name="filter_date_start"
+                               value="{{ filter_date_start }}" autocomplete="off"/>
+                        <span class="input-group-addon">до</span>
+                        <input type="text" class="input-sm form-control" name="filter_date_end"
+                               value="{{ filter_date_end }}" autocomplete="off"/>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-12">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    {% load static %}
+    <script src="{% static 'andr_finance/chartjs/chart.js' %}"></script>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        const cfg = {
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Денежный поток'
+                    }
+                }
+            },
+            data: {
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Баланс',
+                        borderColor: '#36A2EB',
+                        backgroundColor: '#9BD0F5',
+                        data:
+                            {% autoescape off %}
+                                {{ chart_line }}
+                            {% endautoescape %}
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Доход',
+                        backgroundColor: '#4BC0C0',
+                        data:
+                            {% autoescape off %}
+                                {{ chart_bar_plus }}
+                            {% endautoescape %}
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Расход',
+                        backgroundColor: '#FFB1C1',
+                        data:
+                            {% autoescape off %}
+                                {{ chart_bar_minus }}
+                            {% endautoescape %}
+                    },
+                ]
+            }
+        }
+
+        new Chart(ctx, cfg)
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#sandbox-container .input-daterange').datepicker({
+                todayBtn: "linked",
+                clearBtn: true,
+                language: "ru",
+                autoclose: true,
+                todayHighlight: true,
+                keepEmptyValues: true
+            });
+
+            $('form#form_filter').change(function () {
+                $('form#form_filter').submit();
+            });
+
+            $('button#filter_clean').click(function (event) {
+                $('input[name=filter_date_start]').val('')
+                $('input[name=filter_date_end]').val('')
+            });
+
+        });
+
+    </script>
+
+    <script>
+        var currentDate = new Date();
+
+        // Устанавливаем текущую дату на первый день месяца
+        var startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+        // Получаем следующий месяц
+        var nextMonth = currentDate.getMonth() + 1;
+        var nextYear = currentDate.getFullYear();
+        if (nextMonth === 12) {
+            nextMonth = 0;
+            nextYear++;
+        }
+
+        // Устанавливаем текущую дату на последний день месяца (первый день следующего месяца минус один день)
+        var endDate = new Date(nextYear, nextMonth, 0);
+
+        // Выводим результат
+        console.log("Начало текущего месяца:", startDate);
+        console.log("Конец текущего месяца:", endDate);
+    </script>
+{% endblock content %}

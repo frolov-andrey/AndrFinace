@@ -65,7 +65,9 @@ def load_demo_data():
         else:
             category_id = None
 
+        current_date = datetime.now()
         date_add = datetime.strptime(data_transaction['date_add'], "%d.%m.%Y %H:%M")
+        date_add = date_add.replace(month=current_date.month)
 
         Transaction.objects.create(
             account_id=account_id,

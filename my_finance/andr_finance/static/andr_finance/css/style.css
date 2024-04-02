@@ -23,3 +23,6 @@ table tr th.td_right {
 table.table_transaction thead th span.name_col {
     cursor: pointer;
 }
+.input-daterange span.input-group-addon {
+    margin-right: 0;
+}
