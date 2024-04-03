@@ -5,7 +5,7 @@ from decimal import Decimal
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncDate
 
-from .models import Transaction, Account
+from .models import Transaction, Account, Category
 from .report_table import get_sum_transaction
 
 
@@ -148,10 +148,34 @@ def get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_mi
 def get_labels(min_date, max_date):
     current_date = min_date
     datas_list = []
-    while current_date <= max_date:
+    while current_date < max_date:
         datas_list.append(current_date.strftime('%d.%m.%Y'))
         current_date += timedelta(days=1)
 
     datas_label_str = json.dumps(datas_list, indent=4)
 
     return datas_label_str
+
+
+def my_sort(val):
+    print('val', val)
+    print("val['amount']", val['amount'])
+    return int(val['amount'])
+
+
+def get_chart_bar_category(filters, transactions):
+    chart = []
+    categories = Category.objects.all()
+    for category in categories:
+        transactions_category = transactions.filter(category_id=category.id).all()
+        if transactions_category.exists():
+            chart.append({
+                'category_name': category.name,
+                'amount': str(transactions_category.aggregate(Sum('amount'))['amount__sum']),
+            })
+
+    # if len(chart) > 0:
+    #     chart = chart.sort(key=my_sort)
+    #     print('chart', chart)
+
+    return chart

@@ -13,7 +13,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .demo import load_demo_data
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .report_chart import get_chart_line, get_chart_bar, get_chart_str, get_min_max_date, get_labels
+from .report_chart import get_chart_line, get_chart_bar, get_chart_str, get_min_max_date, get_labels, \
+    get_chart_bar_category
 from .report_table import get_filter_transaction, get_transaction, get_transactions_group, get_balances, \
     get_sum_transaction
 
@@ -392,6 +393,12 @@ def transaction_delete(request, transaction_id):
 
 
 def reports(request):
+
+    if request.GET.get('chart_select') is None:
+        chart_select = 'cash_flow'
+    else:
+        chart_select = request.GET.get('chart_select')
+
     if request.GET.get('second') is None:
         # Получаем текущую дату
         current_date = datetime.now()
@@ -423,28 +430,41 @@ def reports(request):
         if 'date_start' not in filters and 'date_end' not in filters:
             if send_filter_date_start != '' and send_filter_date_end != '':
                 filters['date_start'] =  datetime.strptime(send_filter_date_start, '%d.%m.%Y')
-                filters['date_end'] =  datetime.strptime(send_filter_date_end, '%d.%m.%Y')
+                filters['date_end'] =  datetime.strptime(send_filter_date_end, '%d.%m.%Y') + timedelta(days=1)
 
     transactions = get_transaction(filters)
 
-    transactions_by_date_plus = get_chart_bar(filters, transactions, Transaction.PLUS)
-    transactions_by_date_minus = get_chart_bar(filters, transactions, Transaction.MINUS)
+    if chart_select == 'cash_flow':
+        transactions_by_date_plus = get_chart_bar(filters, transactions, Transaction.PLUS)
+        transactions_by_date_minus = get_chart_bar(filters, transactions, Transaction.MINUS)
 
-    min_date, max_date = get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_minus)
+        min_date, max_date = get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_minus)
 
-    chart_bar_plus = get_chart_str(filters, transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
-    chart_bar_minus = get_chart_str(filters, transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
 
-    chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
+        chart_bar_plus = get_chart_str(filters, transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
+        chart_bar_minus = get_chart_str(filters, transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
 
-    labels = get_labels(min_date, max_date)
+        chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
+
+        labels = get_labels(min_date, max_date)
+
+        charts = {
+            'bar_plus': chart_bar_plus,
+            'bar_minus': chart_bar_minus,
+            'line': chart_line,
+            'labels': labels,
+        }
+
+    elif chart_select == 'by_category':
+        chart_bar_category = get_chart_bar_category(filters, transactions)
+        charts = {
+            'chart_bar_category': chart_bar_category
+        }
 
     context = {
         'select_menu': 'reports',
-        'labels': labels,
-        'chart_line': chart_line,
-        'chart_bar_plus': chart_bar_plus,
-        'chart_bar_minus': chart_bar_minus,
+        'charts': charts,
+        'chart_select': chart_select,
         'accounts': Account.objects.order_by('name'),
 
         'filter_account': request.GET.get('filter_account'),

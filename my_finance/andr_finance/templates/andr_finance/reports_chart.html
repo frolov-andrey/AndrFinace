@@ -2,9 +2,43 @@
 
 {% block content %}
 
+    <header>
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom nav-tabs mb-4">
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li>
+                    <a
+                            href="{% url 'andr_finance:reports' %}?chart_select=cash_flow"
+                            class="nav-link px-2 {% if chart_select == 'cash_flow' %}link-secondary active{% endif %} "
+                            {% if chart_select == 'cash_flow' %}aria-current="page"{% endif %}
+                    >Денежный поток</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'andr_finance:reports' %}?chart_select=by_category"
+                            class="nav-link px-2 {% if chart_select == 'by_category' %}link-secondary active{% endif %}"
+                            {% if chart_select == 'by_category' %}aria-current="page"{% endif %}
+                    >По категориям</a>
+                </li>
+            </ul>
+        </header>
+    </header>
     <form action="{% url 'andr_finance:reports' %}" method='get' id="form_filter">
         <input name="second" type="hidden" value="on">
-        <div class="row g-2 align-items-end">
+        <input name="chart_select" type="hidden" value="{{ chart_select }}">
+        <div class="row g-2 align-items-end mb-3">
+            <div class="col-md-4">
+                <div class="" id="sandbox-container">
+                    <label>Период:</label>
+                    <div class="input-daterange input-group d-flex align-items-center justify-content-center"
+                         id="datepicker">
+                        <input type="text" class="input-sm form-control" name="filter_date_start"
+                               value="{{ filter_date_start }}" autocomplete="off"/>
+                        <span class="input-group-addon">-</span>
+                        <input type="text" class="input-sm form-control" name="filter_date_end"
+                               value="{{ filter_date_end }}" autocomplete="off"/>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="form-floating">
                     <select name="filter_account" id="filter_account" class="form-select">
@@ -27,23 +61,6 @@
                     <label for="filter_account">Счет:</label>
                 </div>
             </div>
-        </div>
-        <div class="row g-2 mt-1 align-items-end">
-
-            <div class="col-md-4">
-                <div class="" id="sandbox-container">
-                    <label>Период:</label>
-                    <div class="input-daterange input-group d-flex align-items-center justify-content-center"
-                         id="datepicker">
-                        <input type="text" class="input-sm form-control" name="filter_date_start"
-                               value="{{ filter_date_start }}" autocomplete="off"/>
-                        <span class="input-group-addon">-</span>
-                        <input type="text" class="input-sm form-control" name="filter_date_end"
-                               value="{{ filter_date_end }}" autocomplete="off"/>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md">
                 <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
                 <button class="btn btn-outline-primary btn-sm mt-2" type="submit" id="filter_clean">Сбросить фильтры
@@ -64,60 +81,99 @@
     <script>
         const ctx = document.getElementById('myChart');
 
-        const cfg = {
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Денежный поток'
+        {% if chart_select == 'cash_flow' %}
+            const config = {
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
                     }
+                },
+                data: {
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: 'Баланс',
+                            borderColor: '#36A2EB',
+                            backgroundColor: '#9BD0F5',
+                            data:
+                                {% autoescape off %}
+                                    {{ charts.line }}
+                                {% endautoescape %}
+                            ,
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Доход',
+                            backgroundColor: '#4BC0C0',
+                            data:
+                                {% autoescape off %}
+                                    {{ charts.bar_plus }}
+                                {% endautoescape %}
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Расход',
+                            backgroundColor: '#FFB1C1',
+                            data:
+                                {% autoescape off %}
+                                    {{ charts.bar_minus }}
+                                {% endautoescape %}
+                        },
+                    ],
+                    labels:
+                        {% autoescape off %}
+                            {{ charts.labels }}
+                        {% endautoescape %}
+
                 }
-            },
-            data: {
-                datasets: [
-                    {
-                        type: 'line',
-                        label: 'Баланс',
-                        borderColor: '#36A2EB',
-                        backgroundColor: '#9BD0F5',
-                        data:
-                            {% autoescape off %}
-                                {{ chart_line }}
-                            {% endautoescape %}
-                        ,
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Доход',
-                        backgroundColor: '#4BC0C0',
-                        data:
-                            {% autoescape off %}
-                                {{ chart_bar_plus }}
-                            {% endautoescape %}
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Расход',
-                        backgroundColor: '#FFB1C1',
-                        data:
-                            {% autoescape off %}
-                                {{ chart_bar_minus }}
-                            {% endautoescape %}
-                    },
-                ],
-                labels:
-                    {% autoescape off %}
-                        {{ labels }}
-                    {% endautoescape %}
-
             }
-        }
+        {% elif chart_select == 'by_category' %}
 
-        new Chart(ctx, cfg)
+
+            const data = {
+                labels: [''],
+                datasets: [
+                    {% for category in charts.chart_bar_category %}
+                    {
+                        label: '{{ category.category_name }}',
+                        data: ['{{ category.amount }}'],
+                    },
+                    {% endfor %}
+                /*
+                    {
+                        label: 'Dataset 2',
+                        data: ['7'],
+                    }
+
+                 */
+                ]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    indexAxis: 'y',
+                    elements: {
+                        bar: {
+                            borderWidth: 2,
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                    }
+                },
+            };
+
+        {% endif %}
+
+        new Chart(ctx, config)
     </script>
 
     <script>
@@ -142,11 +198,6 @@
 
             $('form#form_filter').change(function () {
                 $('form#form_filter').submit();
-            });
-
-            $('button#filter_clean').click(function (event) {
-                $('input[name=filter_date_start]').val('')
-                $('input[name=filter_date_end]').val('')
             });
 
             $('button#filter_clean').click(function (event) {
