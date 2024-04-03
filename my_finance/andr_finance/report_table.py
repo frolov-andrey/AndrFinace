@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.db.models import Sum, Q
@@ -46,7 +46,7 @@ def get_filter_transaction(request):
 
     filter_date_start = request.GET.get('filter_date_start')
     try:
-        filter_date_start = datetime.datetime.strptime(filter_date_start, '%d.%m.%Y')
+        filter_date_start = datetime.strptime(filter_date_start, '%d.%m.%Y')
     except:
         filter_date_start = ''
     if filter_date_start != '':
@@ -54,11 +54,11 @@ def get_filter_transaction(request):
 
     filter_date_end = request.GET.get('filter_date_end')
     try:
-        filter_date_end = datetime.datetime.strptime(filter_date_end, '%d.%m.%Y')
+        filter_date_end = datetime.strptime(filter_date_end, '%d.%m.%Y')
     except:
         filter_date_end = ''
     if filter_date_end != '':
-        filter_date_end = filter_date_end + datetime.timedelta(days=1)
+        filter_date_end = filter_date_end + timedelta(days=1)
         filters['date_end'] = filter_date_end
 
     return filters
@@ -159,7 +159,11 @@ def get_balances(transactions, filters):
                 balance = balance + account.start_balance
 
     if 'date_start' in filters:
-        pass
+        transactions_for_start_balance = Transaction.objects.filter(
+            date_add__lt=filters["date_start"]
+        )
+        sum_transaction = get_sum_transaction(transactions_for_start_balance, filters)
+        balance = balance + sum_transaction
 
     transactions_balance = transactions.order_by('date_add', 'id')
     for transaction_balance in transactions_balance:

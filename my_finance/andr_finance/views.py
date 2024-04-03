@@ -1,5 +1,9 @@
 import os
+import calendar
+from datetime import datetime, timedelta, date
 from decimal import Decimal
+from pprint import pprint
+from time import strftime
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,9 +13,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .demo import load_demo_data
 from .forms import CategoryForm, AccountForm, TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
-from .report_chart import get_chart_line, get_chart_bar, get_chart_str
+from .report_chart import get_chart_line, get_chart_bar, get_chart_str, get_min_max_date, get_labels
 from .report_table import get_filter_transaction, get_transaction, get_transactions_group, get_balances, \
     get_sum_transaction
+
+type_transactions = [
+    {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[0][1]},
+    {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[1][1]},
+    {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[2][1]},
+]
 
 folders = [
     {'name': 'finance', 'name_rus': 'Финансы'},
@@ -243,12 +253,6 @@ def transactions(request):
     transactions = get_transaction(filters)
     balances = get_balances(transactions, filters)
 
-    type_transactions = [
-        {'code': Transaction.MINUS, 'name': Transaction.TYPE_TRANSACTION[0][1]},
-        {'code': Transaction.PLUS, 'name': Transaction.TYPE_TRANSACTION[1][1]},
-        {'code': Transaction.TRANSFER, 'name': Transaction.TYPE_TRANSACTION[2][1]},
-    ]
-
     send_filter_date_start = request.GET.get('filter_date_start')
     if send_filter_date_start is None:
         send_filter_date_start = ''
@@ -388,32 +392,63 @@ def transaction_delete(request, transaction_id):
 
 
 def reports(request):
-    filters = {}
+    if request.GET.get('second') is None:
+        # Получаем текущую дату
+        current_date = datetime.now()
 
-    transactions_by_date_plus = get_chart_bar(filters, 'plus')
-    chart_bar_plus = get_chart_str(transactions_by_date_plus, 'plus')
+        # Получаем первый день текущего месяца
+        first_day_of_month = current_date.replace(day=1)
 
-    transactions_by_date_minus = get_chart_bar(filters, 'minus')
-    chart_bar_minus = get_chart_str(transactions_by_date_minus, 'minus')
+        # Получаем первый день следующего месяца
+        # Добавляем 4 дня, чтобы перейти на следующий месяц
+        next_month = current_date.replace(day=28) + timedelta(days=4)
+        first_day_of_next_month = next_month.replace(day=1)
 
-    chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus)
+        # Получаем последний день текущего месяца (последний день предыдущего месяца)
+        last_day_of_month = first_day_of_next_month - timedelta(days=1)
 
-    send_filter_date_start = request.GET.get('filter_date_start')
-    if send_filter_date_start is None:
-        send_filter_date_start = ''
+        send_filter_date_start = first_day_of_month.strftime("%d.%m.%Y")
+        send_filter_date_end = last_day_of_month.strftime("%d.%m.%Y")
+    else:
+        send_filter_date_start = request.GET.get('filter_date_start')
+        if send_filter_date_start is None:
+            send_filter_date_start = ''
 
-    send_filter_date_end = request.GET.get('filter_date_end')
-    if send_filter_date_end is None:
-        send_filter_date_end = ''
+        send_filter_date_end = request.GET.get('filter_date_end')
+        if send_filter_date_end is None:
+            send_filter_date_end = ''
+
+    filters = get_filter_transaction(request)
+    if request.GET.get('second') is None:
+        if 'date_start' not in filters and 'date_end' not in filters:
+            if send_filter_date_start != '' and send_filter_date_end != '':
+                filters['date_start'] =  datetime.strptime(send_filter_date_start, '%d.%m.%Y')
+                filters['date_end'] =  datetime.strptime(send_filter_date_end, '%d.%m.%Y')
+
+    transactions = get_transaction(filters)
+
+    transactions_by_date_plus = get_chart_bar(transactions, Transaction.PLUS)
+    transactions_by_date_minus = get_chart_bar(transactions, Transaction.MINUS)
+
+    min_date, max_date = get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_minus)
+
+    chart_bar_plus = get_chart_str(transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
+    chart_bar_minus = get_chart_str(transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
+
+    chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
+
+    labels = get_labels(min_date, max_date)
 
     context = {
         'select_menu': 'reports',
+        'labels': labels,
         'chart_line': chart_line,
         'chart_bar_plus': chart_bar_plus,
         'chart_bar_minus': chart_bar_minus,
         'filter_date_start': send_filter_date_start,
         'filter_date_end': send_filter_date_end,
     }
+
     return render(request, 'andr_finance/reports_chart.html', context)
 
 
