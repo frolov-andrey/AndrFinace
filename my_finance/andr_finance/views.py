@@ -427,13 +427,13 @@ def reports(request):
 
     transactions = get_transaction(filters)
 
-    transactions_by_date_plus = get_chart_bar(transactions, Transaction.PLUS)
-    transactions_by_date_minus = get_chart_bar(transactions, Transaction.MINUS)
+    transactions_by_date_plus = get_chart_bar(filters, transactions, Transaction.PLUS)
+    transactions_by_date_minus = get_chart_bar(filters, transactions, Transaction.MINUS)
 
     min_date, max_date = get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_minus)
 
-    chart_bar_plus = get_chart_str(transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
-    chart_bar_minus = get_chart_str(transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
+    chart_bar_plus = get_chart_str(filters, transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
+    chart_bar_minus = get_chart_str(filters, transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
 
     chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
 
@@ -445,6 +445,9 @@ def reports(request):
         'chart_line': chart_line,
         'chart_bar_plus': chart_bar_plus,
         'chart_bar_minus': chart_bar_minus,
+        'accounts': Account.objects.order_by('name'),
+
+        'filter_account': request.GET.get('filter_account'),
         'filter_date_start': send_filter_date_start,
         'filter_date_end': send_filter_date_end,
     }

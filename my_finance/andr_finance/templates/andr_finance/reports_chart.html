@@ -5,7 +5,7 @@
     <form action="{% url 'andr_finance:reports' %}" method='get' id="form_filter">
         <input name="second" type="hidden" value="on">
         <div class="row g-2 align-items-end">
-            <div class="col-md">
+            <div class="col-md-4">
                 <div class="form-floating">
                     <select name="filter_account" id="filter_account" class="form-select">
                         <option
@@ -25,50 +25,6 @@
                         {% endfor %}
                     </select>
                     <label for="filter_account">Счет:</label>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_category" id="filter_category" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_category == '0' %}
-                                selected
-                                {% endif %} >
-                            --- Не выбрано ---
-                        </option>
-                        {% for category in categories %}
-                            <option
-                                    value="{{ category.id }}"
-                                    {% if filter_category == category.id|stringformat:"s" %}
-                                    selected
-                                    {% endif %}
-                            >{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="filter_category">Категория:</label>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_type_transaction" id="filter_type_transaction" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_category == '0' %}
-                                selected
-                                {% endif %} >
-                            --- Не выбрано ---
-                        </option>
-                        {% for type_transaction in type_transactions %}
-                            <option
-                                    value="{{ type_transaction.code }}"
-                                    {% if filter_type_transaction == type_transaction.code %}
-                                    selected
-                                    {% endif %}
-                            >{{ type_transaction.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="filter_type_transaction">Тип транзакции:</label>
                 </div>
             </div>
         </div>

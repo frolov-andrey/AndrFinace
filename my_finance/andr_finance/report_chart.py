@@ -2,7 +2,7 @@ import json
 from datetime import timedelta
 from decimal import Decimal
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.functions import TruncDate
 
 from .models import Transaction, Account
@@ -57,7 +57,7 @@ def get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minu
     return data_chart_str
 
 
-def get_chart_str(transactions_by_date, type_transaction, min_date, max_date):
+def get_chart_str(filters, transactions_by_date, type_transaction, min_date, max_date):
     datas_dict = {}
     for data_list in list(transactions_by_date):
         datas_dict[data_list['transaction_date']] = data_list['total_expense']
@@ -71,6 +71,8 @@ def get_chart_str(transactions_by_date, type_transaction, min_date, max_date):
                 sum_day = datas_dict[current_date]
             elif type_transaction == Transaction.MINUS:
                 sum_day = sum_day - datas_dict[current_date]
+            elif 'account_id' in filters and type_transaction == Transaction.TRANSFER:
+                sum_day = sum_day - datas_dict[current_date]
 
             datas_list.append(str(sum_day))
         else:
@@ -83,8 +85,31 @@ def get_chart_str(transactions_by_date, type_transaction, min_date, max_date):
     return datas_chart_str
 
 
-def get_chart_bar(transactions, type_transaction):
-    transactions_by_date = transactions.filter(type_transaction=type_transaction).annotate(
+def get_chart_bar(filters, transactions, type_transaction):
+    if 'account_id' in filters:
+        if type_transaction == Transaction.PLUS:
+            transactions = transactions.filter(
+                (
+                        Q(account_id=filters['account_id']) & Q(type_transaction=Transaction.PLUS)
+                )
+                |
+                (
+                        Q(account_recipient_id=filters['account_id']) & Q(type_transaction=Transaction.TRANSFER)
+                )
+            )
+        elif type_transaction == Transaction.MINUS:
+            transactions = transactions.filter(
+                (
+                        Q(account_id=filters['account_id']) & Q(type_transaction=Transaction.MINUS)
+                )
+                |
+                (
+                        Q(account_id=filters['account_id']) & Q(type_transaction=Transaction.TRANSFER)
+                )
+            )
+
+    transactions_by_date = transactions.filter(
+        Q(type_transaction=type_transaction) | Q(type_transaction=Transaction.TRANSFER)).annotate(
         transaction_date=TruncDate('date_add')
     ).values('transaction_date').annotate(
         total_expense=Sum('amount')
