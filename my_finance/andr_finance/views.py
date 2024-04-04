@@ -1,12 +1,11 @@
+import json
 import os
-import calendar
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from decimal import Decimal
-from pprint import pprint
-from time import strftime
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -33,6 +32,13 @@ folders = [
 ]
 images_path = str(settings.STATIC_URL) + 'andr_finance/item_images/'
 icon_default = images_path + 'default/default_icon.png'
+
+
+class DecimalEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)  # Преобразуем Decimal в строку
+        return super().default(obj)
 
 
 def page_not_found(request):
@@ -272,6 +278,8 @@ def transactions(request):
     else:
         sort_order = 'asc'  # asc, desc
 
+    total_sum = get_sum_transaction(transactions, filters)
+
     context = {
         'sort_field': sort_field,
         'sort_order': sort_order,
@@ -284,6 +292,7 @@ def transactions(request):
         'type_transactions': type_transactions,
         'select_menu': 'transactions',
         'icon_default': icon_default,
+        'total_sum': total_sum,
 
         'filter_account': request.GET.get('filter_account'),
         'filter_category': request.GET.get('filter_category'),
@@ -393,7 +402,6 @@ def transaction_delete(request, transaction_id):
 
 
 def reports(request):
-
     if request.GET.get('chart_select') is None:
         chart_select = 'cash_flow'
     else:
@@ -429,17 +437,17 @@ def reports(request):
     if request.GET.get('second') is None:
         if 'date_start' not in filters and 'date_end' not in filters:
             if send_filter_date_start != '' and send_filter_date_end != '':
-                filters['date_start'] =  datetime.strptime(send_filter_date_start, '%d.%m.%Y')
-                filters['date_end'] =  datetime.strptime(send_filter_date_end, '%d.%m.%Y') + timedelta(days=1)
+                filters['date_start'] = datetime.strptime(send_filter_date_start, '%d.%m.%Y')
+                filters['date_end'] = datetime.strptime(send_filter_date_end, '%d.%m.%Y') + timedelta(days=1)
 
     transactions = get_transaction(filters)
 
+    charts = {}
     if chart_select == 'cash_flow':
         transactions_by_date_plus = get_chart_bar(filters, transactions, Transaction.PLUS)
         transactions_by_date_minus = get_chart_bar(filters, transactions, Transaction.MINUS)
 
         min_date, max_date = get_min_max_date(filters, transactions_by_date_plus, transactions_by_date_minus)
-
 
         chart_bar_plus = get_chart_str(filters, transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
         chart_bar_minus = get_chart_str(filters, transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
@@ -456,7 +464,7 @@ def reports(request):
         }
 
     elif chart_select == 'by_category':
-        chart_bar_category = get_chart_bar_category(filters, transactions)
+        chart_bar_category = get_chart_bar_category(transactions)
         charts = {
             'chart_bar_category': chart_bar_category
         }

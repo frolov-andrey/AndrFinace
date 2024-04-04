@@ -19,3 +19,13 @@ touch tmp/restart.txt
 
 https://qna.habr.com/q/1269136
 python manage.py dumpdata --indent=2 --exclude auth.permission --exclude contenttypes -o db.json
+
+print(json.dumps(list(queryset.values()), indent=4))
+
+class DecimalEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)  # Преобразуем Decimal в строку
+        return super().default(obj)
+
+print(json.dumps(list(transactions.values()), cls=DecimalEncoder, indent=4))

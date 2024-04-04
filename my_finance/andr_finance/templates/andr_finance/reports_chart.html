@@ -139,7 +139,7 @@
                     {% for category in charts.chart_bar_category %}
                     {
                         label: '{{ category.category_name }}',
-                        data: ['{{ category.amount }}'],
+                        data: [{{ category.amount|stringformat:".2f" }}],
                     },
                     {% endfor %}
                 /*

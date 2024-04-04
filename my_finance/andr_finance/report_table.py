@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
+from operator import itemgetter
 
 from django.db.models import Sum, Q
 
@@ -144,6 +145,20 @@ def get_transaction(filters):
     return transactions
 
 
+def get_sort_order(filters):
+    if 'sort_order' in filters:
+        if filters['sort_order'] == 'asc':
+            sort_order = '-'
+        elif filters['sort_order'] == 'desc':
+            sort_order = ''
+        else:
+            sort_order = ''
+    else:
+        sort_order = '-'
+
+    return sort_order
+
+
 def get_balances(transactions, filters):
     balances = {}
     balance = Decimal(0)
@@ -191,28 +206,13 @@ def get_balances(transactions, filters):
     return balances
 
 
-def get_sort_order(filters):
-    if 'sort_order' in filters:
-        if filters['sort_order'] == 'asc':
-            sort_order = ''
-        elif filters['sort_order'] == 'desc':
-            sort_order = '-'
-        else:
-            sort_order = '-'
-    else:
-        sort_order = ''
-
-    return sort_order
-
-
 def get_transactions_group(filters):
     result = []
     transactions = get_transaction(filters)
 
     if 'filter_group_category' in filters:
         if filters['filter_group_category'] == 'on':
-            transactions_group = transactions.values('category').annotate(total=Sum('amount')). \
-                order_by('category__name')
+            transactions_group = transactions.values('category').annotate(total=Sum('amount')).order_by('category__name')
             for transaction_group in transactions_group:
                 transactions_category = transactions.filter(category=transaction_group['category'])
                 if transaction_group['category'] is not None:
@@ -233,5 +233,28 @@ def get_transactions_group(filters):
                     'total': transaction_group['total'],
                     'transactions': transactions_category,
                 })
+
+            if 'sort_field' in filters:
+                sort_field = filters['sort_field']
+                if sort_field == 'category':
+                    sort_field = 'category_name'
+                elif sort_field == 'amount':
+                    sort_field = 'total'
+                else:
+                    sort_field = 'category_name'
+            else:
+                sort_field = 'category_name'
+
+            if 'sort_order' in filters:
+                if filters['sort_order'] == 'asc':
+                    reverse = True
+                elif filters['sort_order'] == 'desc':
+                    reverse = False
+                else:
+                    reverse = False
+            else:
+                reverse = True
+
+            result = sorted(result, key=itemgetter(sort_field), reverse=reverse)
 
     return result

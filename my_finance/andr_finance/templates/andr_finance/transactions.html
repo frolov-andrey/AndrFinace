@@ -93,7 +93,8 @@
             <div class="col-md">
                 <div class="" id="sandbox-container">
                     <label>Период:</label>
-                    <div class="input-daterange input-group d-flex align-items-center justify-content-center" id="datepicker">
+                    <div class="input-daterange input-group d-flex align-items-center justify-content-center"
+                         id="datepicker">
                         <input type="text" class="input-sm form-control" name="filter_date_start"
                                value="{{ filter_date_start }}" autocomplete="off"/>
                         <span class="input-group-addon">-</span>
@@ -168,7 +169,7 @@
                             data-sort-order=""
                     >Баланс</span>
                 </th>
-                <th scope="col">
+                <th scope="col" class="">
                     <span
                             class="text-secondary-emphasis name_col"
                             data-sort-field="account"
@@ -203,7 +204,7 @@
                             class="text-secondary-emphasis name_col"
                             data-sort-field="title"
                             data-sort-order="{% if sort_field == 'title' %}{{ sort_order }}{% endif %}"
-                    >Оп.
+                    >Описание
                         {% if sort_field == 'title' %}
                             {% if sort_order == 'asc' %}
                                 <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
@@ -216,6 +217,16 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-end text-black-50">Итого</td>
+                <td class="text-end text-black-50">{{ total_sum|floatformat:"2g" }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
             {% if group_by != "" %}
                 {% for transaction_group in transactions_group %}
                     <tr
@@ -224,10 +235,12 @@
                             aria-expanded="false"
                             aria-controls="collapse_td_{{ transaction_group.category_id }}"
                             class="tr_group"
+                            id="myCollapsible_{{ transaction_group.category_id }}"
                     >
-                        <td>
+                        <td class="td_img">
                             <span class="group_chevron_right">
-                                <img src="{% static 'andr_finance/images/chevron-right.svg' %}" alt="">
+                                <img src="{% static 'andr_finance/images/chevron-right.svg' %}" alt="" data-name-img="chevron_right">
+                                <img src="{% static 'andr_finance/images/chevron-down.svg' %}" alt="" data-name-img="chevron_down" style="display: none">
                             </span>
                         </td>
                         <td>
@@ -298,6 +311,13 @@
                 keepEmptyValues: true
             });
 
+            $('input[name=filter_group_category]').click(function (event) {
+                if ($(this).val() === 'on') {
+                    $('input[name=sort_field]').val('category')
+                    $('input[name=sort_order]').val('asc')
+                }
+            });
+
             $('form#form_filter').change(function () {
                 $('form#form_filter').submit();
             });
@@ -309,6 +329,19 @@
                 $('input[name=filter_date_start]').val('')
                 $('input[name=filter_date_end]').val('')
                 $('input[name=filter_group_category]').val('')
+            });
+
+            $('.tr_group').click(function (event) {
+                let chevron_right = $(this).children('.td_img').find('img[data-name-img=chevron_right]')
+                let chevron_down = $(this).children('.td_img').find('img[data-name-img=chevron_down]')
+                if (chevron_down.css('display') === 'none') {
+                    chevron_down.removeAttr('style')
+                    chevron_right.css('display', 'none')
+                }
+                else {
+                    chevron_right.removeAttr('style')
+                    chevron_down.css('display', 'none')
+                }
             });
 
         });

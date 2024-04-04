@@ -1,6 +1,7 @@
 import json
 from datetime import timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_DOWN
+from operator import itemgetter
 
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncDate
@@ -46,9 +47,9 @@ def get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minu
                 sum_day = sum_day - datas_minus[current_date]
 
             balance = balance + sum_day
-            datas_list.append(str(balance))
+            datas_list.append(float(balance.quantize(Decimal("1.00"), ROUND_HALF_DOWN)))
         else:
-            datas_list.append(str(balance))
+            datas_list.append(float(balance.quantize(Decimal("1.00"), ROUND_HALF_DOWN)))
 
         current_date += timedelta(days=1)
 
@@ -74,9 +75,9 @@ def get_chart_str(filters, transactions_by_date, type_transaction, min_date, max
             elif 'account_id' in filters and type_transaction == Transaction.TRANSFER:
                 sum_day = sum_day - datas_dict[current_date]
 
-            datas_list.append(str(sum_day))
+            datas_list.append(float(sum_day.quantize(Decimal("1.00"), ROUND_HALF_DOWN)))
         else:
-            datas_list.append('0')
+            datas_list.append(0)
 
         current_date += timedelta(days=1)
 
@@ -107,9 +108,10 @@ def get_chart_bar(filters, transactions, type_transaction):
                         Q(account_id=filters['account_id']) & Q(type_transaction=Transaction.TRANSFER)
                 )
             )
+    else:
+        transactions = transactions.filter(type_transaction=type_transaction)
 
-    transactions_by_date = transactions.filter(
-        Q(type_transaction=type_transaction) | Q(type_transaction=Transaction.TRANSFER)).annotate(
+    transactions_by_date = transactions.annotate(
         transaction_date=TruncDate('date_add')
     ).values('transaction_date').annotate(
         total_expense=Sum('amount')
@@ -157,13 +159,7 @@ def get_labels(min_date, max_date):
     return datas_label_str
 
 
-def my_sort(val):
-    print('val', val)
-    print("val['amount']", val['amount'])
-    return int(val['amount'])
-
-
-def get_chart_bar_category(filters, transactions):
+def get_chart_bar_category(transactions):
     chart = []
     categories = Category.objects.all()
     for category in categories:
@@ -171,11 +167,10 @@ def get_chart_bar_category(filters, transactions):
         if transactions_category.exists():
             chart.append({
                 'category_name': category.name,
-                'amount': str(transactions_category.aggregate(Sum('amount'))['amount__sum']),
+                'amount': transactions_category.aggregate(Sum('amount'))['amount__sum'].quantize(Decimal("1.00"),
+                                                                                                 ROUND_HALF_DOWN),
             })
 
-    # if len(chart) > 0:
-    #     chart = chart.sort(key=my_sort)
-    #     print('chart', chart)
+    chart = sorted(chart, key=itemgetter('amount'), reverse=True)
 
     return chart
