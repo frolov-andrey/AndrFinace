@@ -69,6 +69,13 @@
                             {% if select_menu == 'my_settings' %}aria-current="page"{% endif %}
                     >Настройки</a>
                 </li>
+                <li>
+                    <a
+                            href="{% url 'users:login' %}"
+                            class="nav-link px-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'login' %}aria-current="page"{% endif %}
+                    >Войти</a>
+                </li>
             </ul>
         </header>
     </header>
