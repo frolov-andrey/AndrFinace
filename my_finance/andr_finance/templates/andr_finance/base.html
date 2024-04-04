@@ -69,6 +69,20 @@
                             {% if select_menu == 'my_settings' %}aria-current="page"{% endif %}
                     >Настройки</a>
                 </li>
+
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="#" class="nav-link px-2">{{user.username}}</a>
+                </li>
+                <li>
+                    <a
+                            href="{% url 'users:logout' %}"
+                            class="nav-link px-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
+                            {% if select_menu == 'login' %}aria-current="page"{% endif %}
+                    >Выйти</a>
+                </li>
+            </ul>
+            {% else %}
                 <li>
                     <a
                             href="{% url 'users:login' %}"
@@ -76,6 +90,7 @@
                             {% if select_menu == 'login' %}aria-current="page"{% endif %}
                     >Войти</a>
                 </li>
+        {% endif %}
             </ul>
         </header>
     </header>
