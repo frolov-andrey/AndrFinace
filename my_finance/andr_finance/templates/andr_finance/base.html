@@ -1,6 +1,4 @@
-{% load static %}
-
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +14,8 @@
     <link href="{% static 'andr_finance/bootstrap/bootstrap.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'andr_finance/bootstrap/bootstrap.bundle.js' %}"></script>
 
-    <link href="{% static 'andr_finance/bootstrap-datepicker/bootstrap-datepicker3.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'andr_finance/bootstrap-datepicker/bootstrap-datepicker3.css' %}" rel="stylesheet"
+          type="text/css">
     <script src="{% static 'andr_finance/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'andr_finance/bootstrap-datepicker/bootstrap-datepicker.ru.min.js' %}"></script>
 
@@ -24,75 +23,84 @@
 </head>
 <body>
 <div class="container">
-    <header>
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li>
-                    <a
-                            href="{% url 'andr_finance:index' %}"
-                            class="nav-link px-2 {% if select_menu == 'index' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'index' %}aria-current="page"{% endif %}
-                    >AndrFinance</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'andr_finance:categories' %}"
-                            class="nav-link px-2 {% if select_menu == 'categories' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'categories' %}aria-current="page"{% endif %}
-                    >Категории</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'andr_finance:accounts' %}"
-                            class="nav-link px-2 {% if select_menu == 'accounts' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'accounts' %}aria-current="page"{% endif %}
-                    >Счета</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'andr_finance:transactions' %}"
-                            class="nav-link px-2 {% if select_menu == 'transactions' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'transactions' %}aria-current="page"{% endif %}
-                    >Транзакции</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'andr_finance:reports' %}"
-                            class="nav-link px-2 {% if select_menu == 'reports' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'reports' %}aria-current="page"{% endif %}
-                    >График</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'andr_finance:my_settings' %}"
-                            class="nav-link px-2 {% if select_menu == 'my_settings' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'my_settings' %}aria-current="page"{% endif %}
-                    >Настройки</a>
-                </li>
 
-            {% if user.is_authenticated %}
-                <li>
-                    <a href="#" class="nav-link px-2">{{user.username}}</a>
-                </li>
-                <li>
-                    <a
-                            href="{% url 'users:logout' %}"
-                            class="nav-link px-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'login' %}aria-current="page"{% endif %}
-                    >Выйти</a>
-                </li>
-            </ul>
-            {% else %}
-                <li>
-                    <a
-                            href="{% url 'users:login' %}"
-                            class="nav-link px-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
-                            {% if select_menu == 'login' %}aria-current="page"{% endif %}
-                    >Войти</a>
-                </li>
-        {% endif %}
-            </ul>
-        </header>
+    <header class="p-3 mb-3 border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <img
+                            src="{% static 'andr_finance/images/wallet2.svg' %}"
+                             class="bi me-2" width="40" height="32"
+                            alt=""
+                    >
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li>
+                        <a
+                                href="{% url 'andr_finance:index' %}"
+                                class="nav-link px-2 {% if select_menu == 'index' %}link-secondary active{% endif %}"
+                                {% if select_menu == 'index' %}aria-current="page"{% endif %}
+                        >AndrFinance</a>
+                    </li>
+                        <a
+                                href="{% url 'andr_finance:transactions' %}"
+                                class="nav-link px-2 {% if select_menu == 'transactions' %}link-secondary active{% endif %}"
+                                {% if select_menu == 'transactions' %}aria-current="page"{% endif %}
+                        >Транзакции</a>
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'andr_finance:reports' %}"
+                                class="nav-link px-2 {% if select_menu == 'reports' %}link-secondary active{% endif %}"
+                                {% if select_menu == 'reports' %}aria-current="page"{% endif %}
+                        >График</a>
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'andr_finance:categories' %}"
+                                class="nav-link px-2 {% if select_menu == 'categories' %}link-secondary active{% endif %}"
+                                {% if select_menu == 'categories' %}aria-current="page"{% endif %}
+                        >Категории</a>
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'andr_finance:accounts' %}"
+                                class="nav-link px-2 {% if select_menu == 'accounts' %}link-secondary active{% endif %}"
+                                {% if select_menu == 'accounts' %}aria-current="page"{% endif %}
+                        >Счета</a></li>
+                    <li>
+                    <li>
+                        <a
+                                href="{% url 'andr_finance:my_settings' %}"
+                                class="nav-link px-2 {% if select_menu == 'my_settings' %}link-secondary active{% endif %}"
+                        >Настройки</a>
+                    </li>
+                </ul>
+
+                <div class="col-md-3 text-end">
+                    {% if user.is_authenticated %}
+                        <a
+                                href="#"
+                                class="btn btn-outline-primary me-2"
+                        >{{ user.username }}</a>
+                        <a
+                                href="{% url 'users:logout' %}"
+                                class="btn btn-primary"
+                        >Выход</a>
+                    {% else %}
+                        <a
+                                href="{% url 'users:login' %}"
+                                class="btn btn-outline-primary me-2"
+                        >Войти</a>
+                        <a
+                                href="#"
+                                class="btn btn-primary"
+                        >Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -108,6 +116,7 @@
 
         {% block content %}{% endblock content %}
     </main>
+
 </div>
 </body>
 </html>
