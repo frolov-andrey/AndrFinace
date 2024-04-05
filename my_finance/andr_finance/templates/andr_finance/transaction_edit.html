@@ -7,21 +7,21 @@
 
             <div class="btn-group mb-3">
                 <a
-                        href="{% url "andr_finance:transaction_edit" "minus" transaction.id %}"
+                        href="{% url "andr_finance:transaction_edit_minus" transaction.id %}"
                         class="btn btn-outline-primary {% if type_transaction == "minus" %}active{% endif %}"
                         {% if type_transaction == "minus" %}
                         aria-current="page"
                         {% endif %}
                 >Расход</a>
                 <a
-                        href="{% url "andr_finance:transaction_edit" "plus" transaction.id %}"
+                        href="{% url "andr_finance:transaction_edit_plus" transaction.id %}"
                         class="btn btn-outline-primary {% if type_transaction == "plus" %}active{% endif %}"
                         {% if type_transaction == "plus" %}
                         aria-current="page"
                         {% endif %}
                 >Доход</a>
                 <a
-                        href="{% url "andr_finance:transaction_edit" "transfer" transaction.id %}"
+                        href="{% url "andr_finance:transaction_edit_transfer" transaction.id %}"
                         class="btn btn-outline-primary {% if type_transaction == "transfer" %}active{% endif %}"
                         {% if type_transaction == "transfer" %}
                         aria-current="page"
@@ -31,11 +31,11 @@
 
             <form
                     {% if type_transaction == "minus" %}
-                        action="{% url "andr_finance:transaction_edit" "minus" transaction.id %}"
+                        action="{% url "andr_finance:transaction_edit_minus" transaction.id %}"
                     {% elif type_transaction == "plus" %}
-                        action="{% url "andr_finance:transaction_edit" "plus" transaction.id %}"
+                        action="{% url "andr_finance:transaction_edit_plus" transaction.id %}"
                     {% elif type_transaction == "transfer" %}
-                        action="{% url "andr_finance:transaction_edit" "transfer" transaction.id %}"
+                        action="{% url "andr_finance:transaction_edit_transfer" transaction.id %}"
                     {% endif %}
                         method="post">
 
@@ -66,7 +66,7 @@
                 <a href="{% url 'andr_finance:transactions' %}" class="btn btn-outline-primary btn-sm mt-3">Отмена</a>
             </form>
 
-            <form action="{% url 'andr_finance:transaction_delete' transaction.id %}" method='post'>
+            <form action="{% url 'andr_finance:transaction_delete' transaction.id %}" method='get'>
                 {% csrf_token %}
                 <button name="submit" class="btn btn-outline-primary btn-sm mt-3">Удалить</button>
             </form>

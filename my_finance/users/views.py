@@ -10,7 +10,10 @@ from .forms import LoginUserForm
 class LoginUser(LoginView):
     form_class = LoginUserForm
     template_name = 'users/login.html'
-    extra_context = {'title': 'Авторизация'}
+    extra_context = {
+        'title': 'Авторизация',
+        'select_menu': 'login'
+    }
 
     # def get_success_url(self):
     #     return reverse_lazy('home')

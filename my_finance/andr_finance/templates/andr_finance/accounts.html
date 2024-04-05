@@ -1,5 +1,6 @@
 {% extends "andr_finance/base.html" %}
 {% load static %}
+{% load andr_finance_extras %}
 
 {% block content %}
 
@@ -17,26 +18,25 @@
         </tr>
         </thead>
         <tbody>
-        {% for context_account in context_accounts %}
+        {% for account in accounts %}
             <tr>
                 <td>
                     <img
-                            {% if context_account.account.icon_folder is not None %}
-                                src="{% static 'andr_finance/item_images/' %}{{ context_account.account.icon_folder }}/{{ context_account.account.icon_file }}"
+                            {% if account.icon_folder is not None %}
+                                src="{% static 'andr_finance/item_images/' %}{{ account.icon_folder }}/{{ account.icon_file }}"
                             {% else %}
                                 src="{{ icon_default }}"
                             {% endif %}
-                                width="30" height="30">
+                                width="30" height="30"
+					/>
                 </td>
                 <td>
-                    <a href="{% url 'andr_finance:account_edit' context_account.account.id %}">{{ context_account.account.name }}</a>
+                    <a href="{% url 'andr_finance:account_edit' account.id %}">{{ account.name }}</a>
                 </td>
+				{% tr_account_balance account balances %}
                 <td
-                        class="{% if context_account.balance < 0 %}text-danger{% else %}{% endif %} text-end"
-                >{{ context_account.balance|floatformat:"2g" }}</td>
-                <td
-                        class="{% if context_account.account.start_balance < 0 %}text-danger{% else %}{% endif %} text-end"
-                >{{ context_account.account.start_balance|floatformat:"2g" }}</td>
+                        class="{% if account.start_balance < 0 %}text-danger{% else %}{% endif %} text-end"
+                >{{ account.start_balance|floatformat:"2g" }}</td>
             </tr>
         {% empty %}
             <tr>

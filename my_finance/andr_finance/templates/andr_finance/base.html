@@ -30,7 +30,7 @@
                 <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                     <img
                             src="{% static 'andr_finance/images/wallet2.svg' %}"
-                             class="bi me-2" width="40" height="32"
+                            class="bi me-2" width="40" height="32"
                             alt=""
                     >
                 </a>
@@ -43,6 +43,7 @@
                                 {% if select_menu == 'index' %}aria-current="page"{% endif %}
                         >AndrFinance</a>
                     </li>
+                    <li>
                         <a
                                 href="{% url 'andr_finance:transactions' %}"
                                 class="nav-link px-2 {% if select_menu == 'transactions' %}link-secondary active{% endif %}"
@@ -54,7 +55,7 @@
                                 href="{% url 'andr_finance:reports' %}"
                                 class="nav-link px-2 {% if select_menu == 'reports' %}link-secondary active{% endif %}"
                                 {% if select_menu == 'reports' %}aria-current="page"{% endif %}
-                        >График</a>
+                        >Графики</a>
                     </li>
                     <li>
                         <a
@@ -78,27 +79,28 @@
                     </li>
                 </ul>
 
-                <div class="col-md-3 text-end">
+                <div class="nav justify-content-end col-4 col-md-4 col-sm-6">
                     {% if user.is_authenticated %}
                         <a
                                 href="#"
-                                class="btn btn-outline-primary me-2"
+                                class="nav-link px-2 link-primary me-2"
                         >{{ user.username }}</a>
                         <a
                                 href="{% url 'users:logout' %}"
-                                class="btn btn-primary"
+                                class="nav-link px-2 link-primary me-2"
                         >Выход</a>
                     {% else %}
                         <a
                                 href="{% url 'users:login' %}"
-                                class="btn btn-outline-primary me-2"
+                                class="nav-link px-2 link-primary me-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
                         >Войти</a>
                         <a
                                 href="#"
-                                class="btn btn-primary"
+                                class="nav-link px-2 link-primary me-2"
                         >Регистрация</a>
                     {% endif %}
                 </div>
+
             </div>
         </div>
     </header>

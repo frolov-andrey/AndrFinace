@@ -41,7 +41,13 @@
         {% endif %}
     </td>
     <td>
-        <a href="{% url 'andr_finance:transaction_edit' transaction.type_transaction transaction.id %}">
+	{% if transaction.type_transaction == 'plus' %}
+        <a href="{% url 'andr_finance:transaction_edit_plus' transaction.id %}">
+	{% elif transaction.type_transaction == 'minus' %}
+		<a href="{% url 'andr_finance:transaction_edit_minus' transaction.id %}">
+	{% elif transaction.type_transaction == 'transfer' %}
+		<a href="{% url 'andr_finance:transaction_edit_transfer' transaction.id %}">
+	{% endif %}
             {{ transaction.date_add|date:"d.m.Y H:i" }}
         </a>
     </td>

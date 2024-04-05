@@ -4,349 +4,367 @@
 
 {% block content %}
 
-    <div class="row mb-3">
-        <div class="col-1">
-            <h2>Транзакции</h2>
-        </div>
-        <div class="col-8"></div>
-        <div class="col-3 text-end">
-            <form action="{% url 'andr_finance:transaction_add' 'minus' %}">
-                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
-            </form>
-        </div>
-    </div>
+	<div class="row mb-3">
+		<div class="col-1">
+			<h2>Транзакции</h2>
+		</div>
+		<div class="col-8"></div>
+		<div class="col-3 text-end">
+			<form action="{% url 'andr_finance:transaction_add_minus' %}">
+				<button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
+			</form>
+		</div>
+	</div>
 
-    <form action="{% url 'andr_finance:transactions' %}" method='get' id="form_filter">
-        <input name="sort_field" value="{{ sort_field }}" type="hidden">
-        <input name="sort_order" value="{{ sort_order }}" type="hidden">
-        <div class="row g-2 align-items-end">
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_account" id="filter_account" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_account == '0' %}
-                                selected
-                                {% endif %} >
-                            --- Не выбрано ---
-                        </option>
-                        {% for account in accounts %}
-                            <option
-                                    value="{{ account.id }}"
-                                    {% if filter_account == account.id|stringformat:"s" %}
-                                    selected
-                                    {% endif %}
-                            >{{ account.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="filter_account">Счет:</label>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_category" id="filter_category" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_category == '0' %}
-                                selected
-                                {% endif %} >
-                            --- Не выбрано ---
-                        </option>
-                        {% for category in categories %}
-                            <option
-                                    value="{{ category.id }}"
-                                    {% if filter_category == category.id|stringformat:"s" %}
-                                    selected
-                                    {% endif %}
-                            >{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="filter_category">Категория:</label>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="form-floating">
-                    <select name="filter_type_transaction" id="filter_type_transaction" class="form-select">
-                        <option
-                                value="0"
-                                {% if filter_category == '0' %}
-                                selected
-                                {% endif %} >
-                            --- Не выбрано ---
-                        </option>
-                        {% for type_transaction in type_transactions %}
-                            <option
-                                    value="{{ type_transaction.code }}"
-                                    {% if filter_type_transaction == type_transaction.code %}
-                                    selected
-                                    {% endif %}
-                            >{{ type_transaction.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="filter_type_transaction">Тип транзакции:</label>
-                </div>
-            </div>
-        </div>
+	<form action="{% url 'andr_finance:transactions' %}" method='get' id="form_filter">
+		<input name="sort_field" value="{{ sort_field }}" type="hidden">
+		<input name="sort_order" value="{{ sort_order }}" type="hidden">
+		<div class="row g-2 align-items-end">
+			<div class="col-md">
+				<div class="form-floating">
+					<select name="filter_account" id="filter_account" class="form-select">
+						<option
+								value="0"
+								{% if filter_account == '0' %}
+								selected
+								{% endif %} >
+							--- Не выбрано ---
+						</option>
+						{% for account in accounts %}
+							<option
+									value="{{ account.id }}"
+									{% if filter_account == account.id|stringformat:"s" %}
+									selected
+									{% endif %}
+							>{{ account.name }}</option>
+						{% endfor %}
+					</select>
+					<label for="filter_account">Счет:</label>
+				</div>
+			</div>
+			<div class="col-md">
+				<div class="form-floating">
+					<select name="filter_category" id="filter_category" class="form-select">
+						<option
+								value="0"
+								{% if filter_category == '0' %}
+								selected
+								{% endif %} >
+							--- Не выбрано ---
+						</option>
+						{% for category in categories %}
+							<option
+									value="{{ category.id }}"
+									{% if filter_category == category.id|stringformat:"s" %}
+									selected
+									{% endif %}
+							>{{ category.name }}</option>
+						{% endfor %}
+					</select>
+					<label for="filter_category">Категория:</label>
+				</div>
+			</div>
+			<div class="col-md">
+				<div class="form-floating">
+					<select name="filter_type_transaction" id="filter_type_transaction" class="form-select">
+						<option
+								value="0"
+								{% if filter_category == '0' %}
+								selected
+								{% endif %} >
+							--- Не выбрано ---
+						</option>
+						{% for type_transaction in type_transactions %}
+							<option
+									value="{{ type_transaction.code }}"
+									{% if filter_type_transaction == type_transaction.code %}
+									selected
+									{% endif %}
+							>{{ type_transaction.name }}</option>
+						{% endfor %}
+					</select>
+					<label for="filter_type_transaction">Тип транзакции:</label>
+				</div>
+			</div>
+		</div>
 
-        <div class="row g-2 mt-1 align-items-end">
+		<div class="row g-2 mt-1 align-items-end">
 
-            <div class="col-md">
-                <div class="" id="sandbox-container">
-                    <label>Период:</label>
-                    <div class="input-daterange input-group d-flex align-items-center justify-content-center"
-                         id="datepicker">
-                        <input type="text" class="input-sm form-control" name="filter_date_start"
-                               value="{{ filter_date_start }}" autocomplete="off"/>
-                        <span class="input-group-addon">-</span>
-                        <input type="text" class="input-sm form-control" name="filter_date_end"
-                               value="{{ filter_date_end }}" autocomplete="off"/>
-                    </div>
-                </div>
-            </div>
+			<div class="col-md">
+				<div class="" id="sandbox-container">
+					<label>Период:</label>
+					<div class="input-daterange input-group d-flex align-items-center justify-content-center"
+						 id="datepicker">
+						<input type="text" class="input-sm form-control" name="filter_date_start"
+							   value="{{ filter_date_start }}" autocomplete="off"/>
+						<span class="input-group-addon">-</span>
+						<input type="text" class="input-sm form-control" name="filter_date_end"
+							   value="{{ filter_date_end }}" autocomplete="off"/>
+					</div>
+				</div>
+			</div>
 
-            <div class="col-md">
-                <div class="form-floating">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
-                               {% if filter_group_category == 'on' %}checked{% endif %} name="filter_group_category"
-                        >
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Группировать по категориям</label>
-                    </div>
-                </div>
-            </div>
+			<div class="col-md">
+				<div class="form-floating">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+							   {% if filter_group_category == 'on' %}checked{% endif %} name="filter_group_category"
+						>
+						<label class="form-check-label" for="flexSwitchCheckDefault">Группировать по категориям</label>
+					</div>
+				</div>
+			</div>
 
-            <div class="col-md">
-                <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
-                <button class="btn btn-outline-primary btn-sm mt-2" type="submit" id="filter_clean">Сбросить фильтры
-                </button>
-            </div>
-        </div>
+			<div class="col-md">
+				<button class="btn btn-outline-primary btn-sm mt-2" type="submit">Сформировать</button>
+				<button class="btn btn-outline-primary btn-sm mt-2" type="submit" id="filter_clean">Сбросить фильтры
+				</button>
+			</div>
+		</div>
 
 
-    </form>
+	</form>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-sm mt-3 table_transaction">
-            <thead class="table-light">
-            <tr class="tr_sort">
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col">
+	<div class="table-responsive">
+		<table class="table table-hover table-sm mt-3 table_transaction">
+			<thead class="table-light">
+			<tr class="tr_sort">
+				<th scope="col"></th>
+				<th scope="col"></th>
+				<th scope="col">
                     <span
-                            class="text-secondary-emphasis name_col"
-                            data-sort-field="category"
-                            data-sort-order="{% if sort_field == 'category' %}{{ sort_order }}{% endif %}"
+							class="text-secondary-emphasis name_col"
+							data-sort-field="category"
+							data-sort-order="{% if sort_field == 'category' %}{{ sort_order }}{% endif %}"
 
-                    >Категория
-                        {% if sort_field == 'category' %}
-                            {% if sort_order == 'asc' %}
-                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                            {% elif sort_order == 'desc' %}
-                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
-                            {% endif %}
-                        {% endif %}
+					>Категория
+						{% if sort_field == 'category' %}
+							{% if sort_order == 'asc' %}
+								<img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+							{% elif sort_order == 'desc' %}
+								<img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+							{% endif %}
+						{% endif %}
                     </span>
-                </th>
-                <th scope="col" class="text-end">
+				</th>
+				<th scope="col" class="text-end">
                     <span
-                            class="text-secondary-emphasis name_col"
-                            data-sort-field="amount"
-                            data-sort-order="{% if sort_field == 'amount' %}{{ sort_order }}{% endif %}"
-                    >Сумма
-                        {% if sort_field == 'amount' %}
-                            {% if sort_order == 'asc' %}
-                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                            {% elif sort_order == 'desc' %}
-                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
-                            {% endif %}
-                        {% endif %}
+							class="text-secondary-emphasis name_col"
+							data-sort-field="amount"
+							data-sort-order="{% if sort_field == 'amount' %}{{ sort_order }}{% endif %}"
+					>Сумма
+						{% if sort_field == 'amount' %}
+							{% if sort_order == 'asc' %}
+								<img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+							{% elif sort_order == 'desc' %}
+								<img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+							{% endif %}
+						{% endif %}
                     </span>
-                </th>
-                <th scope="col" class="text-end">
+				</th>
+				<th scope="col" class="text-end">
                     <span
-                            class="text-secondary-emphasis"
-                            data-sort-field="balance"
-                            data-sort-order=""
-                    >Баланс</span>
-                </th>
-                <th scope="col" class="">
+							class="text-secondary-emphasis"
+							data-sort-field="balance"
+							data-sort-order=""
+					>Баланс</span>
+				</th>
+				<th scope="col" class="">
                     <span
-                            class="text-secondary-emphasis name_col"
-                            data-sort-field="account"
-                            data-sort-order="{% if sort_field == 'account' %}{{ sort_order }}{% endif %}"
-                    >Счет
-                        {% if sort_field == 'account' %}
-                            {% if sort_order == 'asc' %}
-                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                            {% elif sort_order == 'desc' %}
-                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
-                            {% endif %}
-                        {% endif %}
+							class="text-secondary-emphasis name_col"
+							data-sort-field="account"
+							data-sort-order="{% if sort_field == 'account' %}{{ sort_order }}{% endif %}"
+					>Счет
+						{% if sort_field == 'account' %}
+							{% if sort_order == 'asc' %}
+								<img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+							{% elif sort_order == 'desc' %}
+								<img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+							{% endif %}
+						{% endif %}
                     </span>
-                </th>
-                <th scope="col">
+				</th>
+				<th scope="col">
                     <span
-                            class="text-secondary-emphasis name_col"
-                            data-sort-field="date_add"
-                            data-sort-order="{% if sort_field == 'date_add' %}{{ sort_order }}{% endif %}"
-                    >Дата
-                        {% if sort_field == 'date_add' %}
-                            {% if sort_order == 'asc' %}
-                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                            {% elif sort_order == 'desc' %}
-                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
-                            {% endif %}
-                        {% endif %}
+							class="text-secondary-emphasis name_col"
+							data-sort-field="date_add"
+							data-sort-order="{% if sort_field == 'date_add' %}{{ sort_order }}{% endif %}"
+					>Дата
+						{% if sort_field == 'date_add' %}
+							{% if sort_order == 'asc' %}
+								<img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+							{% elif sort_order == 'desc' %}
+								<img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+							{% endif %}
+						{% endif %}
                     </span>
-                </th>
-                <th scope="col">
+				</th>
+				<th scope="col">
                     <span
-                            class="text-secondary-emphasis name_col"
-                            data-sort-field="title"
-                            data-sort-order="{% if sort_field == 'title' %}{{ sort_order }}{% endif %}"
-                    >Описание
-                        {% if sort_field == 'title' %}
-                            {% if sort_order == 'asc' %}
-                                <img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
-                            {% elif sort_order == 'desc' %}
-                                <img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
-                            {% endif %}
-                        {% endif %}
+							class="text-secondary-emphasis name_col"
+							data-sort-field="title"
+							data-sort-order="{% if sort_field == 'title' %}{{ sort_order }}{% endif %}"
+					>Описание
+						{% if sort_field == 'title' %}
+							{% if sort_order == 'asc' %}
+								<img src="{% static 'andr_finance/images/sort-down.svg' %}" alt="">
+							{% elif sort_order == 'desc' %}
+								<img src="{% static 'andr_finance/images/sort-up.svg' %}" alt="">
+							{% endif %}
+						{% endif %}
                     </span></th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td class="text-end text-black-50">Итого</td>
-                <td class="text-end text-black-50">{{ total_sum|floatformat:"2g" }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            {% if group_by != "" %}
-                {% for transaction_group in transactions_group %}
-                    <tr
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapse_td_{{ transaction_group.category_id }}"
-                            aria-expanded="false"
-                            aria-controls="collapse_td_{{ transaction_group.category_id }}"
-                            class="tr_group"
-                            id="myCollapsible_{{ transaction_group.category_id }}"
-                    >
-                        <td class="td_img">
+				<th scope="col"></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td class="text-end text-black-50">Итого</td>
+				<td class="text-end text-black-50">{{ total_sum|floatformat:"2g" }}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			{% if group_by != "" %}
+				{% for transaction_group in transactions_group %}
+					<tr
+							data-bs-toggle="collapse"
+							data-bs-target="#collapse_td_{{ transaction_group.category_id }}"
+							aria-expanded="false"
+							aria-controls="collapse_td_{{ transaction_group.category_id }}"
+							class="tr_group"
+							id="myCollapsible_{{ transaction_group.category_id }}"
+					>
+						<td class="td_img">
                             <span class="group_chevron_right">
-                                <img src="{% static 'andr_finance/images/chevron-right.svg' %}" alt="" data-name-img="chevron_right">
-                                <img src="{% static 'andr_finance/images/chevron-down.svg' %}" alt="" data-name-img="chevron_down" style="display: none">
+                                <img src="{% static 'andr_finance/images/chevron-right.svg' %}" alt=""
+									 data-name-img="chevron_right">
+                                <img src="{% static 'andr_finance/images/chevron-down.svg' %}" alt=""
+									 data-name-img="chevron_down" style="display: none">
                             </span>
-                        </td>
-                        <td>
-                            <img
-                                    {% if transaction_group.category_icon_folder is not None %}
-                                        src="
-                                                {% static 'andr_finance/item_images/' %}{{ transaction_group.category_icon_folder }}/{{ transaction_group.category_icon_file }}"
-                                    {% else %}
-                                        src="{{ icon_default }}"
-                                    {% endif %}
-                                        width="20" height="20"
-                                        alt=""
-                            />
-                        </td>
-                        <td class="text-muted">{{ transaction_group.category_name }}</td>
-                        <td class="text-end">{{ transaction_group.total|floatformat:"2g" }}</td>
-                        <td colspan="5"></td>
-                    </tr>
-                    {% for transaction in transaction_group.transactions %}
-                        {% tr_transaction transaction balances transaction_group.category_id icon_default %}
-                    {% endfor %}
-                {% endfor %}
-            {% else %}
-                {% for transaction in transactions %}
-                    {% tr_transaction transaction balances None icon_default %}
-                {% empty %}
-                    <tr>
-                        <td>Нет транзакций</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-            </tbody>
-        </table>
-    </div>
+						</td>
+						<td>
+							<img
+									{% if transaction_group.category_icon_folder is not None %}
+										src="
 
-    <script>
-        $(document).ready(function () {
+												{% static 'andr_finance/item_images/' %}{{ transaction_group.category_icon_folder }}/{{ transaction_group.category_icon_file }}"
+									{% else %}
+										src="{{ icon_default }}"
+									{% endif %}
+										width="20" height="20"
+										alt=""
+							/>
+						</td>
+						<td class="text-muted">{{ transaction_group.category_name }}</td>
+						<td class="text-end">{{ transaction_group.total|floatformat:"2g" }}</td>
+						<td colspan="5"></td>
+					</tr>
+					{% for transaction in transaction_group.transactions %}
+						{% tr_transaction transaction balances transaction_group.category_id icon_default %}
+					{% endfor %}
+				{% endfor %}
+			{% else %}
+				{% for transaction in transactions %}
+					{% tr_transaction transaction balances None icon_default %}
+				{% empty %}
+					<tr>
+						<td>Нет транзакций</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				{% endfor %}
+			{% endif %}
+			</tbody>
+		</table>
+	</div>
 
-            $('table.table_transaction thead th span.name_col').click(function (event) {
-                $('input[name=sort_field]').val($(this).attr('data-sort-field'))
+	<script>
+		$(document).ready(function ()
+		{
 
-                let sort_order = $(this).attr('data-sort-order')
-                if (sort_order === 'asc') {
-                    sort_order = 'desc'
-                } else if (sort_order === 'desc') {
-                    sort_order = 'asc'
-                } else {
-                    sort_order = 'asc'
-                }
-                $('input[name=sort_order]').val(sort_order)
+			$('table.table_transaction thead th span.name_col').click(function (event)
+			{
+				$('input[name=sort_field]').val($(this).attr('data-sort-field'))
 
-                $('form#form_filter').submit();
-            });
+				let sort_order = $(this).attr('data-sort-order')
+				if (sort_order === 'asc')
+				{
+					sort_order = 'desc'
+				}
+				else if (sort_order === 'desc')
+				{
+					sort_order = 'asc'
+				}
+				else
+				{
+					sort_order = 'asc'
+				}
+				$('input[name=sort_order]').val(sort_order)
+
+				$('form#form_filter').submit();
+			});
 
 
-            $('#sandbox-container .input-daterange').datepicker({
-                todayBtn: "linked",
-                clearBtn: true,
-                language: "ru",
-                autoclose: true,
-                todayHighlight: true,
-                keepEmptyValues: true
-            });
+			$('#sandbox-container .input-daterange').datepicker({
+				todayBtn: "linked",
+				clearBtn: true,
+				language: "ru",
+				autoclose: true,
+				todayHighlight: true,
+				keepEmptyValues: true
+			});
 
-            $('input[name=filter_group_category]').click(function (event) {
-                if ($(this).val() === 'on') {
-                    $('input[name=sort_field]').val('category')
-                    $('input[name=sort_order]').val('asc')
-                }
-            });
+			$('input[name=filter_group_category]').click(function (event)
+			{
+				if ($(this).val() === 'on')
+				{
+					$('input[name=sort_field]').val('category')
+					$('input[name=sort_order]').val('asc')
+				}
+			});
 
-            $('form#form_filter').change(function () {
-                $('form#form_filter').submit();
-            });
+			$('form#form_filter').change(function ()
+			{
+				$('form#form_filter').submit();
+			});
 
-            $('button#filter_clean').click(function (event) {
-                $('select[name=filter_account]').val(0)
-                $('select[name=filter_category]').val(0)
-                $('select[name=filter_type_transaction]').val(0)
-                $('input[name=filter_date_start]').val('')
-                $('input[name=filter_date_end]').val('')
-                $('input[name=filter_group_category]').val('')
-            });
+			$('button#filter_clean').click(function (event)
+			{
+				$('select[name=filter_account]').val(0)
+				$('select[name=filter_category]').val(0)
+				$('select[name=filter_type_transaction]').val(0)
+				$('input[name=filter_date_start]').val('')
+				$('input[name=filter_date_end]').val('')
+				$('input[name=filter_group_category]').val('')
+			});
 
-            $('.tr_group').click(function (event) {
-                let chevron_right = $(this).children('.td_img').find('img[data-name-img=chevron_right]')
-                let chevron_down = $(this).children('.td_img').find('img[data-name-img=chevron_down]')
-                if (chevron_down.css('display') === 'none') {
-                    chevron_down.removeAttr('style')
-                    chevron_right.css('display', 'none')
-                }
-                else {
-                    chevron_right.removeAttr('style')
-                    chevron_down.css('display', 'none')
-                }
-            });
+			$('.tr_group').click(function (event)
+			{
+				let chevron_right = $(this).children('.td_img').find('img[data-name-img=chevron_right]')
+				let chevron_down = $(this).children('.td_img').find('img[data-name-img=chevron_down]')
+				if (chevron_down.css('display') === 'none')
+				{
+					chevron_down.removeAttr('style')
+					chevron_right.css('display', 'none')
+				}
+				else
+				{
+					chevron_right.removeAttr('style')
+					chevron_down.css('display', 'none')
+				}
+			});
 
-        });
+		});
 
-    </script>
+	</script>
+
 
 
 {% endblock content %}

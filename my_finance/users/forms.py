@@ -5,9 +5,9 @@ from django.contrib.auth.forms import AuthenticationForm
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label="Логин",
-                    widget=forms.TextInput(attrs={'class': 'form-input'}))
+                    widget=forms.TextInput(attrs={'class': 'form-control mb-3'}))
     password = forms.CharField(label="Пароль",
-                    widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+                    widget=forms.PasswordInput(attrs={'class': 'form-control mb-3'}))
 
     class Meta:
         model = get_user_model()

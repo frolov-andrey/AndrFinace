@@ -9,21 +9,21 @@
 
             <div class="btn-group mb-3">
                 <a
-                        href="{% url "andr_finance:transaction_add" type_transaction="minus" %}"
+                        href="{% url "andr_finance:transaction_add_minus" %}"
                         class="btn btn-outline-primary {% if type_transaction == "minus" %}active{% endif %}"
                         {% if type_transaction == "minus" %}
                         aria-current="page"
                         {% endif %}
                 >Расход</a>
                 <a
-                        href="{% url "andr_finance:transaction_add" type_transaction="plus" %}"
+                        href="{% url "andr_finance:transaction_add_plus" %}"
                         class="btn btn-outline-primary {% if type_transaction == "plus" %}active{% endif %}"
                         {% if type_transaction == "plus" %}
                         aria-current="page"
                         {% endif %}
                 >Доход</a>
                 <a
-                        href="{% url "andr_finance:transaction_add" type_transaction="transfer" %}"
+                        href="{% url "andr_finance:transaction_add_transfer" %}"
                         class="btn btn-outline-primary {% if type_transaction == "transfer" %}active{% endif %}"
                         {% if type_transaction == "transfer" %}
                         aria-current="page"
@@ -33,11 +33,11 @@
 
             <form
                     {% if type_transaction == "minus" %}
-                        action="{% url "andr_finance:transaction_add" "minus" %}"
+                        action="{% url "andr_finance:transaction_add_minus" %}"
                     {% elif type_transaction == "plus" %}
-                        action="{% url "andr_finance:transaction_add" "plus" %}"
+                        action="{% url "andr_finance:transaction_add_plus" %}"
                     {% elif type_transaction == "transfer" %}
-                        action="{% url "andr_finance:transaction_add" "transfer" %}"
+                        action="{% url "andr_finance:transaction_add_transfer" %}"
                     {% endif %}
                         method="post">
                 {% csrf_token %}
