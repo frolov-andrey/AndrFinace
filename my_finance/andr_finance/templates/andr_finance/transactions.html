@@ -250,6 +250,8 @@
 									{% if transaction_group.category_icon_folder is not None %}
 										src="
 
+
+
 												{% static 'andr_finance/item_images/' %}{{ transaction_group.category_icon_folder }}/{{ transaction_group.category_icon_file }}"
 									{% else %}
 										src="{{ icon_default }}"
@@ -363,6 +365,18 @@
 
 		});
 
+		function deleteTransaction(transactionId)
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "/transactions/delete/" + transactionId + "/", true);
+			xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+			xhr.onload = function ()
+			{
+				// Обработка ответа, например, перезагрузка страницы для обновления списка транзакций
+				location.reload();
+			};
+			xhr.send();
+		}
 	</script>
 
 

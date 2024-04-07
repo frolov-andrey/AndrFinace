@@ -15,14 +15,15 @@ urlpatterns = [
     path('categorys/edit/<int:pk>/', views_category.CategoryUpdate.as_view(), name='category_edit'),
     path('categorys/delete/<int:pk>/', views_category.CategoryDelete.as_view(), name='category_delete'),
 
-    path('accounts/', views_account.AccountView.as_view(), name='accounts'),
+
     path('accounts/add/', views_account.AccountAdd.as_view(), name='account_add'),
     path('accounts/edit/<int:pk>/', views_account.AccountUpdate.as_view(), name='account_edit'),
     path('accounts/delete/<int:pk>/', views_account.AccountDelete.as_view(), name='account_delete'),
+    path('accounts/', views_account.AccountView.as_view(), name='accounts'),
+
+
 
     path('transactions/', views_transaction.TransactionView.as_view(), name='transactions'),
-
-    # path('transactions/add/<str:type_transaction>/', views_transaction.transaction_add, name='transaction_add'),
     path('transactions/add/plus/', views_transaction.TransactionAddPlus.as_view(), name='transaction_add_plus'),
     path('transactions/add/minus/', views_transaction.TransactionAddMinus.as_view(), name='transaction_add_minus'),
     path('transactions/add/transfer/', views_transaction.TransactionAddTransfer.as_view(),

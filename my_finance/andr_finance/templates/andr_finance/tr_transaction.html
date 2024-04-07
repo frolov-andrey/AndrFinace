@@ -53,8 +53,8 @@
     </td>
     <td>{{ transaction.title }}</td>
     <td class="align-middle text-center">
-        <a href="{% url 'andr_finance:transaction_delete' transaction.id %}" title="Удалить">
-            <img src="{% static 'andr_finance/images/x-circle.svg' %}" alt="">
+        <a href="" title="Удалить" onclick="deleteTransaction({{ transaction.id }})">
+            <img src="{% static 'andr_finance/images/x-circle.svg' %}" alt="" >
         </a>
     </td>
 </tr>
