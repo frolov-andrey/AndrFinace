@@ -109,8 +109,8 @@ def get_sum_transaction(transactions, filters):
     return balance
 
 
-def get_transaction(filters):
-    transactions = Transaction.objects
+def get_transaction(filters, request):
+    transactions = Transaction.objects.filter(user=request.user)
 
     if len(filters) == 0:
         return transactions.all().order_by('date_add')
@@ -159,7 +159,7 @@ def get_sort_order(filters):
     return sort_order
 
 
-def get_balances(transactions, filters):
+def get_balances(transactions, filters, request):
     balances = {}
     balance = Decimal(0)
 
@@ -174,7 +174,7 @@ def get_balances(transactions, filters):
                 balance = balance + account.start_balance
 
     if 'date_start' in filters:
-        transactions_for_start_balance = Transaction.objects.filter(
+        transactions_for_start_balance = Transaction.objects.filter(user=request.user).filter(
             date_add__lt=filters["date_start"]
         )
         sum_transaction = get_sum_transaction(transactions_for_start_balance, filters)
@@ -206,9 +206,9 @@ def get_balances(transactions, filters):
     return balances
 
 
-def get_transactions_group(filters):
+def get_transactions_group(filters, request):
     result = []
-    transactions = get_transaction(filters)
+    transactions = get_transaction(filters, request)
 
     if 'filter_group_category' in filters:
         if filters['filter_group_category'] == 'on':

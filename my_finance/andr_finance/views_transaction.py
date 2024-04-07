@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -10,12 +12,13 @@ from .report_table import get_filter_transaction, get_transactions_group, get_tr
 from .views import type_transactions, icon_default, page_not_found, get_images, images_path
 
 
-class TransactionView(ListView):
+class TransactionView(LoginRequiredMixin, ListView):
+    model = Transaction
     template_name = 'andr_finance/transactions.html'
     context_object_name = 'transactions'
 
-    def get_queryset(self):
-        return Transaction.objects.order_by('date_add')
+    # def get_queryset(self):
+    #     return Transaction.objects.filter(user=self.request.user).order_by('date_add')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,13 +27,13 @@ class TransactionView(ListView):
 
         if 'filter_group_category' in filters:
             group_by = filters['filter_group_category']
-            transactions_group = get_transactions_group(filters)
+            transactions_group = get_transactions_group(filters, self)
         else:
             group_by = ''
             transactions_group = []
 
-        transactions = get_transaction(filters)
-        balances = get_balances(transactions, filters)
+        transactions = get_transaction(filters, self.request)
+        balances = get_balances(transactions, filters, self.request)
 
         send_filter_date_start = self.request.GET.get('filter_date_start')
         if send_filter_date_start is None:
@@ -75,7 +78,7 @@ class TransactionView(ListView):
         return context
 
 
-class TransactionAddPlus(CreateView):
+class TransactionAddPlus(LoginRequiredMixin, CreateView):
     form_class = TransactionFormMinusPlus
     template_name = 'andr_finance/transaction_add.html'
     success_url = reverse_lazy('andr_finance:transactions')
@@ -95,7 +98,7 @@ class TransactionAddPlus(CreateView):
         return super().form_valid(form)
 
 
-class TransactionAddMinus(CreateView):
+class TransactionAddMinus(LoginRequiredMixin, CreateView):
     form_class = TransactionFormMinusPlus
     template_name = 'andr_finance/transaction_add.html'
     success_url = reverse_lazy('andr_finance:transactions')
@@ -115,7 +118,7 @@ class TransactionAddMinus(CreateView):
         return super().form_valid(form)
 
 
-class TransactionAddTransfer(CreateView):
+class TransactionAddTransfer(LoginRequiredMixin, CreateView):
     form_class = TransactionFormTransfer
     template_name = 'andr_finance/transaction_add.html'
     success_url = reverse_lazy('andr_finance:transactions')
@@ -134,13 +137,19 @@ class TransactionAddTransfer(CreateView):
         return super().form_valid(form)
 
 
-class TransactionUpdatePlus(UpdateView):
+class TransactionUpdatePlus(LoginRequiredMixin, UpdateView):
     model = Transaction
     form_class = TransactionFormMinusPlus
     template_name = 'andr_finance/transaction_edit.html'
     success_url = reverse_lazy('andr_finance:transactions')
 
     title_page = 'Редактирование транзакции'
+
+    def get_object(self, queryset=None):
+        transaction = super().get_object(queryset)
+        if transaction.user != self.request.user:
+            raise Http404("Транзакция не существует или у вас нет разрешения на доступ к ней")
+        return transaction
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -157,13 +166,19 @@ class TransactionUpdatePlus(UpdateView):
         return super().form_valid(form)
 
 
-class TransactionUpdateMinus(UpdateView):
+class TransactionUpdateMinus(LoginRequiredMixin, UpdateView):
     model = Transaction
     form_class = TransactionFormMinusPlus
     template_name = 'andr_finance/transaction_edit.html'
     success_url = reverse_lazy('andr_finance:transactions')
 
     title_page = 'Редактирование транзакции'
+
+    def get_object(self, queryset=None):
+        transaction = super().get_object(queryset)
+        if transaction.user != self.request.user:
+            raise Http404("Транзакция не существует или у вас нет разрешения на доступ к ней")
+        return transaction
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,13 +195,19 @@ class TransactionUpdateMinus(UpdateView):
         return super().form_valid(form)
 
 
-class TransactionUpdateTransfer(UpdateView):
+class TransactionUpdateTransfer(LoginRequiredMixin, UpdateView):
     model = Transaction
     form_class = TransactionFormTransfer
     template_name = 'andr_finance/transaction_edit.html'
     success_url = reverse_lazy('andr_finance:transactions')
 
     title_page = 'Редактирование транзакции'
+
+    def get_object(self, queryset=None):
+        transaction = super().get_object(queryset)
+        if transaction.user != self.request.user:
+            raise Http404("Транзакция не существует или у вас нет разрешения на доступ к ней")
+        return transaction
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -202,48 +223,12 @@ class TransactionUpdateTransfer(UpdateView):
         return super().form_valid(form)
 
 
-def transaction_edit(request, type_transaction, transaction_id):
-    transaction = Transaction.objects.get(id=transaction_id)
-
-    if request.method != 'POST':
-        if type_transaction == Transaction.MINUS or type_transaction == Transaction.PLUS:
-            form = TransactionFormMinusPlus(instance=transaction)
-        elif type_transaction == type_transaction == Transaction.TRANSFER:
-            form = TransactionFormTransfer(instance=transaction)
-        else:
-            return page_not_found(request)
-    else:
-        if type_transaction == Transaction.MINUS or type_transaction == Transaction.PLUS:
-            form = TransactionFormMinusPlus(instance=transaction, data=request.POST)
-        elif type_transaction == type_transaction == Transaction.TRANSFER:
-            form = TransactionFormTransfer(instance=transaction, data=request.POST)
-        else:
-            return page_not_found(request)
-        if form.is_valid():
-            transaction = form.save(commit=False)
-
-            if type_transaction == Transaction.MINUS:
-                transaction.type_transaction = Transaction.MINUS
-                transaction.account_recipient = None
-            elif type_transaction == Transaction.PLUS:
-                transaction.type_transaction = Transaction.PLUS
-                transaction.account_recipient = None
-            elif type_transaction == Transaction.TRANSFER:
-                transaction.type_transaction = Transaction.TRANSFER
-
-            transaction.save()
-
-            return redirect('andr_finance:transactions')
-
-    context = {
-        'transaction': transaction,
-        'form': form,
-        'select_menu': 'transactions',
-        'type_transaction': type_transaction,
-    }
-    return render(request, 'andr_finance/transaction_edit.html', context)
-
-
-class TransactionDelete(DeleteView):
+class TransactionDelete(LoginRequiredMixin, DeleteView):
     model = Transaction
     success_url = reverse_lazy("andr_finance:transactions")
+
+    def get_object(self, queryset=None):
+        transaction = super().get_object(queryset)
+        if transaction.user != self.request.user:
+            raise Http404("Транзакция не существует или у вас нет разрешения на доступ к ней")
+        return transaction

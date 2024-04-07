@@ -1,9 +1,11 @@
+import json
 import os
 from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
@@ -45,6 +47,7 @@ def page_not_found(request):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
 
+@login_required
 def get_images(images_path, catalog=None):
     images = []
     is_find_image = False
@@ -87,6 +90,7 @@ class Home(TemplateView):
         return context
 
 
+@login_required
 def reports(request):
     if request.GET.get('chart_select') is None:
         chart_select = 'cash_flow'
@@ -126,7 +130,7 @@ def reports(request):
                 filters['date_start'] = datetime.strptime(send_filter_date_start, '%d.%m.%Y')
                 filters['date_end'] = datetime.strptime(send_filter_date_end, '%d.%m.%Y') + timedelta(days=1)
 
-    transactions = get_transaction(filters)
+    transactions = get_transaction(filters, request)
 
     charts = {}
     if chart_select == 'cash_flow':
@@ -169,11 +173,12 @@ def reports(request):
     return render(request, 'andr_finance/reports_chart.html', context)
 
 
+@login_required
 def my_settings(request):
     if request.method == 'GET':
         load_demo = request.GET.get('load_demo')
         if load_demo == 'load_demo':
-            load_demo_data()
+            load_demo_data(request)
 
     context = {
         'select_menu': 'my_settings',

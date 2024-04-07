@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -5,6 +6,8 @@ class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, db_index=True)
     icon_folder = models.CharField(max_length=200, default='', null=True, blank=True)
     icon_file = models.CharField(max_length=200, default='', null=True, blank=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
+                             related_name='categories', null=True, default=None)
 
     def __str__(self):
         return self.name
@@ -15,6 +18,8 @@ class Account(models.Model):
     start_balance = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Начальный баланс')
     icon_folder = models.CharField(max_length=200, default='', null=True, blank=True)
     icon_file = models.CharField(max_length=200, default='', null=True, blank=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
+                             related_name='accounts', null=True, default=None)
 
     def __str__(self):
         return self.name
@@ -62,6 +67,8 @@ class Transaction(models.Model):
     )
     date_add = models.DateTimeField(db_index=True)
     title = models.CharField(max_length=200)
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
+                             related_name='transactions', null=True, default=None)
 
     def __str__(self):
         return self.type_transaction + ', ' + str(self.amount) + ' ' + str(self.date_add)
