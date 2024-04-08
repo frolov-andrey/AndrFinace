@@ -95,7 +95,7 @@
                                 class="nav-link px-2 link-primary me-2 {% if select_menu == 'login' %}link-secondary active{% endif %}"
                         >Войти</a>
                         <a
-                                href="#"
+                                href="{% url 'users:register' %}"
                                 class="nav-link px-2 link-primary me-2"
                         >Регистрация</a>
                     {% endif %}
