@@ -1,7 +1,13 @@
 {% extends 'andr_finance/base.html' %}
 
 {% block content %}
-	<h1>Регистрация</h1>
+	<h1 class="mb-5">Регистрация</h1>
+
+	<h5 class="mb-1">Для демо доступа, <a href="{% url 'users:login' %}">введите</a>:</h5>
+	<ul class="list-group-numbered  mb-5">
+		<li><h5>Логин: <span class="fw-bold">demo</span></h5></li>
+		<li><h5>Пароль: <span class="fw-bold">demo</span></h5></li>
+	</ul>
 
 	<div class="row">
 		<div class="col-md-6">
