@@ -141,7 +141,7 @@ def reports(request):
         chart_bar_plus = get_chart_str(filters, transactions_by_date_plus, Transaction.PLUS, min_date, max_date)
         chart_bar_minus = get_chart_str(filters, transactions_by_date_minus, Transaction.MINUS, min_date, max_date)
 
-        chart_line = get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
+        chart_line = get_chart_line(request, filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date)
 
         labels = get_labels(min_date, max_date)
 
@@ -153,7 +153,7 @@ def reports(request):
         }
 
     elif chart_select == 'by_category':
-        chart_bar_category = get_chart_bar_category(transactions)
+        chart_bar_category = get_chart_bar_category(request, transactions)
         charts = {
             'chart_bar_category': chart_bar_category
         }

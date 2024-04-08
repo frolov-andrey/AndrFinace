@@ -164,11 +164,11 @@ def get_balances(transactions, filters, request):
     balance = Decimal(0)
 
     if 'account_id' in filters:
-        accounts = Account.objects.filter(pk=filters['account_id'])
+        accounts = Account.objects.filter(user=request.user).filter(pk=filters['account_id'])
         if accounts.exists():
             balance = balance + accounts.get().start_balance
     else:
-        accounts = Account.objects.all()
+        accounts = Account.objects.filter(user=request.user).all()
         for account in accounts:
             if account.start_balance > 0:
                 balance = balance + account.start_balance

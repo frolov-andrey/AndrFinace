@@ -10,21 +10,21 @@ from .models import Transaction, Account, Category
 from .report_table import get_sum_transaction
 
 
-def get_chart_line(filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date):
+def get_chart_line(request, filters, transactions_by_date_plus, transactions_by_date_minus, min_date, max_date):
     balance = Decimal(0)
 
     if 'account_id' in filters:
-        accounts = Account.objects.filter(pk=filters['account_id'])
+        accounts = Account.objects.filter(user=request.user).filter(pk=filters['account_id'])
         if accounts.exists():
             balance = balance + accounts.get().start_balance
     else:
-        accounts = Account.objects.all()
+        accounts = Account.objects.filter(user=request.user).all()
         for account in accounts:
             if account.start_balance > 0:
                 balance = balance + account.start_balance
 
     if 'date_start' in filters:
-        transactions_for_start_balance = Transaction.objects.filter(date_add__lt=filters["date_start"])
+        transactions_for_start_balance = Transaction.objects.filter(user=request.user).filter(date_add__lt=filters["date_start"])
         sum_transaction = get_sum_transaction(transactions_for_start_balance, filters)
         balance = balance + sum_transaction
 
@@ -159,9 +159,9 @@ def get_labels(min_date, max_date):
     return datas_label_str
 
 
-def get_chart_bar_category(transactions):
+def get_chart_bar_category(request, transactions):
     chart = []
-    categories = Category.objects.all()
+    categories = Category.objects.filter(user=request.user).all()
     for category in categories:
         transactions_category = transactions.filter(category_id=category.id).all()
         if transactions_category.exists():
