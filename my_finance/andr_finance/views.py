@@ -162,7 +162,7 @@ def reports(request):
         'select_menu': 'reports',
         'charts': charts,
         'chart_select': chart_select,
-        'accounts': Account.objects.order_by('name'),
+        'accounts': Account.objects.filter(user=request.user).order_by('name'),
 
         'filter_account': request.GET.get('filter_account'),
         'filter_date_start': send_filter_date_start,

@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
 from .forms import TransactionFormMinusPlus, TransactionFormTransfer
 from .models import Account, Category, Transaction
@@ -27,7 +27,7 @@ class TransactionView(LoginRequiredMixin, ListView):
 
         if 'filter_group_category' in filters:
             group_by = filters['filter_group_category']
-            transactions_group = get_transactions_group(filters, self)
+            transactions_group = get_transactions_group(filters, self.request)
         else:
             group_by = ''
             transactions_group = []
@@ -61,8 +61,8 @@ class TransactionView(LoginRequiredMixin, ListView):
         context['transactions'] = transactions
         context['balances'] = balances
         context['transactions_group'] = transactions_group
-        context['accounts'] = Account.objects.order_by('name')
-        context['categories'] = Category.objects.order_by('name')
+        context['accounts'] = Account.objects.filter(user=self.request.user).order_by('name')
+        context['categories'] = Category.objects.filter(user=self.request.user).order_by('name')
         context['type_transactions'] = type_transactions
         context['select_menu'] = 'transactions'
         context['icon_default'] = icon_default
@@ -97,6 +97,11 @@ class TransactionAddPlus(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
+
 
 class TransactionAddMinus(LoginRequiredMixin, CreateView):
     form_class = TransactionFormMinusPlus
@@ -117,6 +122,11 @@ class TransactionAddMinus(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
+
 
 class TransactionAddTransfer(LoginRequiredMixin, CreateView):
     form_class = TransactionFormTransfer
@@ -135,6 +145,11 @@ class TransactionAddTransfer(LoginRequiredMixin, CreateView):
         transaction.type_transaction = Transaction.TRANSFER
 
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
 
 
 class TransactionUpdatePlus(LoginRequiredMixin, UpdateView):
@@ -165,6 +180,11 @@ class TransactionUpdatePlus(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
+
 
 class TransactionUpdateMinus(LoginRequiredMixin, UpdateView):
     model = Transaction
@@ -194,6 +214,11 @@ class TransactionUpdateMinus(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
+
 
 class TransactionUpdateTransfer(LoginRequiredMixin, UpdateView):
     model = Transaction
@@ -221,6 +246,11 @@ class TransactionUpdateTransfer(LoginRequiredMixin, UpdateView):
         transaction.type_transaction = Transaction.TRANSFER
 
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user_id'] = self.request.user.id
+        return kwargs
 
 
 class TransactionDelete(LoginRequiredMixin, DeleteView):
