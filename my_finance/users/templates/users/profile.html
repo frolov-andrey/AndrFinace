@@ -11,6 +11,10 @@
     <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
 
+	{% if password %}
+	<p>{{ password }}</p>
+	{% endif %}
+
     <p><button type="submit">Сохранить</button></p>
 </form>
 

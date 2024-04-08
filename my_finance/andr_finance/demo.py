@@ -7,7 +7,7 @@ from django.conf import settings
 from andr_finance.models import Account, Transaction, Category
 
 
-def load_demo_data(request):
+def load_demo_data(user_id):
     path_folder_demo = str(settings.BASE_DIR) + '/andr_finance/' + str(settings.STATIC_URL) + 'andr_finance/demo/'
 
     with open(path_folder_demo + 'accounts.json', 'rt', encoding='utf-8') as file_accounts:
@@ -37,7 +37,7 @@ def load_demo_data(request):
             start_balance=data_account['start_balance'],
             icon_folder=data_account['icon_folder'],
             icon_file=data_account['icon_file'],
-            user=request.user,
+            user_id=user_id,
         )
 
     for data_category in data_categories:
@@ -45,7 +45,7 @@ def load_demo_data(request):
             name=data_category['name'],
             icon_folder=data_category['icon_folder'],
             icon_file=data_category['icon_file'],
-            user=request.user,
+            user_id=user_id,
         )
 
     for data_transaction in data_transactions:
@@ -79,5 +79,5 @@ def load_demo_data(request):
             category_id=category_id,
             date_add=date_add,
             title=data_transaction['title'],
-            user=request.user,
+            user_id=user_id,
         )

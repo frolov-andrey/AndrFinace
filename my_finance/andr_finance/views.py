@@ -178,7 +178,7 @@ def my_settings(request):
     if request.method == 'GET':
         load_demo = request.GET.get('load_demo')
         if load_demo == 'load_demo':
-            load_demo_data(request)
+            load_demo_data(request.user.id)
 
     context = {
         'select_menu': 'my_settings',
