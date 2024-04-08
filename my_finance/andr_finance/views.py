@@ -47,7 +47,6 @@ def page_not_found(request):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
 
-@login_required
 def get_images(images_path, catalog=None):
     images = []
     is_find_image = False

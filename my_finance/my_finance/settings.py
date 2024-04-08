@@ -118,7 +118,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'andr_finance:index'
+LOGIN_REDIRECT_URL = 'andr_finance:transactions'
 LOGOUT_REDIRECT_URL = 'andr_finance:index'
 LOGIN_URL = 'users:login'
 

@@ -3,8 +3,7 @@
 {% block content %}
     <h2 class="mb-3">Редактирование транзакции</h2>
     <div class="row">
-        <div class="col-6">
-
+        <div class="col-md-6">
             <div class="btn-group mb-3">
                 <a
                         href="{% url "andr_finance:transaction_edit_minus" transaction.id %}"
@@ -44,7 +43,7 @@
                     <div class="form-error">{{ form.non_field_errors }}</div>
                 </div>
                 {% for f_elem in form %}
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}</label>
                         {% if f_elem.html_name == 'date_add' %}
                             <input

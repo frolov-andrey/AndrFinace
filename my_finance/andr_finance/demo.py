@@ -22,14 +22,17 @@ def load_demo_data(user_id):
         data_transactions = json.load(file_transactions)
 
     # print(data_accounts)
-    transactions = Transaction.objects.all()
-    transactions.delete()
+    transactions = Transaction.objects.filter(user=user_id).all()
+    if transactions.exists():
+        transactions.delete()
 
-    accounts = Account.objects.all()
-    accounts.delete()
+    accounts = Account.objects.filter(user=user_id).all()
+    if accounts.exists():
+        accounts.delete()
 
-    categories = Category.objects.all()
-    categories.delete()
+    categories = Category.objects.filter(user=user_id).all()
+    if categories.exists():
+        categories.delete()
 
     for data_account in data_accounts:
         Account.objects.create(
@@ -49,19 +52,19 @@ def load_demo_data(user_id):
         )
 
     for data_transaction in data_transactions:
-        account = Account.objects.filter(name=data_transaction['account_name'])
+        account = Account.objects.filter(user=user_id).filter(name=data_transaction['account_name'])
         if account.exists():
             account_id = account.get().id
         else:
             account_id = None
 
-        account_recipient = Account.objects.filter(name=data_transaction['account_recipient_name'])
+        account_recipient = Account.objects.filter(user=user_id).filter(name=data_transaction['account_recipient_name'])
         if account_recipient.exists():
             account_recipient_id = account_recipient.get().id
         else:
             account_recipient_id = None
 
-        category = Category.objects.filter(name=data_transaction['category_name'])
+        category = Category.objects.filter(user=user_id).filter(name=data_transaction['category_name'])
         if category.exists():
             category_id = category.get().id
         else:

@@ -1,7 +1,56 @@
 {% extends "andr_finance/base.html" %}
+{% load static %}
 
 {% block content %}
 
-    <h1>AndrFinance</h1>
+	<h1 class="mb-5">AndrFinance</h1>
+
+	<h5 class="mb-1">Для демо доступа, <a href="{% url 'users:login' %}">введите</a>:</h5>
+	<ul class="list-group-numbered  mb-5">
+		<li><h5>Логин: <span class="fw-bold">demo</span></h5></li>
+		<li><h5>Пароль: <span class="fw-bold">demo</span></h5></li>
+	</ul>
+
+	<p class="mb-5">Разработка: Фролов Андрей, afrolov27@gmail.com</p>
+	<p class="">Сделано с использованием:</p>
+	<ul class="list-group-numbered mb-5">
+		<li class="list-group-item">Python</li>
+		<li class="list-group-item">Django</li>
+		<li class="list-group-item">Bootstrap</li>
+	</ul>
+
+	<div class="container">
+		<div class="row mb-5">
+			<div class="col-md-9">
+				<img src="{% static 'andr_finance/images/transactions.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-md-9">
+				<img src="{% static 'andr_finance/images/chart1.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-md-9">
+				<img src="{% static 'andr_finance/images/chart2.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-md-4">
+				<img src="{% static 'andr_finance/images/categories.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-md-8">
+				<img src="{% static 'andr_finance/images/category_add.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-md-7">
+				<img src="{% static 'andr_finance/images/accounts.png' %}" class="img-thumbnail" alt="">
+			</div>
+		</div>
+	</div>
+
 
 {% endblock content %}

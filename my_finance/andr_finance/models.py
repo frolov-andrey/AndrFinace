@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=50, unique=True, db_index=True)
+    name = models.CharField(max_length=50, db_index=True)
     icon_folder = models.CharField(max_length=200, default='', null=True, blank=True)
     icon_file = models.CharField(max_length=200, default='', null=True, blank=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,

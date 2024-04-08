@@ -1,23 +1,35 @@
 {% extends 'andr_finance/base.html' %}
 
 {% block content %}
-<h1>Профиль</h1>
+	<h1>Профиль</h1>
+	<div class="row">
+		<div class="col-md-6">
+			<form method="post" class="mb-4">
+				{% csrf_token %}
+				<div class="form-error">{{ form.non_field_errors }}</div>
+				{% for f_elem in form %}
+					<div class="mb-3">
+						<label class="form-label" for="{{ f_elem.id_for_label }}">{{ f_elem.label }}: </label>
+						{{ f_elem }}
+						<div class="form-error">{{ f_elem.errors }}</div>
+					</div>
+				{% endfor %}
 
-<form method="post">
-    {% csrf_token %}
-    <div class="form-error">{{ form.non_field_errors }}</div>
-    {% for f in form %}
-    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-    <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}
+				{% if password %}
+					<label class="form-label" for="demo_password">Пароль:
+						<input
+								type="text"
+								name="demo_password"
+								value="{{ password }}" class="form-control" required="" disabled="disabled"
+								id="demo_password">
+					</label>
+					<div class="form-error">{{ f_elem.errors }}</div>
+				{% endif %}
+				<button type="submit" class="btn btn-outline-primary btn-sm mt-3">Сохранить</button>
+			</form>
+			<a href="{% url 'users:password_change' %}">Сменить пароль</a>
+		</div>
+	</div>
 
-	{% if password %}
-	<p>{{ password }}</p>
-	{% endif %}
-
-    <p><button type="submit">Сохранить</button></p>
-</form>
-
-<p><a href="{% url 'users:password_change' %}">Сменить пароль</a></p>
 
 {% endblock %}

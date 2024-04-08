@@ -3,6 +3,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
 
+from andr_finance.demo import load_demo_data
 from .models import Profile
 
 
@@ -32,7 +33,11 @@ class DemoAuthBackend(BaseBackend):
 
         try:
             if username == 'demo' and password == 'demo':
-                username = f'demo{random.randint(1, 1000)}'
+                find_user = True
+                while find_user:
+                    username = f'demo{random.randint(1, 1000)}'
+                    find_user = get_user_model().objects.filter(username=username).exists()
+
                 password = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                                                   k=10))  # Random password
                 user, created = get_user_model().objects.get_or_create(username=username)
@@ -40,6 +45,7 @@ class DemoAuthBackend(BaseBackend):
                     user.set_password(password)
                     user.save()
                     Profile.objects.create(user=user, password=password, is_demo=True)
+                    load_demo_data(user.id)
                 else:
                     return None
             else:

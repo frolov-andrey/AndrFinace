@@ -70,9 +70,9 @@ class LoginUserForm(AuthenticationForm):
       return password
 
 class RegisterUserForm(UserCreationForm):
-    username = forms.CharField(label="Логин", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password1 = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    password2 = forms.CharField(label="Повтор пароля", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label="Логин", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label="Повтор пароля", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = get_user_model()
@@ -83,9 +83,9 @@ class RegisterUserForm(UserCreationForm):
             'last_name': "Фамилия",
         }
         widgets = {
-            'email': forms.TextInput(attrs={'class': 'form-input'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_email(self):
@@ -96,8 +96,8 @@ class RegisterUserForm(UserCreationForm):
 
 
 class ProfileUserForm(forms.ModelForm):
-    username = forms.CharField(disabled=True, label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    email = forms.CharField(disabled=True, label='E-mail', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(disabled=True, label='Логин', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.CharField(disabled=True, label='E-mail', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = get_user_model()
@@ -107,13 +107,13 @@ class ProfileUserForm(forms.ModelForm):
             'last_name': 'Фамилия',
         }
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
 class UserPasswordChangeForm(PasswordChangeForm):
-    old_password = forms.CharField(label="Старый пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    new_password1 = forms.CharField(label="Новый пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    old_password = forms.CharField(label="Старый пароль", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password1 = forms.CharField(label="Новый пароль", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     new_password2 = forms.CharField(label="Подтверждение пароля",
-                                    widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}))
