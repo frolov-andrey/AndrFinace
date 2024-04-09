@@ -4,52 +4,53 @@
 
 {% block content %}
 
-    <h2 class="mb-3">Счета</h2>
+	<h2 class="mb-3">Счета</h2>
 
-    <div class="row">
-        <div class="col-8">
-    <table class="table table-hover">
-        <thead class="table-light">
-        <tr>
-            <th>Иконка</th>
-            <th>Название</th>
-            <th class="text-end">Баланс</th>
-            <th class="text-end">Начальный баланс</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for account in accounts %}
-            <tr>
-                <td>
-                    <img
-                            {% if account.icon_folder is not None %}
-                                src="{% static 'andr_finance/item_images/' %}{{ account.icon_folder }}/{{ account.icon_file }}"
-                            {% else %}
-                                src="{{ icon_default }}"
-                            {% endif %}
-                                width="30" height="30"
-					/>
-                </td>
-                <td>
-                    <a href="{% url 'andr_finance:account_edit' account.id %}">{{ account.name }}</a>
-                </td>
-				{% tr_account_balance account balances %}
-                <td
-                        class="{% if account.start_balance < 0 %}text-danger{% else %}{% endif %} text-end"
-                >{{ account.start_balance|floatformat:"2g" }}</td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td>Нет счетов</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-        </div>
-    </div>
-    <a href="{% url 'andr_finance:account_add' %}" class="btn btn-outline-primary btn-sm mt-2">Добавить новый счет</a>
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table table-hover">
+				<thead class="table-light">
+				<tr>
+					<th>Иконка</th>
+					<th>Название</th>
+					<th class="text-end">Баланс</th>
+					<th class="text-end">Начальный баланс</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for account in accounts %}
+					<tr>
+						<td>
+							<img
+									{% if account.icon_folder is not None %}
+										src="
+												{% static 'andr_finance/item_images/' %}{{ account.icon_folder }}/{{ account.icon_file }}"
+									{% else %}
+										src="{{ icon_default }}"
+									{% endif %}
+										width="30" height="30"
+							/>
+						</td>
+						<td>
+							<a href="{% url 'andr_finance:account_edit' account.id %}">{{ account.name }}</a>
+						</td>
+						{% tr_account_balance account balances %}
+						<td
+								class="{% if account.start_balance < 0 %}text-danger{% else %}{% endif %} text-end"
+						>{{ account.start_balance|floatformat:"2g" }}</td>
+					</tr>
+				{% empty %}
+					<tr>
+						<td>Нет счетов</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<a href="{% url 'andr_finance:account_add' %}" class="btn btn-outline-primary btn-sm mt-2">Добавить новый счет</a>
 
 {% endblock content %}

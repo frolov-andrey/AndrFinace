@@ -32,6 +32,7 @@ class CategoryAdd(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         images = get_images(images_path)
+        context['select_menu'] = 'categories'
         context['images'] = images
         context['icon_default'] = icon_default
         context['images_path'] = images_path
@@ -44,6 +45,7 @@ class CategoryAdd(LoginRequiredMixin, CreateView):
         category = form.save(commit=False)
         category.icon_folder = form.data['icon_folder']
         category.icon_file = form.data['icon_file']
+        category.user = self.request.user
 
         return super().form_valid(form)
 

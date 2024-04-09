@@ -5,11 +5,11 @@
 {% block content %}
 
 	<div class="row mb-3">
-		<div class="col-1">
+		<div class="col-md-2">
 			<h2>Транзакции</h2>
 		</div>
-		<div class="col-8"></div>
-		<div class="col-3 text-end">
+		<div class="col-md-6"></div>
+		<div class="col-md-4 text-end">
 			<form action="{% url 'andr_finance:transaction_add_minus' %}">
 				<button type="submit" class="btn btn-outline-primary btn-sm mt-2">Добавить транзакцию</button>
 			</form>

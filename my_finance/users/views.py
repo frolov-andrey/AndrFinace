@@ -4,6 +4,7 @@ import string
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -50,6 +51,14 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        if get_user_model().objects.filter(email=email).exists():
+            form.add_error('email', "Такой E-mail уже существует!")
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
 
 
 class UserPasswordChange(PasswordChangeView):
